@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">UIBMissatgeria</string>
+
+    <string name="hello_world">Please, log in</string>
+    <string name="log_button">Enter</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_logged">Courses</string>
+</resources>
