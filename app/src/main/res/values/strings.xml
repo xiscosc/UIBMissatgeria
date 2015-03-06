@@ -5,4 +5,16 @@
     <string name="log_button">Enter</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_logged">Courses</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_tab">TabActivity</string>
+    <string name="title_activity_drawer">DrawerActivity</string>
+
+    <string name="title_section_courses">Courses</string>
+    <string name="title_section_dm">Direct Messages</string>
+    <string name="title_section_myaccount">My Account</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">Example action</string>
 </resources>
