@@ -40,7 +40,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void logIn(View view) {
-        Intent intent = new Intent(this, LoggedActivity.class);
+        Intent intent = new Intent(this, PrincipalActivity.class);
         //TODO login
         startActivity(intent);
     }
