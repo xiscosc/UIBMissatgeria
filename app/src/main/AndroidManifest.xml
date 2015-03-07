@@ -24,10 +24,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.fsc.uibmissatgeria.MainActivity" />
         </activity>
-        <activity
-            android:name=".DrawerActivity"
-            android:label="@string/title_activity_drawer" >
-        </activity>
     </application>
 
 </manifest>
