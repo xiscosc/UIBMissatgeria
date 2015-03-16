@@ -1,5 +1,8 @@
 package com.fsc.uibmissatgeria.fragments;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -32,6 +35,20 @@ public class CoursesFragment extends Fragment {
                 new Course("Xarxes Avançades", "TARDA", 576723),
         };
 
+        /**
+         * ASYNC TASK
+
+        String stringUrl = "rhodes.joan-font.com/subjects";
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            new DownloadWebpageTask().execute(stringUrl);
+        } else {
+            textView.setText("No network connection available.");
+        }
+
+         */
 
         adapterCourse = new CourseAdapter(getActivity(), courses);
 
