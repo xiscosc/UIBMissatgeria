@@ -1,22 +1,30 @@
 package com.fsc.uibmissatgeria.adapters;
 
 /**
- * Created by Xisco on 04/03/2015.
+ * Created by xiscosastrecabot on 7/3/15.
  */
 public class Message {
-    private String content;
-    private int user;
+    private String body;
+    private int idUser;
 
-    public Message(String content) {
-        this.content = content;
+    public Message(String body, int idUser) {
+        this.body = body;
+        this.idUser = idUser;
     }
 
-    public String getContent() {
-        return content;
+    public String getBody() {
+        return body;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public int getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
     }
 }
-

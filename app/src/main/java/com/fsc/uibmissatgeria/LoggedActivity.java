@@ -21,7 +21,7 @@ public class LoggedActivity extends ActionBarActivity {
         setContentView(R.layout.activity_logged);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new CoursesFragment())
+                    .add(R.id.container_logged, new CoursesFragment())
                     .commit();
         }
     }

@@ -25,8 +25,8 @@
                 android:value="com.fsc.uibmissatgeria.MainActivity" />
         </activity>
         <activity
-            android:name=".DrawerActivity"
-            android:label="@string/title_activity_drawer" >
+            android:name=".PrincipalActivity"
+            android:label="@string/title_activity_principal" >
         </activity>
     </application>
 
