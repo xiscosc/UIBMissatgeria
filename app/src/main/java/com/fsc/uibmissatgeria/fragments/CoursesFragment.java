@@ -15,11 +15,15 @@ import com.fsc.uibmissatgeria.adapters.CourseAdapter;
 
 import com.fsc.uibmissatgeria.api.Server;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class CoursesFragment extends Fragment {
 
     CourseAdapter adapterCourse;
     ProgressDialog pDialog;
+
 
     public CoursesFragment() {
     }
@@ -29,18 +33,7 @@ public class CoursesFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_listchats, container, false);
 
-        /*Course[] courses = new Course[] {
-                new Course("Estructura de dades", "MATI", 5654343),
-                new Course("Gestió de projectes", "MATI", 1234343),
-                new Course("Sistemes operatius 2", "TARDA", 23213),
-                new Course("Programació 2", "MATI", 32221),
-                new Course("Xarxes Avançades", "TARDA", 576723),
-        };*/
-
-        Course[] courses = new Course[0];
-
-
-        adapterCourse = new CourseAdapter(getActivity(), courses);
+        adapterCourse = new CourseAdapter(getActivity(), new Course[0]);
 
         ListView listView = (ListView) rootView.findViewById(R.id.list_item_c);
         listView.setAdapter(adapterCourse);
@@ -64,25 +57,13 @@ public class CoursesFragment extends Fragment {
 
         @Override
         protected Course[] doInBackground(Void... params) {
-
             Server s = new Server();
-            Course[] f = s.getCourses();
-
-            Course[] courses = new Course[] {
-                    new Course("Estructura de dades", "MATI", 5654343),
-                    new Course("Gestió de projectes", "MATI", 1234343),
-                    new Course("Sistemes operatius 2", "TARDA", 23213),
-                    new Course("Programació 2", "MATI", 32221),
-                    new Course("Xarxes Avançades", "TARDA", 576723),
-            };
-
-            return courses;
+            return s.getCourses();
         }
 
         @Override
         protected void onPostExecute(Course[] courses) {
-            //adapterCourse.clear();
-            //adapterCourse.addAll(courses);
+            //TODO: MOSTRAR LISTA
             pDialog.dismiss();
         }
 

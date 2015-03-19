@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class Server {
 
@@ -38,7 +39,13 @@ public class Server {
                 int total = reader.getInt("total");
                 if (total>0) {
                     JSONArray ja = reader.getJSONArray("results");
-                    //TODO: SERIALIZAR Y CONVERTIR A CURSOS
+                    ArrayList<Course> courses = new ArrayList<Course>();
+                    for (int x=0; x<ja.length(); x++) {
+                        JSONObject obj = (JSONObject) ja.get(x);
+                        Course c = new Course(obj.getString("name"), "GRUP: "+obj.getInt("id"), obj.getInt("code"));
+                        courses.add(c);
+                    }
+                    return (Course[]) courses.toArray();
                 }
             } catch (Exception e){
                 return new Course[0];
@@ -54,7 +61,7 @@ public class Server {
         try {
             urlConnection = (HttpURLConnection) urlObj.openConnection();
             urlConnection.setRequestMethod("GET");
-            urlConnection.setRequestProperty("Authorization", "2");
+            urlConnection.setRequestProperty("Authorization", "1");
             urlConnection.connect();
             InputStream inputStream = urlConnection.getInputStream();
             StringBuffer buffer = new StringBuffer();
