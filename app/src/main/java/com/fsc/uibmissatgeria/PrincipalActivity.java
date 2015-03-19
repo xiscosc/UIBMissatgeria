@@ -2,7 +2,6 @@ package com.fsc.uibmissatgeria;
 
 import java.util.Locale;
 
-
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -114,7 +113,6 @@ public class PrincipalActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -159,7 +157,5 @@ public class PrincipalActivity extends ActionBarActivity {
             return null;
         }
     }
-
-
 
 }
