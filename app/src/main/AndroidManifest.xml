@@ -32,6 +32,10 @@
             android:name=".PrincipalActivity"
             android:label="@string/title_activity_principal" >
         </activity>
+        <activity
+            android:name=".MessagesActivity"
+            android:label="@string/title_activity_messages" >
+        </activity>
     </application>
 
 </manifest>

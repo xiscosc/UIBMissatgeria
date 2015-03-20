@@ -1,7 +1,8 @@
 package com.fsc.uibmissatgeria.api;
 
 
-import com.fsc.uibmissatgeria.adapters.Course;
+import com.fsc.uibmissatgeria.objects.Course;
+import com.fsc.uibmissatgeria.objects.Group;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -38,16 +39,42 @@ public class Server {
                 JSONObject reader = new JSONObject(ret);
                 int total = reader.getInt("total");
                 if (total>0) {
-                    JSONArray ja = reader.getJSONArray("results");
-                    Course[] courses = new Course[ja.length()];
-                    for (int x=0; x<ja.length(); x++) {
-                        JSONObject obj = (JSONObject) ja.get(x);
-                        Course c = new Course(obj.getString("name"), ""+obj.getInt("id"), obj.getInt("code"));
-                        courses[x] = c;
+                    JSONArray courseJsonArray = reader.getJSONArray("results");
+                    Course[] courses = new Course[courseJsonArray.length()];
+                    for (int x=0; x<courseJsonArray.length(); x++) {
+                        ArrayList<Group> groups = new ArrayList<>();
+                        JSONObject courseJson = courseJsonArray.getJSONObject(x);
+
+                        /*JSONArray groupJsonArray = courseJson.getJSONArray("group");
+                        for (int y=0; y<groupJsonArray.length(); y++) {
+                            JSONObject groupJson = groupJsonArray.getJSONObject(y);
+                            groups.add(
+                                    new Group(
+                                            groupJson.getInt("id"),
+                                            groupJson.getString("name")
+                                    )
+                            );
+                        }*/
+
+                        JSONObject groupJson = courseJson.getJSONObject("group");
+                        groups.add(
+                                new Group(
+                                        groupJson.getInt("id"),
+                                        groupJson.getString("name")
+                                )
+                        );
+
+                        courses[x] = new Course(
+                                courseJson.getString("name"),
+                                groups,
+                                courseJson.getInt("code"),
+                                courseJson.getInt("id")
+                                );
                     }
                     return courses;
                 }
             } catch (Exception e){
+                System.out.printf(""+e);
                 return new Course[0];
             }
         }

@@ -6,10 +6,12 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_logged">Courses</string>
 
-    <string name="title_activity_principal">UIB</string>
+    <string name="title_activity_principal">UIB Missatgeria</string>
 
 
     <string name="title_section1">Courses</string>
     <string name="title_section2">Messages</string>
     <string name="title_section3">You</string>
+    <string name="title_activity_messages">Course</string>
+
 </resources>

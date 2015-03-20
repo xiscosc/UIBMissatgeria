@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.fsc.uibmissatgeria.R;
+import com.fsc.uibmissatgeria.objects.Course;
 
 /**
  * Created by Xisco on 04/03/2015.
@@ -28,7 +29,7 @@ public class CourseAdapter extends ArrayAdapter<Course> {
         CTitle.setText(c.getName());
 
         TextView CSTitle = (TextView)item.findViewById(R.id.CSTitle);
-        CSTitle.setText(c.getCode()+" - GRUP "+c.getGroup());
+        CSTitle.setText(c.getCode()+" - GROUP: "+c.getGroupName()); //TODO: TRANSLATE
 
         return(item);
     }

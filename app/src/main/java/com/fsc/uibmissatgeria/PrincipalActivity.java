@@ -70,7 +70,7 @@ public class PrincipalActivity extends ActionBarActivity {
         };
 
         // Add 3 tabs, specifying the tab's text and TabListener
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {
             actionBar.addTab(
                     actionBar.newTab()
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
@@ -151,8 +151,6 @@ public class PrincipalActivity extends ActionBarActivity {
                     return getString(R.string.title_section1).toUpperCase(l);
                 case 1:
                     return getString(R.string.title_section2).toUpperCase(l);
-                case 2:
-                    return getString(R.string.title_section3).toUpperCase(l);
             }
             return null;
         }

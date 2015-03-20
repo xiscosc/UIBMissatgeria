@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.fsc.uibmissatgeria.R;
+import com.fsc.uibmissatgeria.objects.Conversation;
 
 
 public class ConversationAdapter extends ArrayAdapter<Conversation> {
