@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.fsc.uibmissatgeria.R;
@@ -50,9 +51,15 @@ public class CoursesFragment extends Fragment {
         task.execute();
     }
 
-    public void createAdapter(Course[] courses) {
+    public void createAdapter(final Course[] courses) {
         adapterCourse = new CourseAdapter(getActivity(), courses);
         listView.setAdapter(adapterCourse);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                   //TODO: CAMBIOS
+            }
+        });
 
     }
 

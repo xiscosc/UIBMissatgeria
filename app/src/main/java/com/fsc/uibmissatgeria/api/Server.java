@@ -50,7 +50,6 @@ public class Server {
             } catch (Exception e){
                 return new Course[0];
             }
-
         }
         return new Course[0];
     }
