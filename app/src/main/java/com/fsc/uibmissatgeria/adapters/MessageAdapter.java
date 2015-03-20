@@ -16,7 +16,7 @@ import com.fsc.uibmissatgeria.objects.Message;
 public class MessageAdapter extends ArrayAdapter<Message> {
 
     public MessageAdapter(Context context, Message[] data) {
-        super(context, R.layout.listitem_course, data);
+        super(context, R.layout.listitem_message, data);
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
