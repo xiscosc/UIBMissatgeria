@@ -39,13 +39,13 @@ public class Server {
                 int total = reader.getInt("total");
                 if (total>0) {
                     JSONArray ja = reader.getJSONArray("results");
-                    ArrayList<Course> courses = new ArrayList<Course>();
+                    Course[] courses = new Course[ja.length()];
                     for (int x=0; x<ja.length(); x++) {
                         JSONObject obj = (JSONObject) ja.get(x);
-                        Course c = new Course(obj.getString("name"), "GRUP: "+obj.getInt("id"), obj.getInt("code"));
-                        courses.add(c);
+                        Course c = new Course(obj.getString("name"), ""+obj.getInt("id"), obj.getInt("code"));
+                        courses[x] = c;
                     }
-                    return (Course[]) courses.toArray();
+                    return courses;
                 }
             } catch (Exception e){
                 return new Course[0];

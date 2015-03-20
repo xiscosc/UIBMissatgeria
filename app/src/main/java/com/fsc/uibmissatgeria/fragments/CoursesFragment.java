@@ -1,6 +1,7 @@
 package com.fsc.uibmissatgeria.fragments;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -23,6 +24,7 @@ public class CoursesFragment extends Fragment {
 
     CourseAdapter adapterCourse;
     ProgressDialog pDialog;
+    ListView listView;
 
 
     public CoursesFragment() {
@@ -32,12 +34,7 @@ public class CoursesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_listchats, container, false);
-
-        adapterCourse = new CourseAdapter(getActivity(), new Course[0]);
-
-        ListView listView = (ListView) rootView.findViewById(R.id.list_item_c);
-        listView.setAdapter(adapterCourse);
-
+        listView = (ListView) rootView.findViewById(R.id.list_item_c);
         loadCourses();
 
         return rootView;
@@ -49,11 +46,24 @@ public class CoursesFragment extends Fragment {
         pDialog.setMessage("Loading courses...");
         pDialog.setCancelable(false);
         pDialog.setMax(100);
-        ObtainCoursesTask task = new ObtainCoursesTask();
+        ObtainCoursesTask task = new ObtainCoursesTask(CoursesFragment.this);
         task.execute();
     }
 
+    public void createAdapter(Course[] courses) {
+        adapterCourse = new CourseAdapter(getActivity(), courses);
+        listView.setAdapter(adapterCourse);
+
+    }
+
     private class ObtainCoursesTask extends AsyncTask<Void, Void, Course[]> {
+
+        private CoursesFragment ctx;
+
+        public ObtainCoursesTask(CoursesFragment c) {
+            super();
+            ctx = c;
+        }
 
         @Override
         protected Course[] doInBackground(Void... params) {
@@ -63,7 +73,7 @@ public class CoursesFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Course[] courses) {
-            //TODO: MOSTRAR LISTA
+            ctx.createAdapter(courses);
             pDialog.dismiss();
         }
 
