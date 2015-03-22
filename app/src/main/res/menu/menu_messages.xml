@@ -3,16 +3,4 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.fsc.uibmissatgeria.activities.MessagesActivity">
 
-    <item
-        android:id="@+id/menu_messages_new"
-        android:icon="@android:drawable/ic_menu_add"
-        app:showAsAction="ifRoom"
-        android:title="@string/menu_new_message"/>
-
-    <item
-        android:id="@+id/menu_messages_reload"
-        android:icon="@android:drawable/ic_menu_rotate"
-        app:showAsAction="ifRoom"
-        android:title="@string/menu_new_message"/>
-
 </menu>

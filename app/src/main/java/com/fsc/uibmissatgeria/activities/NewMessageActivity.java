@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
@@ -21,6 +22,9 @@ public class NewMessageActivity extends ActionBarActivity {
     public int idGroup;
     private String courseName;
     private String groupName;
+
+    TextView course;
+    TextView group;
 
     private ProgressDialog pDialog;
 
@@ -36,7 +40,11 @@ public class NewMessageActivity extends ActionBarActivity {
 
         setContentView(R.layout.activity_new_message);
 
+        course =(TextView)findViewById(R.id.new_message_course);
+        group =(TextView)findViewById(R.id.new_message_group);
 
+        course.setText(courseName);
+        group.setText(groupName);
 
     }
 
@@ -59,6 +67,7 @@ public class NewMessageActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 
 
     public void sendMessage(View view) {

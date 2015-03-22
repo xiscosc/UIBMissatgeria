@@ -190,7 +190,7 @@ public class Server {
             post.addHeader("Authorization", "1");
             List<NameValuePair> pairs = new ArrayList<NameValuePair>();
             pairs.add(new BasicNameValuePair("body", body));
-            post.setEntity(new UrlEncodedFormEntity(pairs));
+            post.setEntity(new UrlEncodedFormEntity(pairs, "UTF-8"));
             HttpResponse response = client.execute(post);
         } catch (Exception e) {
 

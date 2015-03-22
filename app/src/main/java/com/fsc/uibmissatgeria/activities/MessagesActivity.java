@@ -57,21 +57,12 @@ public class MessagesActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.menu_messages_new) {
-            newMessageAction();
-            return true;
-        }
-
-        if (id == R.id.menu_messages_reload) {
-            reloadMessages();
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
 
 
-    private void newMessageAction() {
+    public void newMessageAction() {
         Intent intent = new Intent(this, NewMessageActivity.class);
         intent.putExtra(Constants.GROUP_ID, idGroup);
         intent.putExtra(Constants.COURSE_NAME, courseName);
@@ -80,9 +71,5 @@ public class MessagesActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
-    public void reloadMessages() {
-        MessagesFragment fragment = (MessagesFragment) getSupportFragmentManager().findFragmentById(R.id.container_messages);
-        fragment.loadMessages();
-    }
 
 }
