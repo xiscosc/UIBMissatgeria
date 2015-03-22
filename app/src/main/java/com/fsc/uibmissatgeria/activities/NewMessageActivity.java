@@ -18,12 +18,12 @@ import com.fsc.uibmissatgeria.api.Server;
 
 public class NewMessageActivity extends ActionBarActivity {
 
-    public int idCourse;
+    public int idSubject;
     public int idGroup;
-    private String courseName;
+    private String subjectName;
     private String groupName;
 
-    TextView course;
+    TextView subject;
     TextView group;
 
     private ProgressDialog pDialog;
@@ -33,17 +33,17 @@ public class NewMessageActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         Intent i = getIntent();
-        courseName = i.getStringExtra(Constants.COURSE_NAME);
-        idCourse = i.getIntExtra(Constants.COURSE_ID, 0);
+        subjectName = i.getStringExtra(Constants.SUBJECT_NAME);
+        idSubject = i.getIntExtra(Constants.SUBJECT_ID, 0);
         idGroup = i.getIntExtra(Constants.GROUP_ID, 0);
         groupName = i.getStringExtra(Constants.GROUP_NAME);
 
         setContentView(R.layout.activity_new_message);
 
-        course =(TextView)findViewById(R.id.new_message_course);
+        subject =(TextView)findViewById(R.id.new_message_subject);
         group =(TextView)findViewById(R.id.new_message_group);
 
-        course.setText(courseName);
+        subject.setText(subjectName);
         group.setText(groupName);
 
     }
@@ -81,7 +81,7 @@ public class NewMessageActivity extends ActionBarActivity {
         pDialog.setMax(100);
         SendMessageTask task = new SendMessageTask(
                 this,
-                idCourse ,
+                idSubject,
                 idGroup,
                 body.getText().toString());
         task.execute();
@@ -90,13 +90,13 @@ public class NewMessageActivity extends ActionBarActivity {
     private class SendMessageTask extends AsyncTask<Void, Void, Void> {
 
         String body;
-        int idCourse;
+        int idSubject;
         int idGroup;
         NewMessageActivity ctx;
 
         public SendMessageTask(NewMessageActivity ctx, int idC, int idG, String body) {
             super();
-            this.idCourse = idC;
+            this.idSubject = idC;
             this.idGroup = idG;
             this.body = body;
             this.ctx = ctx;
@@ -105,7 +105,7 @@ public class NewMessageActivity extends ActionBarActivity {
         @Override
         protected Void doInBackground(Void... params) {
             Server s = new Server();
-            s.sendMessage(idGroup, idCourse, body);
+            s.sendMessage(idGroup, idSubject, body);
             return null;
         }
 

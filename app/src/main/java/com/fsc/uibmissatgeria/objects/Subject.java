@@ -5,14 +5,14 @@ import java.util.ArrayList;
 /**
  * Created by Xisco on 04/03/2015.
  */
-public class Course {
+public class Subject {
     private String name;
     private ArrayList<Group> groups;
     private int code;
     private int id;
 
 
-    public Course(String name, ArrayList<Group> groups, int code, int id) {
+    public Subject(String name, ArrayList<Group> groups, int code, int id) {
         this.name = name;
         this.groups = groups;
         this.code = code;

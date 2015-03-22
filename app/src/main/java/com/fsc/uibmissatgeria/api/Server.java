@@ -1,7 +1,7 @@
 package com.fsc.uibmissatgeria.api;
 
 
-import com.fsc.uibmissatgeria.objects.Course;
+import com.fsc.uibmissatgeria.objects.Subject;
 import com.fsc.uibmissatgeria.objects.Group;
 import com.fsc.uibmissatgeria.objects.Message;
 import com.fsc.uibmissatgeria.objects.User;
@@ -17,17 +17,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,12 +38,12 @@ public class Server {
     }
 
 
-    public Course[] getCourses() {
+    public Subject[] getSubjects() {
 
         try {
             urlObj = new URL(SERVER_URL+"user/subjects/");
         } catch (MalformedURLException e) {
-            return new Course[0];
+            return new Subject[0];
         }
 
         String ret = getFromServer();
@@ -57,13 +52,13 @@ public class Server {
                 JSONObject reader = new JSONObject(ret);
                 int total = reader.getInt("total");
                 if (total > 0) {
-                    JSONArray courseJsonArray = reader.getJSONArray("results");
-                    Course[] courses = new Course[courseJsonArray.length()];
-                    for (int x = 0; x < courseJsonArray.length(); x++) {
+                    JSONArray subjectJsonArray = reader.getJSONArray("results");
+                    Subject[] subjects = new Subject[subjectJsonArray.length()];
+                    for (int x = 0; x < subjectJsonArray.length(); x++) {
                         ArrayList<Group> groups = new ArrayList<>();
-                        JSONObject courseJson = courseJsonArray.getJSONObject(x);
+                        JSONObject subjectJson = subjectJsonArray.getJSONObject(x);
 
-                        JSONArray groupJsonArray = courseJson.getJSONArray("groups");
+                        JSONArray groupJsonArray = subjectJson.getJSONArray("groups");
                         for (int y=0; y<groupJsonArray.length(); y++) {
                             JSONObject groupJson = groupJsonArray.getJSONObject(y);
                             groups.add(
@@ -74,7 +69,7 @@ public class Server {
                             );
                         }
 
-                        /*JSONObject groupJson = courseJson.getJSONObject("group");
+                        /*JSONObject groupJson = subjectJson.getJSONObject("group");
                         groups.add(
                                 new Group(
                                         groupJson.getInt("id"),
@@ -82,27 +77,27 @@ public class Server {
                                 )
                         );*/
 
-                        courses[x] = new Course(
-                                courseJson.getString("name"),
+                        subjects[x] = new Subject(
+                                subjectJson.getString("name"),
                                 groups,
-                                courseJson.getInt("code"),
-                                courseJson.getInt("id")
+                                subjectJson.getInt("code"),
+                                subjectJson.getInt("id")
                         );
                     }
-                    return courses;
+                    return subjects;
                 }
             } catch (Exception e) {
                 System.out.printf("" + e);
-                return new Course[0];
+                return new Subject[0];
             }
         }
-        return new Course[0];
+        return new Subject[0];
     }
 
 
-    public Message[] getMessages(int idGroup, int idCourse) {
+    public Message[] getMessages(int idGroup, int idSubject) {
         try {
-            urlObj = new URL(SERVER_URL+"user/subjects/"+idCourse+"/groups/"+idGroup+"/messages/");
+            urlObj = new URL(SERVER_URL+"user/subjects/"+idSubject+"/groups/"+idGroup+"/messages/");
         } catch (MalformedURLException e) {
             return new Message[0];
         }
@@ -182,11 +177,11 @@ public class Server {
     }
 
 
-    public void sendMessage(int idGroup, int idCourse, String body) {
+    public void sendMessage(int idGroup, int idSubject, String body) {
         try {
             HttpClient client = new DefaultHttpClient();
 
-            HttpPost post = new HttpPost(SERVER_URL+"user/subjects/"+idCourse+"/groups/"+idGroup+"/messages/");
+            HttpPost post = new HttpPost(SERVER_URL+"user/subjects/"+idSubject+"/groups/"+idGroup+"/messages/");
             post.addHeader("Authorization", "1");
             List<NameValuePair> pairs = new ArrayList<NameValuePair>();
             pairs.add(new BasicNameValuePair("body", body));

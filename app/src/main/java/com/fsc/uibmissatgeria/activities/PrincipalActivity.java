@@ -17,7 +17,7 @@ import android.view.MenuItem;
 
 
 import com.fsc.uibmissatgeria.R;
-import com.fsc.uibmissatgeria.fragments.CoursesFragment;
+import com.fsc.uibmissatgeria.fragments.SubjectsFragment;
 import com.fsc.uibmissatgeria.fragments.ConversationsFragment;
 import com.fsc.uibmissatgeria.fragments.PlaceholderFragment;
 
@@ -129,7 +129,7 @@ public class PrincipalActivity extends ActionBarActivity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position){
-                case 0: return new CoursesFragment();
+                case 0: return new SubjectsFragment();
 
                 case 1: return new ConversationsFragment();
 

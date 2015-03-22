@@ -16,9 +16,9 @@ public class MessagesActivity extends ActionBarActivity {
 
 
 
-    public int idCourse;
+    public int idSubject;
     public int idGroup;
-    private String courseName;
+    private String subjectName;
     private String groupName;
 
     @Override
@@ -27,12 +27,12 @@ public class MessagesActivity extends ActionBarActivity {
         setContentView(R.layout.activity_messages);
 
         Intent i = getIntent();
-        courseName = i.getStringExtra(Constants.COURSE_NAME);
-        idCourse = i.getIntExtra(Constants.COURSE_ID, 0);
+        subjectName = i.getStringExtra(Constants.SUBJECT_NAME);
+        idSubject = i.getIntExtra(Constants.SUBJECT_ID, 0);
         idGroup = i.getIntExtra(Constants.GROUP_ID, 0);
         groupName = i.getStringExtra(Constants.GROUP_NAME);
 
-        setTitle(courseName);
+        setTitle(subjectName);
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -65,9 +65,9 @@ public class MessagesActivity extends ActionBarActivity {
     public void newMessageAction() {
         Intent intent = new Intent(this, NewMessageActivity.class);
         intent.putExtra(Constants.GROUP_ID, idGroup);
-        intent.putExtra(Constants.COURSE_NAME, courseName);
+        intent.putExtra(Constants.SUBJECT_NAME, subjectName);
         intent.putExtra(Constants.GROUP_NAME, groupName);
-        intent.putExtra(Constants.COURSE_ID, idCourse);
+        intent.putExtra(Constants.SUBJECT_ID, idSubject);
         startActivity(intent);
     }
 

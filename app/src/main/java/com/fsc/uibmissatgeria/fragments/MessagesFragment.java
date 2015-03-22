@@ -70,7 +70,7 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
         MessagesActivity ma = (MessagesActivity) getActivity();
         ObtainMessagesTask task = new ObtainMessagesTask(
                 MessagesFragment.this,
-                ma.idCourse ,
+                ma.idSubject,
                 ma.idGroup);
         task.execute();
     }
@@ -86,20 +86,20 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
     private class ObtainMessagesTask extends AsyncTask<Void, Void, Message[]> {
 
         private MessagesFragment ctx;
-        private int idCourse;
+        private int idSubject;
         private int idGroup;
 
         public ObtainMessagesTask(MessagesFragment c, int idC, int idG) {
             super();
             ctx = c;
-            idCourse = idC;
+            idSubject = idC;
             idGroup = idG;
         }
 
         @Override
         protected Message[] doInBackground(Void... params) {
             Server s = new Server();
-            return s.getMessages(idGroup, idCourse);
+            return s.getMessages(idGroup, idSubject);
         }
 
         @Override

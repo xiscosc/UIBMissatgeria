@@ -14,20 +14,19 @@ import android.widget.ListView;
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.activities.MessagesActivity;
 import com.fsc.uibmissatgeria.R;
-import com.fsc.uibmissatgeria.objects.Course;
-import com.fsc.uibmissatgeria.adapters.CourseAdapter;
+import com.fsc.uibmissatgeria.adapters.SubjectAdapter;
+import com.fsc.uibmissatgeria.objects.Subject;
 import com.fsc.uibmissatgeria.api.Server;
 
 
+public class SubjectsFragment extends Fragment {
 
-public class CoursesFragment extends Fragment {
-
-    CourseAdapter adapterCourse;
+    SubjectAdapter adapterSubject;
     ProgressDialog pDialog;
     ListView listView;
 
 
-    public CoursesFragment() {
+    public SubjectsFragment() {
     }
 
     @Override
@@ -35,59 +34,59 @@ public class CoursesFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_listchats, container, false);
         listView = (ListView) rootView.findViewById(R.id.list_item_c);
-        loadCourses();
+        loadSubjects();
         return rootView;
     }
 
-    public void loadCourses() {
+    public void loadSubjects() {
         pDialog = new ProgressDialog(getActivity());
         pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        pDialog.setMessage("Loading courses..."); //TODO: TRANSLATE
+        pDialog.setMessage("Loading subjects..."); //TODO: TRANSLATE
         pDialog.setCancelable(false);
         pDialog.setMax(100);
-        ObtainCoursesTask task = new ObtainCoursesTask(CoursesFragment.this);
+        ObtainSubjectsTask task = new ObtainSubjectsTask(SubjectsFragment.this);
         task.execute();
     }
 
-    private void createAdapter(final Course[] courses) {
-        adapterCourse = new CourseAdapter(getActivity(), courses);
-        listView.setAdapter(adapterCourse);
+    private void createAdapter(final Subject[] subjects) {
+        adapterSubject = new SubjectAdapter(getActivity(), subjects);
+        listView.setAdapter(adapterSubject);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startMessages(courses[position]);
+                startMessages(subjects[position]);
             }
         });
 
     }
 
-    public void startMessages(Course c) {
+    public void startMessages(Subject c) {
         Intent intent = new Intent(getActivity(), MessagesActivity.class);
-        intent.putExtra(Constants.COURSE_NAME, c.getName());
-        intent.putExtra(Constants.COURSE_ID, c.getId());
+        intent.putExtra(Constants.SUBJECT_NAME, c.getName());
+        intent.putExtra(Constants.SUBJECT_ID, c.getId());
         intent.putExtra(Constants.GROUP_ID, c.getFirstGroup().getId()); // TODO: MULTIGROUP
         intent.putExtra(Constants.GROUP_NAME, c.getFirstGroup().getName());
         startActivity(intent);
     }
 
-    private class ObtainCoursesTask extends AsyncTask<Void, Void, Course[]> {
+    private class ObtainSubjectsTask extends AsyncTask<Void, Void, Subject[]> {
 
-        private CoursesFragment ctx;
+        private SubjectsFragment ctx;
 
-        public ObtainCoursesTask(CoursesFragment c) {
+        public ObtainSubjectsTask(SubjectsFragment c) {
             super();
             ctx = c;
         }
 
         @Override
-        protected Course[] doInBackground(Void... params) {
+        protected Subject[] doInBackground(Void... params) {
             Server s = new Server();
-            return s.getCourses();
+            return s.getSubjects();
         }
 
         @Override
-        protected void onPostExecute(Course[] courses) {
-            ctx.createAdapter(courses);
+        protected void onPostExecute(Subject[] subjects) {
+            ctx.createAdapter(subjects);
             pDialog.dismiss();
         }
 

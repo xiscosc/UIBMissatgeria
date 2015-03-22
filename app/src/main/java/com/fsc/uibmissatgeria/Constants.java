@@ -6,9 +6,9 @@ package com.fsc.uibmissatgeria;
 public class Constants {
 
     public static final String GROUP_ID = "G_ID";
-    public static final String COURSE_NAME = "C_NAME";
+    public static final String SUBJECT_NAME = "S_NAME";
     public static final String GROUP_NAME = "G_NAME";
-    public static final String COURSE_ID = "C_ID";
+    public static final String SUBJECT_ID = "S_ID";
 
 
 }

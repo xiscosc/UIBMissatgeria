@@ -10,7 +10,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <TextView android:id="@+id/new_message_course"
+        <TextView android:id="@+id/new_message_subject"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textStyle="bold"
