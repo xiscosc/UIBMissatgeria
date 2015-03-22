@@ -29,7 +29,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         messageUser.setText(m.getUser().getName());
 
         TextView messageDate = (TextView)item.findViewById(R.id.message_date);
-        messageDate.setText(m.getDate().toString());
+        messageDate.setText(m.getStringDate());
 
         TextView messageBody = (TextView)item.findViewById(R.id.message_body);
         messageBody.setText(m.getBody());

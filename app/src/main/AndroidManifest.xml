@@ -29,12 +29,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PrincipalActivity"
+            android:name=".activities.PrincipalActivity"
             android:label="@string/title_activity_principal" >
         </activity>
         <activity
-            android:name=".MessagesActivity"
+            android:name=".activities.MessagesActivity"
             android:label="@string/title_activity_messages" >
+        </activity>
+        <activity
+            android:name=".activities.NewMessageActivity"
+            android:label="@string/title_activity_new_message" >
         </activity>
     </application>
 

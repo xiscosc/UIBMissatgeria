@@ -11,7 +11,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.fsc.uibmissatgeria.MessagesActivity;
+import com.fsc.uibmissatgeria.Constants;
+import com.fsc.uibmissatgeria.activities.MessagesActivity;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.objects.Course;
 import com.fsc.uibmissatgeria.adapters.CourseAdapter;
@@ -35,7 +36,6 @@ public class CoursesFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_listchats, container, false);
         listView = (ListView) rootView.findViewById(R.id.list_item_c);
         loadCourses();
-
         return rootView;
     }
 
@@ -63,7 +63,10 @@ public class CoursesFragment extends Fragment {
 
     public void startMessages(Course c) {
         Intent intent = new Intent(getActivity(), MessagesActivity.class);
-        intent.putExtra("CNAME", c.getName());
+        intent.putExtra(Constants.COURSE_NAME, c.getName());
+        intent.putExtra(Constants.COURSE_ID, c.getId());
+        intent.putExtra(Constants.GROUP_ID, c.getFirstGroup().getId()); // TODO: MULTIGROUP
+        intent.putExtra(Constants.GROUP_NAME, c.getFirstGroup().getName());
         startActivity(intent);
     }
 

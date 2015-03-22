@@ -1,7 +1,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.fsc.uibmissatgeria.MessagesActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
+    tools:context="com.fsc.uibmissatgeria.activities.MessagesActivity">
+
+    <item
+        android:id="@+id/menu_messages_new"
+        android:icon="@android:drawable/ic_menu_add"
+        app:showAsAction="ifRoom"
+        android:title="@string/menu_new_message"/>
+
+    <item
+        android:id="@+id/menu_messages_reload"
+        android:icon="@android:drawable/ic_menu_rotate"
+        app:showAsAction="ifRoom"
+        android:title="@string/menu_new_message"/>
+
 </menu>

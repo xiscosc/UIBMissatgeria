@@ -12,4 +12,6 @@
         android:id="@+id/list_item_messages" />
 
 
+
+
 </FrameLayout>

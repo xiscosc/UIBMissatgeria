@@ -1,4 +1,4 @@
-package com.fsc.uibmissatgeria;
+package com.fsc.uibmissatgeria.activities;
 
 import java.util.Locale;
 
@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
+import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.fragments.CoursesFragment;
 import com.fsc.uibmissatgeria.fragments.ConversationsFragment;
 import com.fsc.uibmissatgeria.fragments.PlaceholderFragment;
