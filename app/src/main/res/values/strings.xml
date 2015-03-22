@@ -9,10 +9,10 @@
     <string name="title_activity_principal">UIBMissatgeria</string>
 
 
-    <string name="title_section1">Courses</string>
+    <string name="title_section1">Subjects</string>
     <string name="title_section2">Messages</string>
     <string name="title_section3">You</string>
-    <string name="title_activity_messages">Course</string>
+    <string name="title_activity_messages">Subject</string>
     <string name="menu_new_message">New Message</string>
     <string name="title_activity_new_message">New Message</string>
     <string name="new_message_hint">Write here your message</string>
