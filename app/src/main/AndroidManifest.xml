@@ -20,10 +20,12 @@
             </intent-filter>
         </activity>
         <activity
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:name=".activities.PrincipalActivity"
             android:label="@string/title_activity_principal" >
         </activity>
         <activity
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:name=".activities.MessagesActivity"
             android:label="@string/title_activity_messages" >
         </activity>
