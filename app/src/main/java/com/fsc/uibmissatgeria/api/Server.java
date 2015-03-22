@@ -116,7 +116,7 @@ public class Server {
                 if (total > 0) {
                     JSONArray messageJsonArray = reader.getJSONArray("results");
                     Message[] messages = new Message[total];
-                    User us3 = new User(3, "Marc Perelló Ferrer");
+                    User us3 = new User(3, "Usuario de prueba");
                     for (int x = 0; x < total; x++) {
                         JSONObject messageJson = messageJsonArray.getJSONObject(x);
                         messages[x] = new Message(
