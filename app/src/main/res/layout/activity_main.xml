@@ -7,17 +7,35 @@
     android:orientation="vertical">
 
     <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@drawable/uiblogo"/>
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:src="@drawable/uiblogo"
+        android:layout_gravity="center"
+        android:layout_marginTop="17dp"
+        android:layout_marginBottom="5dp"/>
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/login_username"
+        android:hint="@string/login_username_hint"
+        android:layout_marginBottom="5dp"/>
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/login_password"
+        android:hint="@string/login_password_hint"
+        android:layout_marginBottom="5dp"
+        android:inputType="textPassword"/>
+
+
+
     <Button
-        android:layout_width="240dp"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/abc_action_button_min_height_material"
         android:text="@string/log_button"
-        android:onClick="logIn"/>
+        android:onClick="logIn"
+        android:layout_gravity="center"/>
 
 
 </LinearLayout>
