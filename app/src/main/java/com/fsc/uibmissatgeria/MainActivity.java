@@ -1,11 +1,13 @@
 package com.fsc.uibmissatgeria;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 
 import com.fsc.uibmissatgeria.activities.PrincipalActivity;
 
@@ -15,6 +17,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("");
         setContentView(R.layout.activity_main);
     }
 
@@ -43,7 +46,12 @@ public class MainActivity extends ActionBarActivity {
 
     public void logIn(View view) {
         Intent intent = new Intent(this, PrincipalActivity.class);
-        //TODO login
+        /*SharedPreferences prefs =
+                getSharedPreferences("UIBMissatgeria",getBaseContext().MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        EditText ed = (EditText) findViewById(R.id.login_username);
+        editor.putString("uid", ed.getText().toString());
+        editor.commit();*/
         startActivity(intent);
     }
 }
