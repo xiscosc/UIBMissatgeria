@@ -1,11 +1,14 @@
 package com.fsc.uibmissatgeria.objects;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
 /**
  * Created by Xisco on 04/03/2015.
  */
-public class Subject {
+public class Subject implements Parcelable {
     private String name;
     private ArrayList<Group> groups;
     private int code;
@@ -17,6 +20,19 @@ public class Subject {
         this.groups = groups;
         this.code = code;
         this.id = id;
+    }
+
+    public Subject(Parcel in) {
+        this.name = in.readString();
+        Object[] gr =  in.readArray(Group.class.getClassLoader());
+        this.code = in.readInt();
+        this.id= in.readInt();
+        groups = new ArrayList<Group>();
+        for(Object g : gr){
+            Group ng = (Group) g;
+            groups.add(ng);
+        }
+
     }
 
 
@@ -55,4 +71,27 @@ public class Subject {
     public Boolean hasOnlyOneGroup() {
         return (groups.size()==1);
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeArray(groups.toArray());
+        dest.writeInt(code);
+        dest.writeInt(id);
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public Subject createFromParcel(Parcel in) {
+            return new Subject(in);
+        }
+
+        public Subject[] newArray(int size) {
+            return new Subject[size];
+        }
+    };
 }

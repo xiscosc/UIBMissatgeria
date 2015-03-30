@@ -1,6 +1,5 @@
 package com.fsc.uibmissatgeria.api;
 
-
 import com.fsc.uibmissatgeria.objects.Subject;
 import com.fsc.uibmissatgeria.objects.Group;
 import com.fsc.uibmissatgeria.objects.Message;
@@ -14,6 +13,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -28,10 +28,6 @@ import java.util.List;
 
 public class Server {
 
-    private URL urlObj;
-    private HttpURLConnection urlConnection;
-    private BufferedReader reader;
-
     private final String SERVER_URL = "http://rhodes.joan-font.com/";
 
     public Server() {
@@ -40,16 +36,9 @@ public class Server {
 
     public Subject[] getSubjects() {
 
-        try {
-            urlObj = new URL(SERVER_URL+"user/subjects/");
-        } catch (MalformedURLException e) {
-            return new Subject[0];
-        }
-
-        String ret = getFromServer();
-        if (ret != null) {
+        JSONObject reader = getFromServer(SERVER_URL+"user/subjects/");
+        if (reader != null) {
             try {
-                JSONObject reader = new JSONObject(ret);
                 int total = reader.getInt("total");
                 if (total > 0) {
                     JSONArray subjectJsonArray = reader.getJSONArray("results");
@@ -68,14 +57,6 @@ public class Server {
                                     )
                             );
                         }
-
-                        /*JSONObject groupJson = subjectJson.getJSONObject("group");
-                        groups.add(
-                                new Group(
-                                        groupJson.getInt("id"),
-                                        groupJson.getString("name")
-                                )
-                        );*/
 
                         subjects[x] = new Subject(
                                 subjectJson.getString("name"),
@@ -96,17 +77,11 @@ public class Server {
 
 
     public Message[] getMessages(int idGroup, int idSubject) {
-        try {
-            urlObj = new URL(SERVER_URL+"user/subjects/"+idSubject+"/groups/"+idGroup+"/messages/");
-        } catch (MalformedURLException e) {
-            return new Message[0];
-        }
 
-        String ret = getFromServer();
+        JSONObject reader = getFromServer(SERVER_URL+"user/subjects/"+idSubject+"/groups/"+idGroup+"/messages/");
 
-        if (ret != null) {
+        if (reader != null) {
             try {
-                JSONObject reader = new JSONObject(ret);
                 int total = reader.getInt("total");
                 if (total > 0) {
                     JSONArray messageJsonArray = reader.getJSONArray("results");
@@ -124,7 +99,7 @@ public class Server {
                     return messages;
                 }
             } catch (Exception e) {
-                System.out.printf("" + e);
+                System.out.printf(e.toString());
                 return new Message[0];
             }
         }
@@ -134,8 +109,20 @@ public class Server {
     }
 
 
-    private String getFromServer() {
-        String ret;
+    private JSONObject getFromServer(String url) {
+
+        JSONObject obj = null;
+        String strJson = null;
+        HttpURLConnection urlConnection = null;
+        BufferedReader reader = null;
+        URL urlObj;
+
+        try {
+            urlObj = new URL(url);
+        } catch (MalformedURLException e) {
+            return obj;
+        }
+
         try {
             urlConnection = (HttpURLConnection) urlObj.openConnection();
             urlConnection.setRequestMethod("GET");
@@ -144,7 +131,7 @@ public class Server {
             InputStream inputStream = urlConnection.getInputStream();
             StringBuffer buffer = new StringBuffer();
             if (inputStream == null) {
-                ret = null;
+                strJson = null;
             }
             reader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
@@ -153,14 +140,14 @@ public class Server {
             }
 
             if (buffer.length() == 0) {
-                ret = null;
+                strJson = null;
             } else {
-                ret = buffer.toString();
+                strJson = buffer.toString();
             }
 
 
         } catch (IOException e) {
-            ret = null;
+            strJson = null;
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -173,15 +160,40 @@ public class Server {
             }
         }
 
-        return ret;
+        if (strJson != null) {
+            try {
+                obj = new JSONObject(strJson);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return obj;
     }
 
 
-    public void sendMessage(int idGroup, int idSubject, String body) {
+    public void sendMessageToGroup(int idGroup, int idSubject, String body) {
         try {
             HttpClient client = new DefaultHttpClient();
 
             HttpPost post = new HttpPost(SERVER_URL+"user/subjects/"+idSubject+"/groups/"+idGroup+"/messages/");
+            post.addHeader("Authorization", "1");
+            List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+            pairs.add(new BasicNameValuePair("body", body));
+            post.setEntity(new UrlEncodedFormEntity(pairs, "UTF-8"));
+            HttpResponse response = client.execute(post);
+        } catch (Exception e) {
+
+        }
+
+
+    }
+
+    public void sendMessageToSubject(int idSubject, String body) {
+        try {
+            HttpClient client = new DefaultHttpClient();
+
+            HttpPost post = new HttpPost(SERVER_URL+"user/subjects/"+idSubject+"/messages/");
             post.addHeader("Authorization", "1");
             List<NameValuePair> pairs = new ArrayList<NameValuePair>();
             pairs.add(new BasicNameValuePair("body", body));

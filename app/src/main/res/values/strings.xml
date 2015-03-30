@@ -19,5 +19,6 @@
     <string name="new_message_button">Send Message</string>
     <string name="login_username_hint">Enter your username</string>
     <string name="login_password_hint">Enter your password</string>
+    <string name="title_activity_subject">SubjectActivity</string>
 
 </resources>

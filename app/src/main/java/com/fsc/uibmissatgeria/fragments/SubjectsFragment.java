@@ -66,6 +66,7 @@ public class SubjectsFragment extends Fragment {
         intent.putExtra(Constants.SUBJECT_ID, c.getId());
         intent.putExtra(Constants.GROUP_ID, c.getFirstGroup().getId()); // TODO: MULTIGROUP
         intent.putExtra(Constants.GROUP_NAME, c.getFirstGroup().getName());
+        intent.putExtra(Constants.SUBJECT_OBJ, c);
         startActivity(intent);
     }
 

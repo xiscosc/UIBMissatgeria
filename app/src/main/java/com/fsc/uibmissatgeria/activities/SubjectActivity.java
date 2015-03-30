@@ -1,32 +1,33 @@
-package com.fsc.uibmissatgeria;
+package com.fsc.uibmissatgeria.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
 
-import com.fsc.uibmissatgeria.activities.PrincipalActivity;
-import com.fsc.uibmissatgeria.activities.SubjectActivity;
+import com.fsc.uibmissatgeria.R;
+import com.fsc.uibmissatgeria.objects.Subject;
 
+public class SubjectActivity extends ActionBarActivity {
 
-public class MainActivity extends ActionBarActivity {
+    Subject sbj;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("");
-        setContentView(R.layout.activity_main);
+        Intent i = getIntent();
+        sbj = (Subject) i.getParcelableExtra("TEST");
+        setContentView(R.layout.activity_subject);
+
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_subject, menu);
         return true;
     }
 
@@ -43,16 +44,5 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void logIn(View view) {
-        Intent intent = new Intent(this, PrincipalActivity.class);
-        /*SharedPreferences prefs =
-                getSharedPreferences("UIBMissatgeria",getBaseContext().MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        EditText ed = (EditText) findViewById(R.id.login_username);
-        editor.putString("uid", ed.getText().toString());
-        editor.commit();*/
-        startActivity(intent);
     }
 }

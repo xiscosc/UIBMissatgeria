@@ -10,6 +10,8 @@ public class Constants {
     public static final String GROUP_NAME = "G_NAME";
     public static final String SUBJECT_ID = "S_ID";
 
+    public static final String SUBJECT_OBJ = "SUBJECT";
+
 
 }
 
