@@ -13,16 +13,57 @@
         android:paddingRight="12dp"
         android:background="@color/primaryDark">
 
-        <TextView android:text="Xarxes Avançades"
+        <TextView android:text="Subject Name Large"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="45dp"
+            android:id="@+id/subject_name"
             android:textColor="@android:color/white"/>
+
     </RelativeLayout>
 
-    <include layout="@layout/listitem_subject" >
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-    </include>
+        <ImageView
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:src="@drawable/course"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:orientation="vertical">
+
+            <TextView android:id="@+id/subject_general_forum"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:text="@string/subject_general_forum"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="normal"
+                android:textSize="12sp"
+                android:text="@string/subject_general_description"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
     <ListView
         android:layout_width="match_parent"

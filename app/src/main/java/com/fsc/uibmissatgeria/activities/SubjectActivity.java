@@ -5,22 +5,56 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.TextView;
 
+import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
+import com.fsc.uibmissatgeria.adapters.GroupAdapter;
+import com.fsc.uibmissatgeria.objects.Group;
 import com.fsc.uibmissatgeria.objects.Subject;
 
 public class SubjectActivity extends ActionBarActivity {
 
     Subject sbj;
+    ListView listView;
+    GroupAdapter ga;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent i = getIntent();
-        sbj = (Subject) i.getParcelableExtra("TEST");
+        sbj = (Subject) i.getParcelableExtra(Constants.SUBJECT_OBJ);
+        setTitle(R.string.app_name);
         setContentView(R.layout.activity_subject);
+        listView = (ListView) findViewById(R.id.list_groups_subject);
+        TextView title = (TextView) findViewById(R.id.subject_name);
+        title.setText(sbj.getName());
+        createAdapter(sbj.getArrayGroups());
 
+    }
+
+
+    private void createAdapter(final Group[] groups) {
+        ga = new GroupAdapter(this, groups);
+        listView.setAdapter(ga);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                startMessagesGroup(groups[position]);
+            }
+        });
+    }
+
+
+    private void startMessagesGroup(Group g) {
+        Intent intent = new Intent(this, MessagesActivity.class);
+        intent.putExtra(Constants.SUBJECT_OBJ, sbj);
+        intent.putExtra(Constants.GROUP_OBJ, g);
+        startActivity(intent);
     }
 
 

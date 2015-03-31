@@ -68,6 +68,10 @@ public class Subject implements Parcelable {
         return name;
     }
 
+    public Group[] getArrayGroups() {
+        return groups.toArray(new Group[groups.size()]);
+    }
+
     public Boolean hasOnlyOneGroup() {
         return (groups.size()==1);
     }

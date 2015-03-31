@@ -20,5 +20,7 @@
     <string name="login_username_hint">Enter your username</string>
     <string name="login_password_hint">Enter your password</string>
     <string name="title_activity_subject">SubjectActivity</string>
+    <string name="subject_general_forum">Subject Forum</string>
+    <string name="subject_general_description">Subject\'s global messages</string>
 
 </resources>

@@ -14,6 +14,7 @@ import android.widget.ListView;
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.activities.MessagesActivity;
 import com.fsc.uibmissatgeria.R;
+import com.fsc.uibmissatgeria.activities.SubjectActivity;
 import com.fsc.uibmissatgeria.adapters.SubjectAdapter;
 import com.fsc.uibmissatgeria.objects.Subject;
 import com.fsc.uibmissatgeria.api.Server;
@@ -61,11 +62,7 @@ public class SubjectsFragment extends Fragment {
     }
 
     public void startMessages(Subject c) {
-        Intent intent = new Intent(getActivity(), MessagesActivity.class);
-        intent.putExtra(Constants.SUBJECT_NAME, c.getName());
-        intent.putExtra(Constants.SUBJECT_ID, c.getId());
-        intent.putExtra(Constants.GROUP_ID, c.getFirstGroup().getId()); // TODO: MULTIGROUP
-        intent.putExtra(Constants.GROUP_NAME, c.getFirstGroup().getName());
+        Intent intent = new Intent(getActivity(), SubjectActivity.class);
         intent.putExtra(Constants.SUBJECT_OBJ, c);
         startActivity(intent);
     }

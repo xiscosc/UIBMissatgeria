@@ -9,6 +9,8 @@ import android.view.MenuItem;
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.fragments.MessagesFragment;
+import com.fsc.uibmissatgeria.objects.Group;
+import com.fsc.uibmissatgeria.objects.Subject;
 
 
 public class MessagesActivity extends ActionBarActivity {
@@ -21,16 +23,24 @@ public class MessagesActivity extends ActionBarActivity {
     private String subjectName;
     private String groupName;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
 
         Intent i = getIntent();
-        subjectName = i.getStringExtra(Constants.SUBJECT_NAME);
-        idSubject = i.getIntExtra(Constants.SUBJECT_ID, 0);
-        idGroup = i.getIntExtra(Constants.GROUP_ID, 0);
-        groupName = i.getStringExtra(Constants.GROUP_NAME);
+
+        Subject sbj = (Subject) i.getParcelableExtra(Constants.SUBJECT_OBJ);
+        Group gr = (Group) i.getParcelableExtra(Constants.GROUP_OBJ);
+
+
+
+        subjectName = sbj.getName();
+        idSubject = sbj.getId();
+        idGroup = gr.getId();
+        groupName = gr.getName();
 
         setTitle(subjectName);
 
