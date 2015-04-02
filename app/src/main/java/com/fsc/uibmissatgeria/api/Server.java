@@ -76,9 +76,16 @@ public class Server {
     }
 
 
-    public Message[] getMessages(int idGroup, int idSubject) {
+    public Message[] getMessages(Subject s, Group g) {
 
-        JSONObject reader = getFromServer(SERVER_URL+"user/subjects/"+idSubject+"/groups/"+idGroup+"/messages/");
+        JSONObject reader;
+
+        if (g==null) {
+            reader = getFromServer(SERVER_URL+"user/subjects/"+s.getId()+"/messages/");
+        } else {
+            reader = getFromServer(SERVER_URL+"user/subjects/"+s.getId()+"/groups/"+g.getId()+"/messages/");
+        }
+
 
         if (reader != null) {
             try {
@@ -126,7 +133,7 @@ public class Server {
         try {
             urlConnection = (HttpURLConnection) urlObj.openConnection();
             urlConnection.setRequestMethod("GET");
-            urlConnection.setRequestProperty("Authorization", "1");
+            urlConnection.setRequestProperty("Authorization", "4");
             urlConnection.connect();
             InputStream inputStream = urlConnection.getInputStream();
             StringBuffer buffer = new StringBuffer();
@@ -172,12 +179,20 @@ public class Server {
     }
 
 
-    public void sendMessageToGroup(int idGroup, int idSubject, String body) {
+    public void sendMessageToGroup(Subject s, Group g, String body) {
+        String url;
+
+        if (g==null) {
+            url = SERVER_URL+"user/subjects/"+s.getId()+"/messages/";
+        } else {
+            url = SERVER_URL+"user/subjects/"+s.getId()+"/groups/"+g.getId()+"/messages/";
+        }
+
+
         try {
             HttpClient client = new DefaultHttpClient();
-
-            HttpPost post = new HttpPost(SERVER_URL+"user/subjects/"+idSubject+"/groups/"+idGroup+"/messages/");
-            post.addHeader("Authorization", "1");
+            HttpPost post = new HttpPost(url);
+            post.addHeader("Authorization", "4");
             List<NameValuePair> pairs = new ArrayList<NameValuePair>();
             pairs.add(new BasicNameValuePair("body", body));
             post.setEntity(new UrlEncodedFormEntity(pairs, "UTF-8"));
@@ -189,20 +204,4 @@ public class Server {
 
     }
 
-    public void sendMessageToSubject(int idSubject, String body) {
-        try {
-            HttpClient client = new DefaultHttpClient();
-
-            HttpPost post = new HttpPost(SERVER_URL+"user/subjects/"+idSubject+"/messages/");
-            post.addHeader("Authorization", "1");
-            List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-            pairs.add(new BasicNameValuePair("body", body));
-            post.setEntity(new UrlEncodedFormEntity(pairs, "UTF-8"));
-            HttpResponse response = client.execute(post);
-        } catch (Exception e) {
-
-        }
-
-
-    }
 }

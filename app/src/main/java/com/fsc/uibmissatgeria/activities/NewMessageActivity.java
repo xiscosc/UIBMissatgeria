@@ -14,15 +14,14 @@ import android.widget.TextView;
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.api.Server;
+import com.fsc.uibmissatgeria.objects.Group;
+import com.fsc.uibmissatgeria.objects.Subject;
 
 
 public class NewMessageActivity extends ActionBarActivity {
 
-    public int idSubject;
-    public int idGroup;
-    private String subjectName;
-    private String groupName;
-
+    Subject sbj;
+    Group gr;
     TextView subject;
     TextView group;
 
@@ -33,18 +32,22 @@ public class NewMessageActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         Intent i = getIntent();
-        subjectName = i.getStringExtra(Constants.SUBJECT_NAME);
-        idSubject = i.getIntExtra(Constants.SUBJECT_ID, 0);
-        idGroup = i.getIntExtra(Constants.GROUP_ID, 0);
-        groupName = i.getStringExtra(Constants.GROUP_NAME);
+
+        sbj = i.getParcelableExtra(Constants.SUBJECT_OBJ);
+        gr = i.getParcelableExtra(Constants.GROUP_OBJ);
 
         setContentView(R.layout.activity_new_message);
 
         subject =(TextView)findViewById(R.id.new_message_subject);
         group =(TextView)findViewById(R.id.new_message_group);
 
-        subject.setText(subjectName);
-        group.setText(groupName);
+        subject.setText(sbj.getName());
+        if (gr!=null) {
+            group.setText(gr.getName());
+        } else {
+            group.setText("GENERAL"); // TODO: TRANSLATE
+        }
+
 
     }
 
@@ -81,8 +84,8 @@ public class NewMessageActivity extends ActionBarActivity {
         pDialog.setMax(100);
         SendMessageTask task = new SendMessageTask(
                 this,
-                idSubject,
-                idGroup,
+                sbj,
+                gr,
                 body.getText().toString());
         task.execute();
     }
@@ -90,14 +93,14 @@ public class NewMessageActivity extends ActionBarActivity {
     private class SendMessageTask extends AsyncTask<Void, Void, Void> {
 
         String body;
-        int idSubject;
-        int idGroup;
+        Subject subject;
+        Group group;
         NewMessageActivity ctx;
 
-        public SendMessageTask(NewMessageActivity ctx, int idC, int idG, String body) {
+        public SendMessageTask(NewMessageActivity ctx, Subject s, Group g, String body) {
             super();
-            this.idSubject = idC;
-            this.idGroup = idG;
+            this.subject = s;
+            this.group = g;
             this.body = body;
             this.ctx = ctx;
         }
@@ -105,7 +108,7 @@ public class NewMessageActivity extends ActionBarActivity {
         @Override
         protected Void doInBackground(Void... params) {
             Server s = new Server();
-            s.sendMessageToGroup(idGroup, idSubject, body);
+            s.sendMessageToGroup(subject, group, body);
             return null;
         }
 

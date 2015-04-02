@@ -79,4 +79,12 @@ public class SubjectActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void startMessages(View view) {
+        Group g = null;
+        Intent intent = new Intent(this, MessagesActivity.class);
+        intent.putExtra(Constants.SUBJECT_OBJ, sbj);
+        intent.putExtra(Constants.GROUP_OBJ, g);
+        startActivity(intent);
+    }
 }

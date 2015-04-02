@@ -15,7 +15,9 @@ import com.fsc.uibmissatgeria.activities.MessagesActivity;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.adapters.MessageAdapter;
 import com.fsc.uibmissatgeria.api.Server;
+import com.fsc.uibmissatgeria.objects.Group;
 import com.fsc.uibmissatgeria.objects.Message;
+import com.fsc.uibmissatgeria.objects.Subject;
 
 
 public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -93,8 +95,8 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
         MessagesActivity ma = (MessagesActivity) getActivity();
         ObtainMessagesTask task = new ObtainMessagesTask(
                 MessagesFragment.this,
-                ma.idSubject,
-                ma.idGroup);
+                ma.sbj,
+                ma.gr);
         task.execute();
     }
 
@@ -114,20 +116,20 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
     private class ObtainMessagesTask extends AsyncTask<Void, Void, Message[]> {
 
         private MessagesFragment ctx;
-        private int idSubject;
-        private int idGroup;
+        private Subject subject;
+        private Group group;
 
-        public ObtainMessagesTask(MessagesFragment c, int idC, int idG) {
+        public ObtainMessagesTask(MessagesFragment c, Subject s, Group g) {
             super();
             ctx = c;
-            idSubject = idC;
-            idGroup = idG;
+            subject = s;
+            group = g;
         }
 
         @Override
         protected Message[] doInBackground(Void... params) {
             Server s = new Server();
-            return s.getMessages(idGroup, idSubject);
+            return s.getMessages(subject, group);
         }
 
         @Override

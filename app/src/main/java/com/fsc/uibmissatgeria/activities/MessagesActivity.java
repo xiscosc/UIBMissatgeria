@@ -14,16 +14,8 @@ import com.fsc.uibmissatgeria.objects.Subject;
 
 
 public class MessagesActivity extends ActionBarActivity {
-
-
-
-
-    public int idSubject;
-    public int idGroup;
-    private String subjectName;
-    private String groupName;
-
-
+    public Subject sbj;
+    public Group gr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,18 +24,14 @@ public class MessagesActivity extends ActionBarActivity {
 
         Intent i = getIntent();
 
-        Subject sbj = (Subject) i.getParcelableExtra(Constants.SUBJECT_OBJ);
-        Group gr = (Group) i.getParcelableExtra(Constants.GROUP_OBJ);
+        sbj = (Subject) i.getParcelableExtra(Constants.SUBJECT_OBJ);
+        gr = (Group) i.getParcelableExtra(Constants.GROUP_OBJ);
 
-
-
-        subjectName = sbj.getName();
-        idSubject = sbj.getId();
-        idGroup = gr.getId();
-        groupName = gr.getName();
-
-        setTitle(subjectName);
-
+        String name = sbj.getName();
+        if (gr!=null) {
+          name +=" "+gr.getName();
+        }
+        setTitle(name);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container_messages, new MessagesFragment())
@@ -74,10 +62,8 @@ public class MessagesActivity extends ActionBarActivity {
 
     public void newMessageAction() {
         Intent intent = new Intent(this, NewMessageActivity.class);
-        intent.putExtra(Constants.GROUP_ID, idGroup);
-        intent.putExtra(Constants.SUBJECT_NAME, subjectName);
-        intent.putExtra(Constants.GROUP_NAME, groupName);
-        intent.putExtra(Constants.SUBJECT_ID, idSubject);
+        intent.putExtra(Constants.GROUP_OBJ, gr);
+        intent.putExtra(Constants.SUBJECT_OBJ, sbj);
         startActivity(intent);
     }
 
