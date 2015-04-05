@@ -10,10 +10,13 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <ListView
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list_item_messages"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/list_item_messages" />
+            android:layout_height="match_parent" />
+
+
         <ImageButton
             android:id="@+id/fab_image_button"
             android:layout_width="@dimen/fab_button_diameter"

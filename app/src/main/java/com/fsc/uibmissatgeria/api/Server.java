@@ -34,7 +34,7 @@ public class Server {
     }
 
 
-    public Subject[] getSubjects() {
+    public ArrayList<Subject> getSubjects() {
 
         JSONObject reader = getFromServer(SERVER_URL+"user/subjects/");
         if (reader != null) {
@@ -42,7 +42,7 @@ public class Server {
                 int total = reader.getInt("total");
                 if (total > 0) {
                     JSONArray subjectJsonArray = reader.getJSONArray("results");
-                    Subject[] subjects = new Subject[subjectJsonArray.length()];
+                    ArrayList<Subject> subjects = new ArrayList<>();
                     for (int x = 0; x < subjectJsonArray.length(); x++) {
                         ArrayList<Group> groups = new ArrayList<>();
                         JSONObject subjectJson = subjectJsonArray.getJSONObject(x);
@@ -58,25 +58,27 @@ public class Server {
                             );
                         }
 
-                        subjects[x] = new Subject(
+                        subjects.add(
+                                new Subject(
                                 subjectJson.getString("name"),
                                 groups,
                                 subjectJson.getInt("code"),
                                 subjectJson.getInt("id")
+                              )
                         );
                     }
                     return subjects;
                 }
             } catch (Exception e) {
                 System.out.printf("" + e);
-                return new Subject[0];
+                return new ArrayList<>();
             }
         }
-        return new Subject[0];
+        return new ArrayList<>();
     }
 
 
-    public Message[] getMessages(Subject s, Group g) {
+    public ArrayList<Message> getMessages(Subject s, Group g) {
 
         JSONObject reader;
 
@@ -92,25 +94,25 @@ public class Server {
                 int total = reader.getInt("total");
                 if (total > 0) {
                     JSONArray messageJsonArray = reader.getJSONArray("results");
-                    Message[] messages = new Message[total];
+                    ArrayList<Message> messages = new ArrayList<>();
                     User us3 = new User(3, "Usuario de prueba");
                     for (int x = 0; x < total; x++) {
                         JSONObject messageJson = messageJsonArray.getJSONObject(x);
-                        messages[x] = new Message(
+                        messages.add( new Message(
                                 messageJson.getInt("id"),
                                 messageJson.getString("body"),
                                 us3,
                                 messageJson.getString("created_at")
-                        );
+                        ));
                     }
                     return messages;
                 }
             } catch (Exception e) {
                 System.out.printf(e.toString());
-                return new Message[0];
+                return new ArrayList<>();
             }
         }
-        return new Message[0];
+        return new ArrayList<>();
 
 
     }

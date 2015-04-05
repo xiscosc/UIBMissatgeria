@@ -4,12 +4,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ImageButton;
-import android.widget.ListView;
 
 import com.fsc.uibmissatgeria.activities.MessagesActivity;
 import com.fsc.uibmissatgeria.R;
@@ -19,12 +19,16 @@ import com.fsc.uibmissatgeria.objects.Group;
 import com.fsc.uibmissatgeria.objects.Message;
 import com.fsc.uibmissatgeria.objects.Subject;
 
+import java.util.ArrayList;
+
 
 public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    MessageAdapter adapterMessage;
-    ListView listView;
-    SwipeRefreshLayout swipeLayout;
+    private MessageAdapter messageAdapter;
+    private ArrayList<Message> messages;
+    private RecyclerView recView;
+    private SwipeRefreshLayout swipeLayout;
+    private ImageButton fabImageButton;
 
 
     public MessagesFragment() {
@@ -34,7 +38,7 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_messages, container, false);
-        listView = (ListView) rootView.findViewById(R.id.list_item_messages);
+        recView = (RecyclerView) rootView.findViewById(R.id.list_item_messages);
 
         swipeLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_messages);
         swipeLayout.setOnRefreshListener(this);
@@ -42,15 +46,25 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
+        fabImageButton = (ImageButton) rootView.findViewById(R.id.fab_image_button);
 
+        setListeners();
+
+        return rootView;
+    }
+
+    @Override public void onRefresh() {
+        loadMessages();
+    }
+
+
+    private void setListeners() {
         swipeLayout.post(new Runnable() {
             @Override public void run() {
                 swipeLayout.setRefreshing(true);
                 loadMessages();
             }
         });
-
-        ImageButton fabImageButton = (ImageButton) rootView.findViewById(R.id.fab_image_button);
 
         fabImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,33 +74,18 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
         });
 
-        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
-
+        recView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem,
-                                 int visibleItemCount, int totalItemCount) {
-                boolean enable = false;
-                if(listView != null && listView.getChildCount() > 0){
-                    // check if the first item of the list is visible
-                    boolean firstItemVisible = listView.getFirstVisiblePosition() == 0;
-                    // check if the top of the first item is visible
-                    boolean topOfFirstItemVisible = listView.getChildAt(0).getTop() == 0;
-                    // enabling or disabling the refresh layout
-                    enable = firstItemVisible && topOfFirstItemVisible;
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                LinearLayoutManager layoutManager = ((LinearLayoutManager)recView.getLayoutManager());
+                if (layoutManager.findFirstVisibleItemPosition() == 0) {
+                    swipeLayout.setEnabled(true);
+                } else {
+                    swipeLayout.setEnabled(false);
                 }
-                swipeLayout.setEnabled(enable);
+
             }
         });
-
-        return rootView;
-    }
-
-    @Override public void onRefresh() {
-        loadMessages();
     }
 
 
@@ -100,9 +99,11 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
         task.execute();
     }
 
-    private void createAdapter(final Message[] messages) {
-        adapterMessage = new MessageAdapter(getActivity(), messages);
-        listView.setAdapter(adapterMessage);
+    private void createAdapter() {
+        messageAdapter = new MessageAdapter(messages);
+        recView.setAdapter(messageAdapter);
+        recView.setLayoutManager(
+                new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
     }
 
@@ -113,7 +114,7 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
         loadMessages();
     }
 
-    private class ObtainMessagesTask extends AsyncTask<Void, Void, Message[]> {
+    private class ObtainMessagesTask extends AsyncTask<Void, Void, ArrayList<Message>> {
 
         private MessagesFragment ctx;
         private Subject subject;
@@ -127,14 +128,15 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
         }
 
         @Override
-        protected Message[] doInBackground(Void... params) {
+        protected ArrayList<Message> doInBackground(Void... params) {
             Server s = new Server();
             return s.getMessages(subject, group);
         }
 
         @Override
-        protected void onPostExecute(Message[] messages) {
-            ctx.createAdapter(messages);
+        protected void onPostExecute(ArrayList<Message> messages) {
+            ctx.messages = messages;
+            ctx.createAdapter();
             ctx.swipeLayout.setRefreshing(false);
         }
 

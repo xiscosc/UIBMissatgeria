@@ -4,11 +4,11 @@
     android:paddingRight="2dp"
     android:paddingTop="2dp"
     android:paddingBottom="2dp"
-    tools:context="com.fsc.uibmissatgeria.fragments.ConversationsFragment">
+    tools:context="com.fsc.uibmissatgeria.fragments.SubjectsFragment">
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list_subjects"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/list_item_c" />
+        android:layout_height="wrap_content" />
 
 </FrameLayout>

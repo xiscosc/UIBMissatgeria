@@ -5,26 +5,30 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.fsc.uibmissatgeria.Constants;
-import com.fsc.uibmissatgeria.activities.MessagesActivity;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.activities.SubjectActivity;
 import com.fsc.uibmissatgeria.adapters.SubjectAdapter;
 import com.fsc.uibmissatgeria.objects.Subject;
 import com.fsc.uibmissatgeria.api.Server;
 
+import java.util.ArrayList;
+
 
 public class SubjectsFragment extends Fragment {
 
-    SubjectAdapter adapterSubject;
+
     ProgressDialog pDialog;
-    ListView listView;
+    private RecyclerView recView;
+    private ArrayList<Subject> subjects;
+    private SubjectAdapter subjectAdapter;
+
 
 
     public SubjectsFragment() {
@@ -33,8 +37,11 @@ public class SubjectsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_listchats, container, false);
-        listView = (ListView) rootView.findViewById(R.id.list_item_c);
+        View rootView = inflater.inflate(R.layout.fragment_subject, container, false);
+
+        recView = (RecyclerView) rootView.findViewById(R.id.list_subjects);
+
+
         loadSubjects();
         return rootView;
     }
@@ -49,25 +56,29 @@ public class SubjectsFragment extends Fragment {
         task.execute();
     }
 
-    private void createAdapter(final Subject[] subjects) {
-        adapterSubject = new SubjectAdapter(getActivity(), subjects);
-        listView.setAdapter(adapterSubject);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    private void createAdapter() {
+
+        subjectAdapter = new SubjectAdapter(subjects);
+        subjectAdapter.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startMessages(subjects[position]);
+            public void onClick(View v) {
+                Subject s = subjects.get(recView.getChildAdapterPosition(v));
+                startSubjectActivity(s);
             }
         });
+        recView.setAdapter(subjectAdapter);
+        recView.setLayoutManager(
+                new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
 
     }
 
-    public void startMessages(Subject c) {
+    public void startSubjectActivity(Subject s) {
         Intent intent = new Intent(getActivity(), SubjectActivity.class);
-        intent.putExtra(Constants.SUBJECT_OBJ, c);
+        intent.putExtra(Constants.SUBJECT_OBJ, s);
         startActivity(intent);
     }
 
-    private class ObtainSubjectsTask extends AsyncTask<Void, Void, Subject[]> {
+    private class ObtainSubjectsTask extends AsyncTask<Void, Void, ArrayList<Subject>> {
 
         private SubjectsFragment ctx;
 
@@ -77,14 +88,15 @@ public class SubjectsFragment extends Fragment {
         }
 
         @Override
-        protected Subject[] doInBackground(Void... params) {
+        protected ArrayList<Subject> doInBackground(Void... params) {
             Server s = new Server();
             return s.getSubjects();
         }
 
         @Override
-        protected void onPostExecute(Subject[] subjects) {
-            ctx.createAdapter(subjects);
+        protected void onPostExecute(ArrayList<Subject> subjects) {
+            ctx.subjects = subjects;
+            ctx.createAdapter();
             pDialog.dismiss();
         }
 
