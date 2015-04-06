@@ -41,7 +41,6 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
         recView = (RecyclerView) rootView.findViewById(R.id.list_item_messages);
 
         swipeLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_messages);
-        swipeLayout.setOnRefreshListener(this);
         swipeLayout.setColorScheme(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
@@ -59,6 +58,8 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
     private void setListeners() {
+        swipeLayout.setRefreshing(true);
+        swipeLayout.setOnRefreshListener(this);
         swipeLayout.post(new Runnable() {
             @Override public void run() {
                 swipeLayout.setRefreshing(true);
