@@ -1,5 +1,9 @@
 package com.fsc.uibmissatgeria.api;
 
+import android.content.Context;
+import android.content.res.Resources;
+
+import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.objects.Subject;
 import com.fsc.uibmissatgeria.objects.Group;
 import com.fsc.uibmissatgeria.objects.Message;
@@ -16,21 +20,33 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.KeyStore;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+
 public class Server {
 
-    private final String SERVER_URL = "http://rhodes.joan-font.com/";
+    private final String SERVER_URL = "https://rhodes.joan-font.com/";
+    private Context c;
 
-    public Server() {
+    public Server(Context c) {
+        this.c = c;
+
     }
 
 
@@ -122,7 +138,7 @@ public class Server {
 
         JSONObject obj = null;
         String strJson = null;
-        HttpURLConnection urlConnection = null;
+        HttpsURLConnection urlConnection = null;
         BufferedReader reader = null;
         URL urlObj;
 
@@ -133,9 +149,32 @@ public class Server {
         }
 
         try {
-            urlConnection = (HttpURLConnection) urlObj.openConnection();
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+            InputStream caInput = c.getResources().openRawResource(R.raw.rhodes);
+            Certificate ca;
+            try {
+                ca = cf.generateCertificate(caInput);
+                System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
+            } finally {
+                caInput.close();
+            }
+
+            String keyStoreType = KeyStore.getDefaultType();
+            KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+            keyStore.load(null, null);
+            keyStore.setCertificateEntry("ca", ca);
+
+            String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+            tmf.init(keyStore);
+
+            SSLContext context = SSLContext.getInstance("TLS");
+            context.init(null, tmf.getTrustManagers(), null);
+
+            urlConnection = (HttpsURLConnection) urlObj.openConnection();
+            urlConnection.setSSLSocketFactory(context.getSocketFactory());
             urlConnection.setRequestMethod("GET");
-            urlConnection.setRequestProperty("Authorization", "4");
+            urlConnection.setRequestProperty("Authorization", "cP2AlEWpd9PjcsOf7qKm1/AB6CPf0dD0LI5GK3DZ1c8=");
             urlConnection.connect();
             InputStream inputStream = urlConnection.getInputStream();
             StringBuffer buffer = new StringBuffer();
@@ -155,8 +194,9 @@ public class Server {
             }
 
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             strJson = null;
+            System.out.println(e.toString());
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();

@@ -107,7 +107,7 @@ public class NewMessageActivity extends ActionBarActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            Server s = new Server();
+            Server s = new Server(ctx);
             s.sendMessageToGroup(subject, group, body);
             return null;
         }

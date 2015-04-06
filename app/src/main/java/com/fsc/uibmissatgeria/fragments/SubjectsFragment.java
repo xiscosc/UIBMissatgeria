@@ -89,7 +89,7 @@ public class SubjectsFragment extends Fragment {
 
         @Override
         protected ArrayList<Subject> doInBackground(Void... params) {
-            Server s = new Server();
+            Server s = new Server(ctx.getActivity());
             return s.getSubjects();
         }
 

@@ -130,7 +130,7 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         @Override
         protected ArrayList<Message> doInBackground(Void... params) {
-            Server s = new Server();
+            Server s = new Server(ctx.getActivity());
             return s.getMessages(subject, group);
         }
 
