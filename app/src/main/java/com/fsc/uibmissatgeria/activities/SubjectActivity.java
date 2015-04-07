@@ -32,7 +32,6 @@ public class SubjectActivity extends ActionBarActivity {
         Intent i = getIntent();
         sbj = i.getParcelableExtra(Constants.SUBJECT_OBJ);
         groups = sbj.getGroups();
-        setTitle(R.string.app_name);
         setContentView(R.layout.activity_subject);
         TextView title = (TextView) findViewById(R.id.subject_name);
         recView = (RecyclerView) findViewById(R.id.list_groups_subject);
@@ -69,7 +68,6 @@ public class SubjectActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_subject, menu);
         return true;
     }
 

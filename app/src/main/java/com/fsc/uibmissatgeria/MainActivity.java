@@ -1,16 +1,14 @@
 package com.fsc.uibmissatgeria;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
 
+import com.fsc.uibmissatgeria.activities.LoginActivity;
 import com.fsc.uibmissatgeria.activities.PrincipalActivity;
-import com.fsc.uibmissatgeria.activities.SubjectActivity;
+import com.fsc.uibmissatgeria.api.Server;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -20,6 +18,13 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setTitle("");
         setContentView(R.layout.activity_main);
+        Server s = new Server(this);
+        if (!s.getToken().equals(Constants.TK_FAIL)) {
+            startPrincipalActivity();
+        } else {
+            startLoginView();
+        }
+
     }
 
 
@@ -45,14 +50,21 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void logIn(View view) {
-        Intent intent = new Intent(this, PrincipalActivity.class);
-        /*SharedPreferences prefs =
-                getSharedPreferences("UIBMissatgeria",getBaseContext().MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        EditText ed = (EditText) findViewById(R.id.login_username);
-        editor.putString("uid", ed.getText().toString());
-        editor.commit();*/
+    public void startLoginView() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
+    }
+
+    private void startPrincipalActivity(){
+        Intent intent = new Intent(this, PrincipalActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        this.finish();
     }
 }

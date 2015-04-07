@@ -1,0 +1,41 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin" tools:context="com.fsc.uibmissatgeria.activities.LoginActivity"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:src="@drawable/uiblogo"
+        android:layout_gravity="center"
+        android:layout_marginTop="17dp"
+        android:layout_marginBottom="5dp"/>
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/login_username"
+        android:hint="@string/login_username_hint"
+        android:layout_marginBottom="5dp"/>
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/login_password"
+        android:hint="@string/login_password_hint"
+        android:layout_marginBottom="5dp"
+        android:inputType="textPassword"/>
+
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/abc_action_button_min_height_material"
+        android:text="@string/log_button"
+        android:onClick="logIn"
+        android:layout_gravity="center"/>
+
+
+</LinearLayout>

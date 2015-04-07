@@ -2,6 +2,7 @@ package com.fsc.uibmissatgeria.activities;
 
 import java.util.Locale;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -16,7 +17,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
+import com.fsc.uibmissatgeria.Constants;
+import com.fsc.uibmissatgeria.MainActivity;
 import com.fsc.uibmissatgeria.R;
+import com.fsc.uibmissatgeria.api.Server;
 import com.fsc.uibmissatgeria.fragments.SubjectsFragment;
 import com.fsc.uibmissatgeria.fragments.ConversationsFragment;
 import com.fsc.uibmissatgeria.fragments.PlaceholderFragment;
@@ -114,6 +118,14 @@ public class PrincipalActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void logout(MenuItem item) {
+        Server s = new Server(this);
+        s.removeToken();
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+    }
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -154,6 +166,15 @@ public class PrincipalActivity extends ActionBarActivity {
                     return getString(R.string.title_section2).toUpperCase(l);
             }
             return null;
+        }
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        Server s = new Server(this);
+        if (s.getToken().equals(Constants.TK_FAIL)) {
+            this.finish();
         }
     }
 
