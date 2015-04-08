@@ -19,6 +19,8 @@ import com.fsc.uibmissatgeria.objects.Subject;
 import com.fsc.uibmissatgeria.api.Server;
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Objects;
 
 
 public class SubjectsFragment extends Fragment {
@@ -40,8 +42,8 @@ public class SubjectsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_subject, container, false);
 
         recView = (RecyclerView) rootView.findViewById(R.id.list_subjects);
-
-
+        recView.setLayoutManager(
+                new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
         loadSubjects();
         return rootView;
     }
@@ -57,7 +59,6 @@ public class SubjectsFragment extends Fragment {
     }
 
     private void createAdapter() {
-
         subjectAdapter = new SubjectAdapter(subjects);
         subjectAdapter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,9 +68,6 @@ public class SubjectsFragment extends Fragment {
             }
         });
         recView.setAdapter(subjectAdapter);
-        recView.setLayoutManager(
-                new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
-
     }
 
     public void startSubjectActivity(Subject s) {
@@ -78,7 +76,7 @@ public class SubjectsFragment extends Fragment {
         startActivity(intent);
     }
 
-    private class ObtainSubjectsTask extends AsyncTask<Void, Void, ArrayList<Subject>> {
+    private class ObtainSubjectsTask extends AsyncTask<Void, Void, Map<String, Object>> {
 
         private SubjectsFragment ctx;
 
@@ -88,15 +86,27 @@ public class SubjectsFragment extends Fragment {
         }
 
         @Override
-        protected ArrayList<Subject> doInBackground(Void... params) {
+        protected Map<String, Object> doInBackground(Void... params) {
             Server s = new Server(ctx.getActivity());
             return s.getSubjects();
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Subject> subjects) {
-            ctx.subjects = subjects;
-            ctx.createAdapter();
+        protected void onPostExecute(Map<String, Object> hm) {
+            String error_message = (String) hm.get(Constants.RESULT_ERROR);
+            if (error_message==null) {
+                int total = (int) hm.get(Constants.RESULT_TOTAL);
+                ArrayList<Subject> subjects = (ArrayList<Subject>) hm.get(Constants.RESULT_SUBJECTS);
+                if (total>0) {
+                    ctx.subjects = subjects;
+                    ctx.createAdapter();
+                } else {
+                    Constants.showToast(ctx.getActivity(), "No subjects to show"); //TODO: TRANSLATE
+                }
+
+            } else {
+                Constants.showToast(ctx.getActivity(), error_message);
+            }
             pDialog.dismiss();
         }
 

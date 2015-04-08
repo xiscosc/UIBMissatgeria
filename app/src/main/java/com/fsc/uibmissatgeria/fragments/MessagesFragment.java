@@ -10,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
+import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.activities.MessagesActivity;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.adapters.MessageAdapter;
@@ -20,6 +22,7 @@ import com.fsc.uibmissatgeria.objects.Message;
 import com.fsc.uibmissatgeria.objects.Subject;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 
 public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -39,7 +42,8 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_messages, container, false);
         recView = (RecyclerView) rootView.findViewById(R.id.list_item_messages);
-
+        recView.setLayoutManager(
+                new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
         swipeLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_messages);
         swipeLayout.setColorScheme(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
@@ -58,7 +62,6 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
     private void setListeners() {
-        swipeLayout.setRefreshing(true);
         swipeLayout.setOnRefreshListener(this);
         swipeLayout.post(new Runnable() {
             @Override public void run() {
@@ -101,10 +104,9 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     private void createAdapter() {
+        recView.setEnabled(true);
         messageAdapter = new MessageAdapter(messages);
         recView.setAdapter(messageAdapter);
-        recView.setLayoutManager(
-                new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
     }
 
@@ -115,7 +117,7 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
         loadMessages();
     }
 
-    private class ObtainMessagesTask extends AsyncTask<Void, Void, ArrayList<Message>> {
+    private class ObtainMessagesTask extends AsyncTask<Void, Void, Map<String, Object>> {
 
         private MessagesFragment ctx;
         private Subject subject;
@@ -129,16 +131,29 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
         }
 
         @Override
-        protected ArrayList<Message> doInBackground(Void... params) {
+        protected Map<String, Object> doInBackground(Void... params) {
             Server s = new Server(ctx.getActivity());
             return s.getMessages(subject, group);
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Message> messages) {
-            ctx.messages = messages;
-            ctx.createAdapter();
-            ctx.swipeLayout.setRefreshing(false);
+        protected void onPostExecute(Map<String, Object> hm) {
+                String error_message = (String) hm.get(Constants.RESULT_ERROR);
+                if (error_message==null) {
+                    int total = (int) hm.get(Constants.RESULT_TOTAL);
+                    ArrayList<Message> messages = (ArrayList<Message>) hm.get(Constants.RESULT_MESSAGES);
+                    if (total>0) {
+                        ctx.messages = messages;
+                        ctx.createAdapter();
+                    } else {
+                        Constants.showToast(ctx.getActivity(), "No messages to show"); //TODO: TRANSLATE
+                    }
+
+                } else {
+                    Constants.showToast(ctx.getActivity(), error_message);
+                }
+                ctx.swipeLayout.setRefreshing(false);
+
         }
 
         @Override

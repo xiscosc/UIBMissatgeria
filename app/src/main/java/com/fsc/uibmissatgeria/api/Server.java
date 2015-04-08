@@ -31,6 +31,8 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -47,9 +49,11 @@ public class Server {
     }
 
 
-    public ArrayList<Subject> getSubjects() {
+    public Map<String, Object> getSubjects() {
 
         JSONObject reader = readFromServer(SERVER_URL + "user/subjects/");
+        Map<String, Object> result = new HashMap<>();
+
         if (reader != null) {
             try {
                 int total = reader.getInt("total");
@@ -80,25 +84,35 @@ public class Server {
                               )
                         );
                     }
-                    return subjects;
+                    result.put(Constants.RESULT_TOTAL, total);
+                    result.put(Constants.RESULT_SUBJECTS, subjects);
+                    return result;
                 }
             } catch (Exception e) {
-                System.out.printf("" + e);
-                return new ArrayList<>();
+                try {
+                    result.put(Constants.RESULT_ERROR, reader.getString("message"));
+                    return result;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         }
-        return new ArrayList<>();
+
+        result.put(Constants.RESULT_ERROR, "Network Error"); //TODO: TRANSLATE
+        return result;
     }
 
 
-    public ArrayList<Message> getMessages(Subject s, Group g) {
+    public Map<String, Object> getMessages(Subject s, Group g) {
 
         JSONObject reader;
+        Map<String, Object> result = new HashMap<>();
 
         if (g==null) {
             reader = readFromServer(SERVER_URL + "user/subjects/" + s.getId() + "/messages/");
         } else {
-            reader = readFromServer(SERVER_URL + "user/subjects/" + s.getId() + "/groups/" + g.getId() + "/messages/");
+            reader = readFromServer(SERVER_URL + "user/subjects/" + s.getId() + "/groups/"
+                    + g.getId() + "/messages/");
         }
 
 
@@ -114,20 +128,27 @@ public class Server {
                         messages.add( new Message(
                                 messageJson.getInt("id"),
                                 messageJson.getString("body"),
-                                new User(userJson.getInt("id"), userJson.getString("first_name")+" "+userJson.getString("last_name")),
+                                new User(userJson.getInt("id"), userJson.getString("first_name")
+                                        + " " + userJson.getString("last_name")),
                                 messageJson.getString("created_at")
                         ));
                     }
-                    return messages;
+                    result.put(Constants.RESULT_TOTAL, total);
+                    result.put(Constants.RESULT_MESSAGES, messages);
+                    return result;
                 }
             } catch (Exception e) {
-                System.out.printf(e.toString());
-                return new ArrayList<>();
+                try {
+                    result.put(Constants.RESULT_ERROR, reader.getString("message"));
+                    return result;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         }
-        return new ArrayList<>();
 
-
+        result.put(Constants.RESULT_ERROR, "Network Error"); //TODO: TRANSLATE
+        return result;
     }
 
 
@@ -228,7 +249,6 @@ public class Server {
             caInput = c.getResources().openRawResource(R.raw.rhodes);
             Certificate ca;
             ca = cf.generateCertificate(caInput);
-            System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
 
             String keyStoreType = KeyStore.getDefaultType();
             KeyStore keyStore = KeyStore.getInstance(keyStoreType);

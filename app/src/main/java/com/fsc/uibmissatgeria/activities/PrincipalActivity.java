@@ -176,6 +176,7 @@ public class PrincipalActivity extends ActionBarActivity {
         if (s.getToken().equals(Constants.TK_FAIL)) {
             this.finish();
         }
+
     }
 
 }
