@@ -1,13 +1,18 @@
 package com.fsc.uibmissatgeria.activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -24,6 +29,10 @@ public class NewMessageActivity extends ActionBarActivity {
     Group gr;
     TextView subject;
     TextView group;
+    EditText body;
+    TextView numChar;
+    Button button;
+    int defaultColor;
 
     private ProgressDialog pDialog;
 
@@ -40,6 +49,12 @@ public class NewMessageActivity extends ActionBarActivity {
 
         subject =(TextView)findViewById(R.id.new_message_subject);
         group =(TextView)findViewById(R.id.new_message_group);
+        body =  (EditText)findViewById(R.id.new_message_text);
+        numChar = (TextView)findViewById(R.id.new_message_chars);
+        button = (Button) findViewById(R.id.new_message_button);
+
+        numChar.setText(Constants.MAX_CHAR+"");
+        defaultColor = numChar.getCurrentTextColor();
 
         subject.setText(sbj.getName());
         if (gr!=null) {
@@ -48,6 +63,24 @@ public class NewMessageActivity extends ActionBarActivity {
             group.setText("GENERAL"); // TODO: TRANSLATE
         }
 
+        body.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+                int total = Constants.MAX_CHAR - s.toString().length();
+                if (total < 0 ) {
+                    button.setEnabled(false);
+                    numChar.setTextColor(Color.RED);
+                } else {
+                    numChar.setTextColor(defaultColor);
+                    button.setEnabled(true);
+                }
+                numChar.setText(total+"");
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
 
     }
 
@@ -73,20 +106,29 @@ public class NewMessageActivity extends ActionBarActivity {
 
 
     public void sendMessage(View view) {
+        String bodyString = body.getText().toString();
 
-        EditText body =  (EditText)findViewById(R.id.new_message_text);
+        if (!bodyString.replaceAll("\\s+","").isEmpty()
+                && bodyString.replaceAll("\\s+","")!=null
+                && bodyString.length()<=Constants.MAX_CHAR) {
+            pDialog = new ProgressDialog(this);
+            pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            pDialog.setMessage("Sending message..."); //TODO: TRANSLATE
+            pDialog.setCancelable(false);
+            pDialog.setMax(100);
+            SendMessageTask task = new SendMessageTask(
+                    this,
+                    sbj,
+                    gr,
+                    bodyString);
+            task.execute();
+        } else if (bodyString.length()>Constants.MAX_CHAR) {
+            Constants.showToast(this, "MAX CHAR ERROR"); //TODO: TRANSLATE
+        } else {
+            Constants.showToast(this, "The message can't be empty"); //TODO: TRANSLATE
+        }
 
-        pDialog = new ProgressDialog(this);
-        pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        pDialog.setMessage("Sending message..."); //TODO: TRANSLATE
-        pDialog.setCancelable(false);
-        pDialog.setMax(100);
-        SendMessageTask task = new SendMessageTask(
-                this,
-                sbj,
-                gr,
-                body.getText().toString());
-        task.execute();
+
     }
 
     private class SendMessageTask extends AsyncTask<Void, Void, Void> {

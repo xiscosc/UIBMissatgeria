@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
-import com.fsc.uibmissatgeria.api.Server;
+import com.fsc.uibmissatgeria.api.AccountUIB;
 
 
 public class LoginActivity extends ActionBarActivity {
@@ -74,6 +74,7 @@ public class LoginActivity extends ActionBarActivity {
     private void startPrincipalActivity(){
         Intent intent = new Intent(this, PrincipalActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        this.finish();
         startActivity(intent);
     }
 
@@ -88,8 +89,8 @@ public class LoginActivity extends ActionBarActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            Server s = new Server(ctx);
-            return s.doLogin(ctx.userString, ctx.passwordString);
+            AccountUIB auib = new AccountUIB(ctx);
+            return auib.initalLogin(ctx.userString, ctx.passwordString);
         }
 
         @Override
@@ -99,8 +100,7 @@ public class LoginActivity extends ActionBarActivity {
             if (logged) {
                 ctx.startPrincipalActivity();
             } else {
-                Toast toast = Toast.makeText(ctx, "Auth Error", Toast.LENGTH_SHORT); //TODO: TRANSLATE
-                toast.show();
+                Constants.showToast(ctx, "Auth Error"); //TODO: TRANSLATE
             }
 
         }
@@ -112,11 +112,4 @@ public class LoginActivity extends ActionBarActivity {
         }
     }
 
-    protected void onPostResume() {
-        super.onPostResume();
-        Server s = new Server(this);
-        if (!s.getToken().equals(Constants.TK_FAIL)) {
-            this.finish();
-        }
-    }
 }

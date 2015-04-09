@@ -8,6 +8,7 @@ import android.view.MenuItem;
 
 import com.fsc.uibmissatgeria.activities.LoginActivity;
 import com.fsc.uibmissatgeria.activities.PrincipalActivity;
+import com.fsc.uibmissatgeria.api.AccountUIB;
 import com.fsc.uibmissatgeria.api.Server;
 
 
@@ -18,8 +19,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setTitle("");
         setContentView(R.layout.activity_main);
-        Server s = new Server(this);
-        if (!s.getToken().equals(Constants.TK_FAIL)) {
+        if ((new AccountUIB(this)).isLogged()) {
             startPrincipalActivity();
         } else {
             startLoginView();
@@ -53,18 +53,15 @@ public class MainActivity extends ActionBarActivity {
     public void startLoginView() {
         Intent intent = new Intent(this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        this.finish();
         startActivity(intent);
     }
 
     private void startPrincipalActivity(){
         Intent intent = new Intent(this, PrincipalActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        this.finish();
         startActivity(intent);
     }
 
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        this.finish();
-    }
 }

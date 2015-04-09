@@ -42,6 +42,7 @@ public class Server {
 
     private final String SERVER_URL = "https://rhodes.joan-font.com/";
     private Context c;
+    private String token;
 
     public Server(Context c) {
         this.c = c;
@@ -242,6 +243,7 @@ public class Server {
         HttpsURLConnection urlConnection = null;
         InputStream caInput = null;
         URL urlObj;
+        AccountUIB auib;
 
         try {
             urlObj = new URL(url);
@@ -262,10 +264,12 @@ public class Server {
             SSLContext context = SSLContext.getInstance("TLS");
             context.init(null, tmf.getTrustManagers(), null);
 
+            auib = new AccountUIB(this.c);
+
             urlConnection = (HttpsURLConnection) urlObj.openConnection();
             urlConnection.setSSLSocketFactory(context.getSocketFactory());
             urlConnection.setRequestMethod(method);
-            urlConnection.setRequestProperty("Authorization", getToken());
+            urlConnection.setRequestProperty("Authorization", auib.getToken());
 
         } catch (MalformedURLException | CertificateException | NoSuchAlgorithmException |
                 KeyStoreException | KeyManagementException | ProtocolException e) {
@@ -282,11 +286,7 @@ public class Server {
         try {
             String url = SERVER_URL+"login/?user="+user+"&password="+password;
             JSONObject reader = readFromServer(url);
-            String token = reader.getString("token");
-            SharedPreferences settings = c.getSharedPreferences(Constants.SP_UIB, 0);
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putString("token", token);
-            editor.commit();
+            this.token = reader.getString("token");
             result = true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -294,25 +294,11 @@ public class Server {
         return result;
     }
 
-    public String getToken() {
-        try {
-            SharedPreferences settings = c.getSharedPreferences(Constants.SP_UIB, 0);
-            return settings.getString("token", Constants.TK_FAIL);
-        } catch (Exception e) {
-            return Constants.TK_FAIL;
-        }
-
+    public String getTokenRaw() {
+        return this.token;
     }
 
-    public void removeToken() {
-        try {
-            SharedPreferences settings = c.getSharedPreferences(Constants.SP_UIB, 0);
-            SharedPreferences.Editor editor = settings.edit();
-            editor.clear();
-            editor.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+
+
 
 }
