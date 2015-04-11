@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.fsc.uibmissatgeria.R;
-import com.fsc.uibmissatgeria.objects.Subject;
+import com.fsc.uibmissatgeria.models.Subject;
 
 import java.util.ArrayList;
 
@@ -25,7 +25,7 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.Subjects
 
         public SubjectsViewHolder(View itemView) {
             super(itemView);
-
+            itemView.setClickable(true);
             subjectTitle = (TextView) itemView.findViewById(R.id.subject_title);
             subjectSubTitle = (TextView) itemView.findViewById(R.id.subject_subtitle);
         }

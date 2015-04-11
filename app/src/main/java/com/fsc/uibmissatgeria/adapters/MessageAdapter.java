@@ -1,6 +1,5 @@
 package com.fsc.uibmissatgeria.adapters;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.fsc.uibmissatgeria.R;
-import com.fsc.uibmissatgeria.objects.Message;
+import com.fsc.uibmissatgeria.models.Message;
 
 import java.util.ArrayList;
 
@@ -28,6 +27,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Messages
 
         public MessagesViewHolder(View itemView) {
             super(itemView);
+            itemView.setClickable(true);
             messageUser = (TextView)itemView.findViewById(R.id.message_user);
             messageDate = (TextView)itemView.findViewById(R.id.message_date);
             messageBody = (TextView)itemView.findViewById(R.id.message_body);

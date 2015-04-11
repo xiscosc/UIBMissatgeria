@@ -8,8 +8,8 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primaryDark</item>
         <item name="colorAccent">@color/primary</item>
+        <item name="actionModeBackground">@color/primary</item>
     </style>
-
 
     <color name="transparent">#00000000</color>
     <color name="tab_highlight">#ff9ecfbf</color>

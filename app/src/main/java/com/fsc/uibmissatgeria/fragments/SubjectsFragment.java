@@ -15,12 +15,11 @@ import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.activities.SubjectActivity;
 import com.fsc.uibmissatgeria.adapters.SubjectAdapter;
-import com.fsc.uibmissatgeria.objects.Subject;
+import com.fsc.uibmissatgeria.models.Subject;
 import com.fsc.uibmissatgeria.api.Server;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Objects;
 
 
 public class SubjectsFragment extends Fragment {

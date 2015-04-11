@@ -66,8 +66,7 @@ public class LoginActivity extends ActionBarActivity {
             LogInTask lt = new LogInTask(this);
             lt.execute();
         } else {
-            Toast toast = Toast.makeText(this, "There is an empty field", Toast.LENGTH_SHORT); //TODO: TRANSLATE
-            toast.show();
+            Constants.showToast(this, "There is an empty field"); //TODO: TRANSLATE
         }
     }
 

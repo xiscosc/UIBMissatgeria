@@ -1,32 +1,34 @@
-package com.fsc.uibmissatgeria.objects;
+package com.fsc.uibmissatgeria.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.orm.SugarRecord;
 
 import java.util.ArrayList;
 
 /**
  * Created by Xisco on 04/03/2015.
  */
-public class Subject implements Parcelable {
+public class Subject extends SugarRecord<Subject> implements Parcelable {
     private String name;
     private ArrayList<Group> groups;
     private int code;
-    private int id;
+    private int idApi;
 
 
     public Subject(String name, ArrayList<Group> groups, int code, int id) {
         this.name = name;
         this.groups = groups;
         this.code = code;
-        this.id = id;
+        this.idApi = id;
     }
 
     public Subject(Parcel in) {
         this.name = in.readString();
         Object[] gr =  in.readArray(Group.class.getClassLoader());
         this.code = in.readInt();
-        this.id= in.readInt();
+        this.idApi = in.readInt();
         groups = new ArrayList<Group>();
         for(Object g : gr){
             Group ng = (Group) g;
@@ -48,8 +50,8 @@ public class Subject implements Parcelable {
         return code;
     }
 
-    public int getId() {
-        return id;
+    public int getIdApi() {
+        return idApi;
     }
 
     public Group getFirstGroup() {
@@ -86,7 +88,7 @@ public class Subject implements Parcelable {
         dest.writeString(name);
         dest.writeArray(groups.toArray());
         dest.writeInt(code);
-        dest.writeInt(id);
+        dest.writeInt(idApi);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

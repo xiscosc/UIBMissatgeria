@@ -1,7 +1,6 @@
 package com.fsc.uibmissatgeria.activities;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -19,8 +18,8 @@ import android.widget.TextView;
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.api.Server;
-import com.fsc.uibmissatgeria.objects.Group;
-import com.fsc.uibmissatgeria.objects.Subject;
+import com.fsc.uibmissatgeria.models.Group;
+import com.fsc.uibmissatgeria.models.Subject;
 
 
 public class NewMessageActivity extends ActionBarActivity {

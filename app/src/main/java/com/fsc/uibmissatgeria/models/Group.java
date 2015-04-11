@@ -1,28 +1,30 @@
-package com.fsc.uibmissatgeria.objects;
+package com.fsc.uibmissatgeria.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.orm.SugarRecord;
+
 /**
  * Created by xiscosastrecabot on 20/3/15.
  */
-public class Group implements Parcelable {
-    private int id;
+public class Group extends SugarRecord<Group> implements Parcelable {
+    private int idApi;
     private String name;
 
     public Group(int id, String name) {
 
-        this.id = id;
+        this.idApi = id;
         this.name = name;
     }
 
     public Group(Parcel in) {
-        this.id = in.readInt();
+        this.idApi = in.readInt();
         this.name = in.readString();
     }
 
-    public int getId() {
-        return id;
+    public int getIdApi() {
+        return idApi;
     }
 
     public String getName() {
@@ -36,7 +38,7 @@ public class Group implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(id);
+            dest.writeInt(idApi);
             dest.writeString(name);
     }
 

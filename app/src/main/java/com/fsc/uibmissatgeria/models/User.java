@@ -1,14 +1,16 @@
-package com.fsc.uibmissatgeria.objects;
+package com.fsc.uibmissatgeria.models;
+
+import com.orm.SugarRecord;
 
 /**
  * Created by xiscosastrecabot on 7/3/15.
  */
-public class User {
+public class User extends SugarRecord<User>{
     private String name;
-    private int id;
+    private int idApi;
 
     public User(int id, String name) {
-        this.id = id;
+        this.idApi = id;
         this.name = name;
     }
 

@@ -1,6 +1,5 @@
 package com.fsc.uibmissatgeria.adapters;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.fsc.uibmissatgeria.R;
-import com.fsc.uibmissatgeria.objects.Group;
+import com.fsc.uibmissatgeria.models.Group;
 
 import java.util.ArrayList;
 
@@ -24,6 +23,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupsViewHo
 
         public GroupsViewHolder(View itemView) {
             super(itemView);
+            itemView.setClickable(true);
             groupTitle = (TextView) itemView.findViewById(R.id.group_title);
         }
 
@@ -54,6 +54,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupsViewHo
     public void onBindViewHolder(GroupsViewHolder viewHolder, int pos) {
         Group item = groups.get(pos);
         viewHolder.bindGroup(item);
+
     }
 
     @Override

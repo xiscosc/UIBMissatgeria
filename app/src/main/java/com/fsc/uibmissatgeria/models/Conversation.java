@@ -1,4 +1,4 @@
-package com.fsc.uibmissatgeria.objects;
+package com.fsc.uibmissatgeria.models;
 
 /**
  * Created by Xisco on 04/03/2015.

@@ -1,14 +1,13 @@
 package com.fsc.uibmissatgeria.api;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
-import com.fsc.uibmissatgeria.objects.Subject;
-import com.fsc.uibmissatgeria.objects.Group;
-import com.fsc.uibmissatgeria.objects.Message;
-import com.fsc.uibmissatgeria.objects.User;
+import com.fsc.uibmissatgeria.models.Subject;
+import com.fsc.uibmissatgeria.models.Group;
+import com.fsc.uibmissatgeria.models.Message;
+import com.fsc.uibmissatgeria.models.User;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,7 +28,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -110,10 +108,10 @@ public class Server {
         Map<String, Object> result = new HashMap<>();
 
         if (g==null) {
-            reader = readFromServer(SERVER_URL + "user/subjects/" + s.getId() + "/messages/");
+            reader = readFromServer(SERVER_URL + "user/subjects/" + s.getIdApi() + "/messages/");
         } else {
-            reader = readFromServer(SERVER_URL + "user/subjects/" + s.getId() + "/groups/"
-                    + g.getId() + "/messages/");
+            reader = readFromServer(SERVER_URL + "user/subjects/" + s.getIdApi() + "/groups/"
+                    + g.getIdApi() + "/messages/");
         }
 
 
@@ -129,9 +127,13 @@ public class Server {
                         messages.add( new Message(
                                 messageJson.getInt("id"),
                                 messageJson.getString("body"),
-                                new User(userJson.getInt("id"), userJson.getString("first_name")
-                                        + " " + userJson.getString("last_name")),
-                                messageJson.getString("created_at")
+                                new User(userJson.getInt("id"),
+                                        userJson.getString("first_name")
+                                        + " " + userJson.getString("last_name")
+                                ),
+                                messageJson.getString("created_at"),
+                                s,
+                                g
                         ));
                     }
                     result.put(Constants.RESULT_TOTAL, total);
@@ -213,9 +215,9 @@ public class Server {
         HttpsURLConnection urlConnection = null;
 
         if (g==null) {
-            url = SERVER_URL+"user/subjects/"+s.getId()+"/messages/";
+            url = SERVER_URL+"user/subjects/"+s.getIdApi()+"/messages/";
         } else {
-            url = SERVER_URL+"user/subjects/"+s.getId()+"/groups/"+g.getId()+"/messages/";
+            url = SERVER_URL+"user/subjects/"+s.getIdApi()+"/groups/"+g.getIdApi()+"/messages/";
         }
 
         try {

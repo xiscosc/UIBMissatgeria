@@ -4,4 +4,9 @@
     tools:context="com.fsc.uibmissatgeria.activities.PrincipalActivity">
     <item android:id="@+id/action_settings" android:title="Log Out"
         android:orderInCategory="100" app:showAsAction="never" android:onClick="logout"/>
+    <item
+        android:title="@string/profile_edit"
+        android:id="@+id/menu_edit_profille"
+        android:icon="@drawable/user_avatar"
+        app:showAsAction="ifRoom"/>
 </menu>

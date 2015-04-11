@@ -13,8 +13,8 @@ import android.widget.TextView;
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.adapters.GroupAdapter;
-import com.fsc.uibmissatgeria.objects.Group;
-import com.fsc.uibmissatgeria.objects.Subject;
+import com.fsc.uibmissatgeria.models.Group;
+import com.fsc.uibmissatgeria.models.Subject;
 
 import java.util.ArrayList;
 

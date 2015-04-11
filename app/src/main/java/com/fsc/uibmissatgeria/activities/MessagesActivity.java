@@ -9,8 +9,8 @@ import android.view.MenuItem;
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.fragments.MessagesFragment;
-import com.fsc.uibmissatgeria.objects.Group;
-import com.fsc.uibmissatgeria.objects.Subject;
+import com.fsc.uibmissatgeria.models.Group;
+import com.fsc.uibmissatgeria.models.Subject;
 
 
 public class MessagesActivity extends ActionBarActivity {

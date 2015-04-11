@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.fsc.uibmissatgeria.R;
-import com.fsc.uibmissatgeria.objects.Conversation;
+import com.fsc.uibmissatgeria.models.Conversation;
 import com.fsc.uibmissatgeria.adapters.ConversationAdapter;
 
 

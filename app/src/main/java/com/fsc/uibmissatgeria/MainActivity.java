@@ -18,7 +18,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle("");
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
         if ((new AccountUIB(this)).isLogged()) {
             startPrincipalActivity();
         } else {

@@ -1,4 +1,6 @@
-package com.fsc.uibmissatgeria.objects;
+package com.fsc.uibmissatgeria.models;
+
+import com.orm.SugarRecord;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -8,23 +10,29 @@ import java.util.Locale;
 /**
  * Created by xiscosastrecabot on 7/3/15.
  */
-public class Message {
+public class Message extends SugarRecord<Message>{
     private String body;
     private User user;
     private Date date;
-    private int id;
+    private int idApi;
+    private Subject subject;
+    private Group group;
 
-    public Message(int id, String body, User user, Date date) {
+    public Message(int id, String body, User user, Date date, Subject s, Group g) {
         this.body = body;
         this.user = user;
         this.date = date;
-        this.id = id;
+        this.idApi = id;
+        this.subject = s;
+        this.group = g;
     }
 
-    public Message(int id, String body, User user, String date) {
+    public Message(int id, String body, User user, String date, Subject s, Group g) {
         this.body = body;
         this.user = user;
-        this.id = id;
+        this.idApi = id;
+        this.subject = s;
+        this.group = g;
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             this.date = formatter.parse(date);
