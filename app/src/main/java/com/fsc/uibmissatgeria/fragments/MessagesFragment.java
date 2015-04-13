@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.activities.MessagesActivity;
@@ -31,6 +33,7 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
     private RecyclerView recView;
     private SwipeRefreshLayout swipeLayout;
     private ImageButton fabImageButton;
+    private ProgressBar loadingBar;
 
 
     public MessagesFragment() {
@@ -49,6 +52,7 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
         fabImageButton = (ImageButton) rootView.findViewById(R.id.fab_image_button);
+        loadingBar = (ProgressBar) rootView.findViewById(R.id.loading_messages);
 
         setListeners();
 
@@ -144,10 +148,8 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
                     if (total>0) {
                         ctx.messages = messages;
                         ctx.createAdapter();
-                    } else {
-                        Constants.showToast(ctx.getActivity(), "No messages to show"); //TODO: TRANSLATE
+                        ctx.loadingBar.setVisibility(View.GONE);
                     }
-
                 } else {
                     Constants.showToast(ctx.getActivity(), error_message);
                 }

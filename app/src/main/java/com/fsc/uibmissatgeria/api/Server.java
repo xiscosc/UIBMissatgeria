@@ -73,7 +73,6 @@ public class Server {
                                     )
                             );
                         }
-
                         subjects.add(
                                 new Subject(
                                 subjectJson.getString("name"),
@@ -85,8 +84,10 @@ public class Server {
                     }
                     result.put(Constants.RESULT_TOTAL, total);
                     result.put(Constants.RESULT_SUBJECTS, subjects);
-                    return result;
+                } else {
+                    result.put(Constants.RESULT_ERROR, "No subjects to show"); //TODO: TRANSLATE
                 }
+                return result;
             } catch (Exception e) {
                 try {
                     result.put(Constants.RESULT_ERROR, reader.getString("message"));
@@ -138,8 +139,10 @@ public class Server {
                     }
                     result.put(Constants.RESULT_TOTAL, total);
                     result.put(Constants.RESULT_MESSAGES, messages);
-                    return result;
+                } else {
+                    result.put(Constants.RESULT_ERROR, "No messages to show"); //TODO: TRANSLATE
                 }
+                return result;
             } catch (Exception e) {
                 try {
                     result.put(Constants.RESULT_ERROR, reader.getString("message"));

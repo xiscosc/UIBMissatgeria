@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
@@ -25,10 +26,10 @@ import java.util.Map;
 public class SubjectsFragment extends Fragment {
 
 
-    ProgressDialog pDialog;
     private RecyclerView recView;
     private ArrayList<Subject> subjects;
     private SubjectAdapter subjectAdapter;
+    private ProgressBar loadingBar;
 
 
 
@@ -43,16 +44,12 @@ public class SubjectsFragment extends Fragment {
         recView = (RecyclerView) rootView.findViewById(R.id.list_subjects);
         recView.setLayoutManager(
                 new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
+        loadingBar = (ProgressBar) rootView.findViewById(R.id.subjects_loading);
         loadSubjects();
         return rootView;
     }
 
     public void loadSubjects() {
-        pDialog = new ProgressDialog(getActivity());
-        pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        pDialog.setMessage("Loading subjects..."); //TODO: TRANSLATE
-        pDialog.setCancelable(false);
-        pDialog.setMax(100);
         ObtainSubjectsTask task = new ObtainSubjectsTask(SubjectsFragment.this);
         task.execute();
     }
@@ -99,21 +96,13 @@ public class SubjectsFragment extends Fragment {
                 if (total>0) {
                     ctx.subjects = subjects;
                     ctx.createAdapter();
-                } else {
-                    Constants.showToast(ctx.getActivity(), "No subjects to show"); //TODO: TRANSLATE
                 }
-
             } else {
                 Constants.showToast(ctx.getActivity(), error_message);
             }
-            pDialog.dismiss();
+            loadingBar.setVisibility(View.GONE);
         }
 
-        @Override
-        protected void onPreExecute() {
-            pDialog.setProgress(0);
-            pDialog.show();
-        }
     }
 
 }

@@ -8,7 +8,10 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.fsc.uibmissatgeria.Constants;
@@ -18,11 +21,12 @@ import com.fsc.uibmissatgeria.api.AccountUIB;
 
 public class LoginActivity extends ActionBarActivity {
 
-    private ProgressDialog pDialog;
     private EditText user;
     private EditText password;
     private String userString;
     private String passwordString;
+    private LinearLayout loginLayout;
+    private ProgressBar loadingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +35,8 @@ public class LoginActivity extends ActionBarActivity {
         setContentView(R.layout.activity_login);
         user = (EditText) findViewById(R.id.login_username);
         password = (EditText) findViewById(R.id.login_password);
+        loadingBar = (ProgressBar) findViewById(R.id.login_loading);
+        loginLayout = (LinearLayout) findViewById(R.id.login_layout);
     }
 
 
@@ -55,14 +61,15 @@ public class LoginActivity extends ActionBarActivity {
     }
 
     public void logIn(View view) {
+        InputMethodManager inputManager = (InputMethodManager)
+                getSystemService(this.INPUT_METHOD_SERVICE);
+
+        inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                InputMethodManager.HIDE_NOT_ALWAYS);
+
         userString = user.getText().toString().toUpperCase().replaceAll("\\s+","");
         passwordString = password.getText().toString().replaceAll("\\s+","");
         if ((userString!=null && !userString.isEmpty()) && (passwordString!=null && !passwordString.isEmpty())) {
-            pDialog = new ProgressDialog(this);
-            pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            pDialog.setMessage("Please Wait..."); //TODO: TRANSLATE
-            pDialog.setCancelable(false);
-            pDialog.setMax(100);
             LogInTask lt = new LogInTask(this);
             lt.execute();
         } else {
@@ -95,10 +102,11 @@ public class LoginActivity extends ActionBarActivity {
         @Override
         protected void onPostExecute(Boolean logged) {
             super.onPostExecute(logged);
-            pDialog.dismiss();
             if (logged) {
                 ctx.startPrincipalActivity();
             } else {
+                loginLayout.setVisibility(View.VISIBLE);
+                loadingBar.setVisibility(View.GONE);
                 Constants.showToast(ctx, "Auth Error"); //TODO: TRANSLATE
             }
 
@@ -106,8 +114,8 @@ public class LoginActivity extends ActionBarActivity {
 
         @Override
         protected void onPreExecute() {
-            pDialog.setProgress(0);
-            pDialog.show();
+            loginLayout.setVisibility(View.GONE);
+            loadingBar.setVisibility(View.VISIBLE);
         }
     }
 
