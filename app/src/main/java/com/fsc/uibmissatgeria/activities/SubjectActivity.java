@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.adapters.GroupAdapter;
-import com.fsc.uibmissatgeria.models.Group;
+import com.fsc.uibmissatgeria.models.SubjectGroup;
 import com.fsc.uibmissatgeria.models.Subject;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class SubjectActivity extends ActionBarActivity {
 
     private Subject sbj;
     private GroupAdapter groupAdapter;
-    private ArrayList<Group> groups;
+    private ArrayList<SubjectGroup> subjectGroups;
     private RecyclerView recView;
 
 
@@ -30,8 +30,9 @@ public class SubjectActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent i = getIntent();
-        sbj = i.getParcelableExtra(Constants.SUBJECT_OBJ);
-        groups = sbj.getGroups();
+        Long idSubject = i.getLongExtra(Constants.SUBJECT_OBJ, 0);
+        sbj = Subject.findById(Subject.class, idSubject);
+        subjectGroups = sbj.getGroups();
         setContentView(R.layout.activity_subject);
         TextView title = (TextView) findViewById(R.id.subject_name);
         recView = (RecyclerView) findViewById(R.id.list_groups_subject);
@@ -42,11 +43,11 @@ public class SubjectActivity extends ActionBarActivity {
 
 
     private void createAdapter() {
-        groupAdapter = new GroupAdapter(groups);
+        groupAdapter = new GroupAdapter(subjectGroups);
         groupAdapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Group g = groups.get(recView.getChildAdapterPosition(v));
+                SubjectGroup g = subjectGroups.get(recView.getChildAdapterPosition(v));
                 startMessagesActivity(g);
             }
         });
@@ -57,10 +58,10 @@ public class SubjectActivity extends ActionBarActivity {
     }
 
 
-    private void startMessagesActivity(Group g) {
+    private void startMessagesActivity(SubjectGroup g) {
         Intent intent = new Intent(this, MessagesActivity.class);
-        intent.putExtra(Constants.SUBJECT_OBJ, sbj);
-        intent.putExtra(Constants.GROUP_OBJ, g);
+        intent.putExtra(Constants.SUBJECT_OBJ, sbj.getId());
+        if (g!=null) intent.putExtra(Constants.GROUP_OBJ, g.getId());
         startActivity(intent);
     }
 

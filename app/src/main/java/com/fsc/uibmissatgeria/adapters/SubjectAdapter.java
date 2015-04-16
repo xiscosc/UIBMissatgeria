@@ -32,7 +32,7 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.Subjects
 
         public void bindSubject(Subject s) {
             subjectTitle.setText(s.getName());
-            subjectSubTitle.setText(s.getCode()+" - GROUP: "+s.getGroupName()); //TODO: TRANSLATE
+            subjectSubTitle.setText(Integer.toString(s.getCode()));
         }
     }
 

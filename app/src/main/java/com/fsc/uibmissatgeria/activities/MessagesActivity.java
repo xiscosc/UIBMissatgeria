@@ -9,13 +9,13 @@ import android.view.MenuItem;
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.fragments.MessagesFragment;
-import com.fsc.uibmissatgeria.models.Group;
+import com.fsc.uibmissatgeria.models.SubjectGroup;
 import com.fsc.uibmissatgeria.models.Subject;
 
 
 public class MessagesActivity extends ActionBarActivity {
     public Subject sbj;
-    public Group gr;
+    public SubjectGroup gr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +24,10 @@ public class MessagesActivity extends ActionBarActivity {
 
         Intent i = getIntent();
 
-        sbj = (Subject) i.getParcelableExtra(Constants.SUBJECT_OBJ);
-        gr = (Group) i.getParcelableExtra(Constants.GROUP_OBJ);
+        Long idSubject = i.getLongExtra(Constants.SUBJECT_OBJ, 0);
+        sbj = Subject.findById(Subject.class, idSubject);
+        Long idSubjectGroup = i.getLongExtra(Constants.GROUP_OBJ, 0);
+        if (idSubjectGroup != 0) gr = SubjectGroup.findById(SubjectGroup.class, idSubjectGroup);
 
         String name = sbj.getName();
         if (gr!=null) {
@@ -61,8 +63,8 @@ public class MessagesActivity extends ActionBarActivity {
 
     public void newMessageAction() {
         Intent intent = new Intent(this, NewMessageActivity.class);
-        intent.putExtra(Constants.GROUP_OBJ, gr);
-        intent.putExtra(Constants.SUBJECT_OBJ, sbj);
+        intent.putExtra(Constants.SUBJECT_OBJ, sbj.getId());
+        if(gr!=null) intent.putExtra(Constants.GROUP_OBJ, gr.getId());
         startActivity(intent);
     }
 

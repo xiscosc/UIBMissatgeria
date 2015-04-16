@@ -1,6 +1,5 @@
 package com.fsc.uibmissatgeria.fragments;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,10 +15,12 @@ import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.activities.SubjectActivity;
 import com.fsc.uibmissatgeria.adapters.SubjectAdapter;
+import com.fsc.uibmissatgeria.models.ModelsManager;
 import com.fsc.uibmissatgeria.models.Subject;
 import com.fsc.uibmissatgeria.api.Server;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 
@@ -68,11 +69,11 @@ public class SubjectsFragment extends Fragment {
 
     public void startSubjectActivity(Subject s) {
         Intent intent = new Intent(getActivity(), SubjectActivity.class);
-        intent.putExtra(Constants.SUBJECT_OBJ, s);
+        intent.putExtra(Constants.SUBJECT_OBJ, s.getId());
         startActivity(intent);
     }
 
-    private class ObtainSubjectsTask extends AsyncTask<Void, Void, Map<String, Object>> {
+    private class ObtainSubjectsTask extends AsyncTask<Void, Void, ArrayList<Subject>> {
 
         private SubjectsFragment ctx;
 
@@ -82,24 +83,15 @@ public class SubjectsFragment extends Fragment {
         }
 
         @Override
-        protected Map<String, Object> doInBackground(Void... params) {
-            Server s = new Server(ctx.getActivity());
-            return s.getSubjects();
+        protected ArrayList<Subject> doInBackground(Void... params) {
+            ModelsManager mm = new ModelsManager(ctx.getActivity());
+            return mm.getSubjects();
         }
 
         @Override
-        protected void onPostExecute(Map<String, Object> hm) {
-            String error_message = (String) hm.get(Constants.RESULT_ERROR);
-            if (error_message==null) {
-                int total = (int) hm.get(Constants.RESULT_TOTAL);
-                ArrayList<Subject> subjects = (ArrayList<Subject>) hm.get(Constants.RESULT_SUBJECTS);
-                if (total>0) {
-                    ctx.subjects = subjects;
-                    ctx.createAdapter();
-                }
-            } else {
-                Constants.showToast(ctx.getActivity(), error_message);
-            }
+        protected void onPostExecute(ArrayList<Subject> subjects) {
+            ctx.subjects =  subjects;
+            ctx.createAdapter();
             loadingBar.setVisibility(View.GONE);
         }
 

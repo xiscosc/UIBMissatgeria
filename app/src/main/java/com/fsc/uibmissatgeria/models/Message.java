@@ -14,31 +14,36 @@ public class Message extends SugarRecord<Message>{
     private String body;
     private User user;
     private Date date;
-    private int idApi;
     private Subject subject;
-    private Group group;
+    private SubjectGroup subjectGroup;
+    private int idApi;
 
-    public Message(int id, String body, User user, Date date, Subject s, Group g) {
+
+    public Message(int id, String body, User user, Date date, Subject s, SubjectGroup g) {
         this.body = body;
         this.user = user;
         this.date = date;
-        this.idApi = id;
         this.subject = s;
-        this.group = g;
+        this.subjectGroup = g;
+        this.idApi = id;
     }
 
-    public Message(int id, String body, User user, String date, Subject s, Group g) {
+    public Message(int id, String body, User user, String date, Subject s, SubjectGroup g) {
         this.body = body;
         this.user = user;
-        this.idApi = id;
         this.subject = s;
-        this.group = g;
+        this.subjectGroup = g;
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             this.date = formatter.parse(date);
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        this.idApi=id;
+    }
+
+    public Message(){
+
     }
 
     public String getBody() {
@@ -51,6 +56,10 @@ public class Message extends SugarRecord<Message>{
 
     public Date getDate() {
         return date;
+    }
+
+    public int getIdApi() {
+        return idApi;
     }
 
     public String getStringDate() {

@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.fsc.uibmissatgeria.Constants;
@@ -18,7 +17,7 @@ import com.fsc.uibmissatgeria.activities.MessagesActivity;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.adapters.MessageAdapter;
 import com.fsc.uibmissatgeria.api.Server;
-import com.fsc.uibmissatgeria.models.Group;
+import com.fsc.uibmissatgeria.models.SubjectGroup;
 import com.fsc.uibmissatgeria.models.Message;
 import com.fsc.uibmissatgeria.models.Subject;
 
@@ -124,19 +123,19 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         private MessagesFragment ctx;
         private Subject subject;
-        private Group group;
+        private SubjectGroup subjectGroup;
 
-        public ObtainMessagesTask(MessagesFragment c, Subject s, Group g) {
+        public ObtainMessagesTask(MessagesFragment c, Subject s, SubjectGroup g) {
             super();
             ctx = c;
             subject = s;
-            group = g;
+            subjectGroup = g;
         }
 
         @Override
         protected Map<String, Object> doInBackground(Void... params) {
             Server s = new Server(ctx.getActivity());
-            return s.getMessages(subject, group);
+            return s.getMessages(subject, subjectGroup);
         }
 
         @Override

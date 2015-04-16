@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.fsc.uibmissatgeria.R;
-import com.fsc.uibmissatgeria.models.Group;
+import com.fsc.uibmissatgeria.models.SubjectGroup;
 
 import java.util.ArrayList;
 
@@ -27,16 +27,16 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupsViewHo
             groupTitle = (TextView) itemView.findViewById(R.id.group_title);
         }
 
-        public void bindGroup(Group g) {
-            groupTitle.setText("Group "+g.getName()); //TODO: TRANSLATE
+        public void bindGroup(SubjectGroup g) {
+            groupTitle.setText("SubjectGroup "+g.getName()); //TODO: TRANSLATE
         }
     }
 
-    private ArrayList<Group> groups;
+    private ArrayList<SubjectGroup> subjectGroups;
     private View.OnClickListener listener;
 
-    public GroupAdapter(ArrayList<Group> groups) {
-        this.groups = groups;
+    public GroupAdapter(ArrayList<SubjectGroup> subjectGroups) {
+        this.subjectGroups = subjectGroups;
     }
 
     @Override
@@ -52,14 +52,14 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupsViewHo
 
     @Override
     public void onBindViewHolder(GroupsViewHolder viewHolder, int pos) {
-        Group item = groups.get(pos);
+        SubjectGroup item = subjectGroups.get(pos);
         viewHolder.bindGroup(item);
 
     }
 
     @Override
     public int getItemCount() {
-        return groups.size();
+        return subjectGroups.size();
     }
 
     public void setOnClickListener(View.OnClickListener listener) {

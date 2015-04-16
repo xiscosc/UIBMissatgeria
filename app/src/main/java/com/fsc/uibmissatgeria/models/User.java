@@ -5,16 +5,31 @@ import com.orm.SugarRecord;
 /**
  * Created by xiscosastrecabot on 7/3/15.
  */
-public class User extends SugarRecord<User>{
-    private String name;
+public class User extends SugarRecord<User> {
+    private String firstName;
+    private String lastName;
+    private String uibDigitalUser;
+    private String type;
     private int idApi;
 
-    public User(int id, String name) {
+
+    public User(int id, String firstName, String lastName, String uibDigitalUser, String type) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.uibDigitalUser = uibDigitalUser;
+        this.type = type;
         this.idApi = id;
-        this.name = name;
+    }
+
+    public User() {
+
     }
 
     public String getName() {
-        return name;
+        return firstName+" "+lastName;
+    }
+
+    public int getIdApi() {
+        return idApi;
     }
 }

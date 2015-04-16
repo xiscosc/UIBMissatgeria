@@ -18,14 +18,14 @@ import android.widget.TextView;
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.api.Server;
-import com.fsc.uibmissatgeria.models.Group;
+import com.fsc.uibmissatgeria.models.SubjectGroup;
 import com.fsc.uibmissatgeria.models.Subject;
 
 
 public class NewMessageActivity extends ActionBarActivity {
 
     Subject sbj;
-    Group gr;
+    SubjectGroup gr;
     TextView subject;
     TextView group;
     EditText body;
@@ -41,8 +41,11 @@ public class NewMessageActivity extends ActionBarActivity {
 
         Intent i = getIntent();
 
-        sbj = i.getParcelableExtra(Constants.SUBJECT_OBJ);
-        gr = i.getParcelableExtra(Constants.GROUP_OBJ);
+        Long idSubject = i.getLongExtra(Constants.SUBJECT_OBJ, 0);
+        sbj = Subject.findById(Subject.class, idSubject);
+        Long idSubjectGroup = i.getLongExtra(Constants.GROUP_OBJ, 0);
+        if (idSubjectGroup != 0) gr = SubjectGroup.findById(SubjectGroup.class, idSubjectGroup);
+
 
         setContentView(R.layout.activity_new_message);
 
@@ -134,13 +137,13 @@ public class NewMessageActivity extends ActionBarActivity {
 
         String body;
         Subject subject;
-        Group group;
+        SubjectGroup subjectGroup;
         NewMessageActivity ctx;
 
-        public SendMessageTask(NewMessageActivity ctx, Subject s, Group g, String body) {
+        public SendMessageTask(NewMessageActivity ctx, Subject s, SubjectGroup g, String body) {
             super();
             this.subject = s;
-            this.group = g;
+            this.subjectGroup = g;
             this.body = body;
             this.ctx = ctx;
         }
@@ -148,7 +151,7 @@ public class NewMessageActivity extends ActionBarActivity {
         @Override
         protected Void doInBackground(Void... params) {
             Server s = new Server(ctx);
-            s.sendMessageToGroup(subject, group, body);
+            s.sendMessageToGroup(subject, subjectGroup, body);
             return null;
         }
 
