@@ -43,6 +43,13 @@ public class ModelsManager {
         }
     }
 
+    public void resetDB() {
+        User.deleteAll(User.class);
+        //Message.deleteAll(Message.class);
+        Subject.deleteAll(Subject.class);
+        SubjectGroup.deleteAll(SubjectGroup.class);
+    }
+
 
 
 }

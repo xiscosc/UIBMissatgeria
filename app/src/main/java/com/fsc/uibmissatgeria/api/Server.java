@@ -256,10 +256,7 @@ public class Server {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
-
 
     private HttpsURLConnection setUpConnection(String url, String method){
         HttpsURLConnection urlConnection = null;
@@ -320,7 +317,21 @@ public class Server {
         return this.token;
     }
 
-
-
-
+    public User getUserByToken() {
+        JSONObject reader = readFromServer(SERVER_URL + "user/");
+        if (reader != null) {
+            try {
+                return new User(
+                        reader.getInt("id"),
+                        reader.getString("first_name"),
+                        reader.getString("last_name"),
+                        reader.getString("user"),
+                        reader.getString("type")
+                );
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
 }

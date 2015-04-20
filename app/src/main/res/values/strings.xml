@@ -23,5 +23,6 @@
     <string name="subject_general_forum">Subject Forum</string>
     <string name="subject_general_description">Subject\'s global messages</string>
     <string name="profile_edit">Edit Profile</string>
+    <string name="title_activity_profile">Profile</string>
 
 </resources>

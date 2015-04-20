@@ -28,7 +28,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupsViewHo
         }
 
         public void bindGroup(SubjectGroup g) {
-            groupTitle.setText("SubjectGroup "+g.getName()); //TODO: TRANSLATE
+            groupTitle.setText("Group "+g.getName()); //TODO: TRANSLATE
         }
     }
 

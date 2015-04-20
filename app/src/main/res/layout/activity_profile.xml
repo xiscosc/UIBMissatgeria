@@ -1,0 +1,35 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="com.fsc.uibmissatgeria.activities.ProfileActivity">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/user_avatar"
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="52dp"
+
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Usuari UIB"
+        android:layout_gravity="center_horizontal"
+        android:textStyle="bold"
+        android:id="@+id/user_name_profile"
+        android:textSize="@dimen/abc_text_size_large_material" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="UIB123"
+        android:id="@+id/uibdigital_profile"
+        android:layout_gravity="center_horizontal" />
+
+</LinearLayout>

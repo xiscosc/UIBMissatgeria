@@ -17,11 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-import com.fsc.uibmissatgeria.Constants;
-import com.fsc.uibmissatgeria.MainActivity;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.api.AccountUIB;
-import com.fsc.uibmissatgeria.api.Server;
 import com.fsc.uibmissatgeria.fragments.SubjectsFragment;
 import com.fsc.uibmissatgeria.fragments.ConversationsFragment;
 import com.fsc.uibmissatgeria.fragments.PlaceholderFragment;
@@ -115,8 +112,18 @@ public class PrincipalActivity extends ActionBarActivity {
         if (id == R.id.action_settings) {
             return true;
         }
+        if (id == R.id.menu_edit_profille) {
+            startProfileEdit();
+        }
+
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void startProfileEdit() {
+        Intent i = new Intent(this, ProfileActivity.class);
+        startActivity(i);
+
     }
 
     public void logout(MenuItem item) {

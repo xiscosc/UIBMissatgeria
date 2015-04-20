@@ -32,4 +32,8 @@ public class User extends SugarRecord<User> {
     public int getIdApi() {
         return idApi;
     }
+
+    public String getUibDigitalUser() {
+        return uibDigitalUser;
+    }
 }

@@ -20,6 +20,7 @@ public class Constants {
     public static final String RESULT_SUBJECT_GROUPS = "result_groups";
 
     public static final String ACCOUNT_TOKEN =  "UIB_T_ACCOUNT";
+    public static final String ACCOUNT_ID = "UIB_ID_ACCOUNT";
     public static final String ACCOUNT_TOKEN_FAILED = "token_failed";
 
     public static final int MAX_CHAR = 400;
