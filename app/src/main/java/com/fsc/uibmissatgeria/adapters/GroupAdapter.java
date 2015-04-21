@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.models.SubjectGroup;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Xisco on 04/03/2015.
@@ -32,10 +32,10 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupsViewHo
         }
     }
 
-    private ArrayList<SubjectGroup> subjectGroups;
+    private List<SubjectGroup> subjectGroups;
     private View.OnClickListener listener;
 
-    public GroupAdapter(ArrayList<SubjectGroup> subjectGroups) {
+    public GroupAdapter(List<SubjectGroup> subjectGroups) {
         this.subjectGroups = subjectGroups;
     }
 

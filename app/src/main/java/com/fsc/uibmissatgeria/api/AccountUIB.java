@@ -59,8 +59,7 @@ public class AccountUIB {
 
     public void logOut() {
         this.removeAccount();
-        ModelsManager mm = new ModelsManager(this.c);
-        mm.resetDB();
+        ModelsManager.resetDB();
     }
 
     public boolean isLogged() {

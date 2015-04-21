@@ -19,35 +19,69 @@ public class ModelsManager {
 
     public ModelsManager(Context c) {
         ctx = c;
-        server = new Server(ctx);
+
 }
 
-    public ArrayList<Message> getMessages(Subject s, SubjectGroup g) {
-        return new ArrayList<>();
+    public List<Message> getMessages(Subject s, SubjectGroup g) {
+        List<Message> messages = Message.find(Message.class,
+                "SUBJECT_GROUP = ?",
+                Long.toString(g.getId()));
+        if (messages.isEmpty()) {
+            return initMessages(s, g);
+        } else {
+            return  messages;
+        }
     }
 
-    public ArrayList<Subject> getSubjects() {
+    private List<Message> initMessages(Subject s, SubjectGroup g) {
+        server = new Server(ctx);
+        Map<String, Object> messagesData = server.getMessages(s, g);
+        boolean existsError = messagesData.containsKey(Constants.RESULT_ERROR);
+        if (existsError) {
+            String error_message = (String) messagesData.get(Constants.RESULT_ERROR);
+            Constants.showToast(ctx, error_message);
+            return new ArrayList<>();
+        }
+        return (List<Message>) messagesData.get(Constants.RESULT_MESSAGES);
+    }
+
+    public List<Subject> getSubjects() {
         List<Subject> subjects = Subject.listAll(Subject.class);
         if (subjects.isEmpty()) {
-            initSubjects();
+            return initSubjects();
+        } else {
+            return  subjects;
         }
-        return (ArrayList<Subject>) Subject.listAll(Subject.class);
     }
 
-    private void initSubjects() {
+    private List<Subject> initSubjects() {
+        server = new Server(ctx);
         Map<String, Object> subjectsData = server.getSubjects();
         boolean existsError = subjectsData.containsKey(Constants.RESULT_ERROR);
         if (existsError) {
             String error_message = (String) subjectsData.get(Constants.RESULT_ERROR);
             Constants.showToast(ctx, error_message);
+            return new ArrayList<>();
         }
+        return (List<Subject>) subjectsData.get(Constants.RESULT_SUBJECTS);
     }
 
-    public void resetDB() {
+    public static void resetDB() {
         User.deleteAll(User.class);
-        //Message.deleteAll(Message.class);
+        Message.deleteAll(Message.class);
         Subject.deleteAll(Subject.class);
         SubjectGroup.deleteAll(SubjectGroup.class);
+    }
+
+    public static Subject getSubjectFromApi(int idApi) {
+        List<Subject> subjects = Subject.find(Subject.class, "ID_API = ?", Integer.toString(idApi));
+        return subjects.get(0);
+    }
+
+    public static SubjectGroup generateSGDefault(Subject s) {
+        SubjectGroup sg = new SubjectGroup(Constants.DEFAULT_GROUP_ID, "Subject Forum", s);
+        sg.save();
+        return sg;
     }
 
 

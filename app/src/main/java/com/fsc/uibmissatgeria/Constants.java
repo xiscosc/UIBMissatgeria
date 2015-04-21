@@ -24,6 +24,7 @@ public class Constants {
     public static final String ACCOUNT_TOKEN_FAILED = "token_failed";
 
     public static final int MAX_CHAR = 400;
+    public static final int DEFAULT_GROUP_ID = -1;
 
 
     public static void showToast(Context ctx, String message) {

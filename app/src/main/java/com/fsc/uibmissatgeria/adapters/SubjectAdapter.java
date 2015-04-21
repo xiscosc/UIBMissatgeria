@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.models.Subject;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Xisco on 04/03/2015.
@@ -36,10 +36,10 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.Subjects
         }
     }
 
-    private ArrayList<Subject> subjects;
+    private List<Subject> subjects;
     private View.OnClickListener listener;
 
-    public SubjectAdapter(ArrayList<Subject> subjects) {
+    public SubjectAdapter(List<Subject> subjects) {
         this.subjects = subjects;
     }
 

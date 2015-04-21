@@ -14,24 +14,21 @@ public class Message extends SugarRecord<Message>{
     private String body;
     private User user;
     private Date date;
-    private Subject subject;
     private SubjectGroup subjectGroup;
     private int idApi;
 
 
-    public Message(int id, String body, User user, Date date, Subject s, SubjectGroup g) {
+    public Message(int id, String body, User user, Date date, SubjectGroup g) {
         this.body = body;
         this.user = user;
         this.date = date;
-        this.subject = s;
         this.subjectGroup = g;
         this.idApi = id;
     }
 
-    public Message(int id, String body, User user, String date, Subject s, SubjectGroup g) {
+    public Message(int id, String body, User user, String date, SubjectGroup g) {
         this.body = body;
         this.user = user;
-        this.subject = s;
         this.subjectGroup = g;
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
@@ -65,5 +62,14 @@ public class Message extends SugarRecord<Message>{
     public String getStringDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd-MM-yyyy", Locale.GERMAN);
         return sdf.format(this.date);
+    }
+
+    @Override
+    public boolean equals(Object other){
+        if (other == null) return false;
+        if (other == this) return true;
+        if (!(other instanceof Message)) return false;
+        Message otherMyClass = (Message) other;
+        return (this.idApi == otherMyClass.idApi);
     }
 }

@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.models.Message;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Xisco on 04/03/2015.
@@ -40,10 +40,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Messages
         }
     }
 
-    private ArrayList<Message> messages;
+    private List<Message> messages;
     private View.OnClickListener listener;
 
-    public MessageAdapter(ArrayList<Message> messages) {
+    public MessageAdapter(List<Message> messages) {
         this.messages = messages;
     }
 

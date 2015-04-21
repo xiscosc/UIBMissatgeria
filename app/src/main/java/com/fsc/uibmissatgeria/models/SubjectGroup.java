@@ -27,4 +27,13 @@ public class SubjectGroup extends SugarRecord<SubjectGroup>{
     public Subject getSubject() {
         return subject;
     }
+
+    @Override
+    public boolean equals(Object other){
+        if (other == null) return false;
+        if (other == this) return true;
+        if (!(other instanceof SubjectGroup)) return false;
+        SubjectGroup otherSG = (SubjectGroup) other;
+        return (idApi == otherSG.idApi && subject.equals(otherSG.subject));
+    }
 }

@@ -1,8 +1,9 @@
 package com.fsc.uibmissatgeria.models;
 
+import com.fsc.uibmissatgeria.Constants;
 import com.orm.SugarRecord;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Xisco on 04/03/2015.
@@ -17,6 +18,7 @@ public class Subject extends SugarRecord<Subject> {
         this.code = code;
         this.idApi = id;
     }
+
 
     public Subject() {
 
@@ -34,11 +36,31 @@ public class Subject extends SugarRecord<Subject> {
         return code;
     }
 
-    public ArrayList<SubjectGroup> getGroups() {
-        return (ArrayList<SubjectGroup>) SubjectGroup.find(
+    public List<SubjectGroup> getGroups() {
+        return SubjectGroup.find(
                 SubjectGroup.class,
-                "SUBJECT = ?",
-                Long.toString(this.getId())
+                "SUBJECT = ? AND ID_API != ?",
+                Long.toString(this.getId()),
+                Integer.toString(Constants.DEFAULT_GROUP_ID)
         );
+    }
+
+    public SubjectGroup getDefaultGroup() {
+        List<SubjectGroup> groups = SubjectGroup.find(
+                SubjectGroup.class,
+                "SUBJECT = ? AND ID_API = ?",
+                Long.toString(this.getId()),
+                Integer.toString(Constants.DEFAULT_GROUP_ID)
+        );
+        return groups.get(0);
+    }
+
+    @Override
+    public boolean equals(Object other){
+        if (other == null) return false;
+        if (other == this) return true;
+        if (!(other instanceof Subject)) return false;
+        Subject otherMyClass = (Subject) other;
+        return (this.idApi == otherMyClass.idApi);
     }
 }

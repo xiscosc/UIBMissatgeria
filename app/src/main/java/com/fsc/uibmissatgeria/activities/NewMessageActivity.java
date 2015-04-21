@@ -44,8 +44,7 @@ public class NewMessageActivity extends ActionBarActivity {
         Long idSubject = i.getLongExtra(Constants.SUBJECT_OBJ, 0);
         sbj = Subject.findById(Subject.class, idSubject);
         Long idSubjectGroup = i.getLongExtra(Constants.GROUP_OBJ, 0);
-        if (idSubjectGroup != 0) gr = SubjectGroup.findById(SubjectGroup.class, idSubjectGroup);
-
+        gr = SubjectGroup.findById(SubjectGroup.class, idSubjectGroup);
 
         setContentView(R.layout.activity_new_message);
 
@@ -59,7 +58,7 @@ public class NewMessageActivity extends ActionBarActivity {
         defaultColor = numChar.getCurrentTextColor();
 
         subject.setText(sbj.getName());
-        if (gr!=null) {
+        if (gr.getIdApi() != Constants.DEFAULT_GROUP_ID) {
             group.setText(gr.getName());
         } else {
             group.setText("GENERAL"); // TODO: TRANSLATE

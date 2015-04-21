@@ -17,18 +17,15 @@ import com.fsc.uibmissatgeria.activities.SubjectActivity;
 import com.fsc.uibmissatgeria.adapters.SubjectAdapter;
 import com.fsc.uibmissatgeria.models.ModelsManager;
 import com.fsc.uibmissatgeria.models.Subject;
-import com.fsc.uibmissatgeria.api.Server;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 public class SubjectsFragment extends Fragment {
 
 
     private RecyclerView recView;
-    private ArrayList<Subject> subjects;
+    private List<Subject> subjects;
     private SubjectAdapter subjectAdapter;
     private ProgressBar loadingBar;
 
@@ -73,7 +70,7 @@ public class SubjectsFragment extends Fragment {
         startActivity(intent);
     }
 
-    private class ObtainSubjectsTask extends AsyncTask<Void, Void, ArrayList<Subject>> {
+    private class ObtainSubjectsTask extends AsyncTask<Void, Void, List<Subject>> {
 
         private SubjectsFragment ctx;
 
@@ -83,13 +80,13 @@ public class SubjectsFragment extends Fragment {
         }
 
         @Override
-        protected ArrayList<Subject> doInBackground(Void... params) {
+        protected List<Subject> doInBackground(Void... params) {
             ModelsManager mm = new ModelsManager(ctx.getActivity());
             return mm.getSubjects();
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Subject> subjects) {
+        protected void onPostExecute(List<Subject> subjects) {
             ctx.subjects =  subjects;
             ctx.createAdapter();
             loadingBar.setVisibility(View.GONE);

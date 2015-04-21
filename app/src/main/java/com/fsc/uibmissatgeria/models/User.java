@@ -36,4 +36,13 @@ public class User extends SugarRecord<User> {
     public String getUibDigitalUser() {
         return uibDigitalUser;
     }
+
+    @Override
+    public boolean equals(Object other){
+        if (other == null) return false;
+        if (other == this) return true;
+        if (!(other instanceof User)) return false;
+        User otherMyClass = (User) other;
+        return (this.idApi == otherMyClass.idApi);
+    }
 }

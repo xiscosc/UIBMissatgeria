@@ -1,9 +1,11 @@
 package com.fsc.uibmissatgeria.api;
 
 import android.content.Context;
+import android.graphics.AvoidXfermode;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
+import com.fsc.uibmissatgeria.models.ModelsManager;
 import com.fsc.uibmissatgeria.models.Subject;
 import com.fsc.uibmissatgeria.models.SubjectGroup;
 import com.fsc.uibmissatgeria.models.Message;
@@ -55,50 +57,41 @@ public class Server {
 
         if (reader != null) {
             try {
-                int total_subjects = 0;
-                int total_groups = 0;
                 JSONArray subjectJsonArray = reader.getJSONArray("results");
+                List<Subject> subjectDbList = Subject.listAll(Subject.class);
+                List<SubjectGroup> subjectGroupDbList = SubjectGroup.listAll(SubjectGroup.class);
                 for (int x = 0; x < subjectJsonArray.length(); x++) {
                     JSONObject subjectJson = subjectJsonArray.getJSONObject(x);
                     JSONArray groupJsonArray = subjectJson.getJSONArray("groups");
                     Subject sbj;
-                    List<Subject> subjectDbList = Subject.find(
-                            Subject.class,
-                            "ID_API = ?",
-                            Integer.toString(subjectJson.getInt("id"))
+                    sbj = new Subject(
+                            subjectJson.getString("name"),
+                            subjectJson.getInt("code"),
+                            subjectJson.getInt("id")
                     );
-                    if (subjectDbList.isEmpty()) {
-                        sbj = new Subject(
-                                subjectJson.getString("name"),
-                                subjectJson.getInt("code"),
-                                subjectJson.getInt("id")
-                        );
+                    if (!subjectDbList.contains(sbj)) {
                         sbj.save();
-                        total_subjects++;
+                        ModelsManager.generateSGDefault(sbj);
+                        subjectDbList.add(sbj);
                     } else {
-                        sbj = subjectDbList.get(0);
+                        int index = subjectDbList.indexOf(sbj);
+                        sbj = subjectDbList.get(index);
                     }
 
                     for (int y=0; y<groupJsonArray.length(); y++) {
                         JSONObject groupJson = groupJsonArray.getJSONObject(y);
-                        List<SubjectGroup> subjectGroupDbList = SubjectGroup.find(
-                                SubjectGroup.class,
-                                "ID_API = ?",
-                                Integer.toString(groupJson.getInt("id"))
+                        SubjectGroup sbjg = new SubjectGroup(
+                                groupJson.getInt("id"),
+                                groupJson.getString("name"),
+                                sbj
                         );
-                        if (subjectGroupDbList.isEmpty()) {
-                            SubjectGroup sbjg = new SubjectGroup(
-                                    groupJson.getInt("id"),
-                                    groupJson.getString("name"),
-                                    sbj
-                            );
+                        if (!subjectGroupDbList.contains(sbjg)) {
                             sbjg.save();
-                            total_groups++;
+                            subjectGroupDbList.add(sbjg);
                         }
                     }
                 }
-                result.put(Constants.RESULT_SUBJECTS, total_subjects);
-                result.put(Constants.RESULT_SUBJECT_GROUPS, total_groups);
+                result.put(Constants.RESULT_SUBJECTS, subjectDbList);
                 return result;
             } catch (Exception e) {
                 try {
@@ -117,47 +110,23 @@ public class Server {
 
     public Map<String, Object> getMessages(Subject s, SubjectGroup g) {
 
-        JSONObject reader;
         Map<String, Object> result = new HashMap<>();
-
-        if (g==null) {
+        List<User> usersDbList = User.listAll(User.class);
+        List<Message> messagesDbList = Message.find(Message.class,
+                "SUBJECT_GROUP = ?",
+                Long.toString(g.getId())
+        );
+        JSONObject reader;
+        if (g.getIdApi()==Constants.DEFAULT_GROUP_ID) {
             reader = readFromServer(SERVER_URL + "user/subjects/" + s.getIdApi() + "/messages/");
         } else {
             reader = readFromServer(SERVER_URL + "user/subjects/" + s.getIdApi() + "/groups/"
                     + g.getIdApi() + "/messages/");
         }
-
-
         if (reader != null) {
             try {
-                int total = reader.getInt("total");
-                if (total > 0) {
-                    JSONArray messageJsonArray = reader.getJSONArray("results");
-                    ArrayList<Message> messages = new ArrayList<>();
-                    for (int x = 0; x < total; x++) {
-                        JSONObject messageJson = messageJsonArray.getJSONObject(x);
-                        JSONObject userJson = messageJson.getJSONObject("sender");
-                        messages.add( new Message(
-                                messageJson.getInt("id"),
-                                messageJson.getString("body"),
-
-                                new User(
-                                        userJson.getInt("id"),
-                                        userJson.getString("first_name"),
-                                        userJson.getString("last_name"),
-                                        userJson.getString("user"),
-                                        userJson.getString("type")
-                                ),
-                                messageJson.getString("created_at"),
-                                s,
-                                g
-                        ));
-                    }
-                    result.put(Constants.RESULT_TOTAL, total);
-                    result.put(Constants.RESULT_MESSAGES, messages);
-                } else {
-                    result.put(Constants.RESULT_ERROR, "No messages to show"); //TODO: TRANSLATE
-                }
+                manageMessages(reader, messagesDbList, usersDbList, g);
+                result.put(Constants.RESULT_MESSAGES, messagesDbList);
                 return result;
             } catch (Exception e) {
                 try {
@@ -168,8 +137,48 @@ public class Server {
                 }
             }
         }
-
         result.put(Constants.RESULT_ERROR, "Network Error"); //TODO: TRANSLATE
+        return result;
+    }
+
+
+    private List<Message> manageMessages(JSONObject reader, List<Message> messagesDbList, List<User> usersDbList, SubjectGroup g) throws JSONException {
+        JSONArray messageJsonArray = reader.getJSONArray("results");
+        List<Message> result = new ArrayList<>();
+        for (int x = 0; x < messageJsonArray.length(); x++) {
+            JSONObject messageJson = messageJsonArray.getJSONObject(x);
+            JSONObject userJson = messageJson.getJSONObject("sender");
+
+            User sender = new User(
+                    userJson.getInt("id"),
+                    userJson.getString("first_name"),
+                    userJson.getString("last_name"),
+                    userJson.getString("user"),
+                    userJson.getString("type")
+            );
+
+            if (!usersDbList.contains(sender)) {
+                sender.save();
+                usersDbList.add(sender);
+            } else {
+                int index = usersDbList.indexOf(sender);
+                sender = usersDbList.get(index);
+            }
+
+            Message msg  = new Message(
+                    messageJson.getInt("id"),
+                    messageJson.getString("body"),
+                    sender,
+                    messageJson.getString("created_at"),
+                    g
+            );
+
+            if (!messagesDbList.contains(msg)) {
+                msg.save();
+                messagesDbList.add(msg);
+                result.add(msg);
+            }
+        }
         return result;
     }
 
@@ -233,7 +242,7 @@ public class Server {
         String url;
         HttpsURLConnection urlConnection = null;
 
-        if (g==null) {
+        if (g.getIdApi()==Constants.DEFAULT_GROUP_ID) {
             url = SERVER_URL+"user/subjects/"+s.getIdApi()+"/messages/";
         } else {
             url = SERVER_URL+"user/subjects/"+s.getIdApi()+"/groups/"

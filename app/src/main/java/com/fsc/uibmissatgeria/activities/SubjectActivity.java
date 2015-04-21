@@ -16,13 +16,13 @@ import com.fsc.uibmissatgeria.adapters.GroupAdapter;
 import com.fsc.uibmissatgeria.models.SubjectGroup;
 import com.fsc.uibmissatgeria.models.Subject;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class SubjectActivity extends ActionBarActivity {
 
     private Subject sbj;
     private GroupAdapter groupAdapter;
-    private ArrayList<SubjectGroup> subjectGroups;
+    private List<SubjectGroup> subjectGroups;
     private RecyclerView recView;
 
 
@@ -61,7 +61,7 @@ public class SubjectActivity extends ActionBarActivity {
     private void startMessagesActivity(SubjectGroup g) {
         Intent intent = new Intent(this, MessagesActivity.class);
         intent.putExtra(Constants.SUBJECT_OBJ, sbj.getId());
-        if (g!=null) intent.putExtra(Constants.GROUP_OBJ, g.getId());
+        intent.putExtra(Constants.GROUP_OBJ, g.getId());
         startActivity(intent);
     }
 
@@ -88,6 +88,6 @@ public class SubjectActivity extends ActionBarActivity {
     }
 
     public void startMessages(View view) {
-        startMessagesActivity(null);
+        startMessagesActivity(sbj.getDefaultGroup());
     }
 }

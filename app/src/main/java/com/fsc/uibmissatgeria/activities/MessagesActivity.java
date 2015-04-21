@@ -27,10 +27,10 @@ public class MessagesActivity extends ActionBarActivity {
         Long idSubject = i.getLongExtra(Constants.SUBJECT_OBJ, 0);
         sbj = Subject.findById(Subject.class, idSubject);
         Long idSubjectGroup = i.getLongExtra(Constants.GROUP_OBJ, 0);
-        if (idSubjectGroup != 0) gr = SubjectGroup.findById(SubjectGroup.class, idSubjectGroup);
+        gr = SubjectGroup.findById(SubjectGroup.class, idSubjectGroup);
 
         String name = sbj.getName();
-        if (gr!=null) {
+        if (gr.getIdApi()!=Constants.DEFAULT_GROUP_ID) {
           name +=" "+gr.getName();
         }
         setTitle(name);
@@ -64,7 +64,7 @@ public class MessagesActivity extends ActionBarActivity {
     public void newMessageAction() {
         Intent intent = new Intent(this, NewMessageActivity.class);
         intent.putExtra(Constants.SUBJECT_OBJ, sbj.getId());
-        if(gr!=null) intent.putExtra(Constants.GROUP_OBJ, gr.getId());
+        intent.putExtra(Constants.GROUP_OBJ, gr.getId());
         startActivity(intent);
     }
 
