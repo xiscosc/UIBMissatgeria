@@ -52,12 +52,11 @@ public class Server {
 
     public Map<String, Object> getSubjects() {
 
-        JSONObject reader = readFromServer(SERVER_URL + "user/subjects/");
+        JSONArray subjectJsonArray = readArrayFromServer(SERVER_URL + "user/subjects/");
         Map<String, Object> result = new HashMap<>();
 
-        if (reader != null) {
+        if (subjectJsonArray != null) {
             try {
-                JSONArray subjectJsonArray = reader.getJSONArray("results");
                 List<Subject> subjectDbList = Subject.listAll(Subject.class);
                 List<SubjectGroup> subjectGroupDbList = SubjectGroup.listAll(SubjectGroup.class);
                 for (int x = 0; x < subjectJsonArray.length(); x++) {
@@ -94,12 +93,7 @@ public class Server {
                 result.put(Constants.RESULT_SUBJECTS, subjectDbList);
                 return result;
             } catch (Exception e) {
-                try {
-                    result.put(Constants.RESULT_ERROR, reader.getString("message"));
-                    return result;
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+              e.printStackTrace();
             }
         }
 
@@ -118,9 +112,9 @@ public class Server {
         );
         JSONObject reader;
         if (g.getIdApi()==Constants.DEFAULT_GROUP_ID) {
-            reader = readFromServer(SERVER_URL + "user/subjects/" + s.getIdApi() + "/messages/");
+            reader = readObjectFromServer(SERVER_URL + "user/subjects/" + s.getIdApi() + "/messages/");
         } else {
-            reader = readFromServer(SERVER_URL + "user/subjects/" + s.getIdApi() + "/groups/"
+            reader = readObjectFromServer(SERVER_URL + "user/subjects/" + s.getIdApi() + "/groups/"
                     + g.getIdApi() + "/messages/");
         }
         if (reader != null) {
@@ -143,7 +137,7 @@ public class Server {
 
 
     private List<Message> manageMessages(JSONObject reader, List<Message> messagesDbList, List<User> usersDbList, SubjectGroup g) throws JSONException {
-        JSONArray messageJsonArray = reader.getJSONArray("results");
+        JSONArray messageJsonArray = reader.getJSONArray("messages");
         List<Message> result = new ArrayList<>();
         for (int x = 0; x < messageJsonArray.length(); x++) {
             JSONObject messageJson = messageJsonArray.getJSONObject(x);
@@ -183,7 +177,31 @@ public class Server {
     }
 
 
-    private JSONObject readFromServer(String url) {
+    private JSONObject readObjectFromServer(String url) {
+        JSONObject result = null;
+        try {
+            String data = readFromServer(url);
+            result = new JSONObject(data);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+
+    private JSONArray readArrayFromServer(String url){
+        JSONArray result = null;
+        try {
+            String data = readFromServer(url);
+            result = new JSONArray(data);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+
+    private String readFromServer(String url) {
 
         JSONObject obj = null;
         String strJson = null;
@@ -226,15 +244,7 @@ public class Server {
             }
         }
 
-        if (strJson != null) {
-            try {
-                obj = new JSONObject(strJson);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return obj;
+        return strJson;
     }
 
 
@@ -313,7 +323,7 @@ public class Server {
         Boolean result = false;
         try {
             String url = SERVER_URL+"login/?user="+user+"&password="+password;
-            JSONObject reader = readFromServer(url);
+            JSONObject reader = readObjectFromServer(url);
             this.token = reader.getString("token");
             result = true;
         } catch (Exception e) {
@@ -327,7 +337,7 @@ public class Server {
     }
 
     public User getUserByToken() {
-        JSONObject reader = readFromServer(SERVER_URL + "user/");
+        JSONObject reader = readObjectFromServer(SERVER_URL + "user/");
         if (reader != null) {
             try {
                 return new User(

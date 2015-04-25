@@ -73,11 +73,6 @@ public class ModelsManager {
         SubjectGroup.deleteAll(SubjectGroup.class);
     }
 
-    public static Subject getSubjectFromApi(int idApi) {
-        List<Subject> subjects = Subject.find(Subject.class, "ID_API = ?", Integer.toString(idApi));
-        return subjects.get(0);
-    }
-
     public static SubjectGroup generateSGDefault(Subject s) {
         SubjectGroup sg = new SubjectGroup(Constants.DEFAULT_GROUP_ID, "Subject Forum", s);
         sg.save();
