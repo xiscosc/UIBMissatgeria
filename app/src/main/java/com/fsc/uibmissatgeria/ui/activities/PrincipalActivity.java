@@ -1,4 +1,4 @@
-package com.fsc.uibmissatgeria.activities;
+package com.fsc.uibmissatgeria.ui.activities;
 
 import java.util.Locale;
 
@@ -19,9 +19,9 @@ import android.view.MenuItem;
 
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.api.AccountUIB;
-import com.fsc.uibmissatgeria.fragments.SubjectsFragment;
-import com.fsc.uibmissatgeria.fragments.ConversationsFragment;
-import com.fsc.uibmissatgeria.fragments.PlaceholderFragment;
+import com.fsc.uibmissatgeria.ui.fragments.SubjectsFragment;
+import com.fsc.uibmissatgeria.ui.fragments.ConversationsFragment;
+import com.fsc.uibmissatgeria.ui.fragments.PlaceholderFragment;
 
 
 public class PrincipalActivity extends ActionBarActivity {

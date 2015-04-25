@@ -1,7 +1,6 @@
 package com.fsc.uibmissatgeria.api;
 
 import android.content.Context;
-import android.graphics.AvoidXfermode;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
@@ -102,6 +101,8 @@ public class Server {
     }
 
 
+
+
     public Map<String, Object> getMessages(Subject s, SubjectGroup g) {
 
         Map<String, Object> result = new HashMap<>();
@@ -110,13 +111,83 @@ public class Server {
                 "SUBJECT_GROUP = ?",
                 Long.toString(g.getId())
         );
-        JSONObject reader;
-        if (g.getIdApi()==Constants.DEFAULT_GROUP_ID) {
-            reader = readObjectFromServer(SERVER_URL + "user/subjects/" + s.getIdApi() + "/messages/");
-        } else {
-            reader = readObjectFromServer(SERVER_URL + "user/subjects/" + s.getIdApi() + "/groups/"
-                    + g.getIdApi() + "/messages/");
+        JSONObject reader = readObjectFromServer(makeMessagesUrl(s, g, null, null, null));
+        if (reader != null) {
+            try {
+                manageMessages(reader, messagesDbList, usersDbList, g);
+                result.put(Constants.RESULT_MESSAGES, messagesDbList);
+                return result;
+            } catch (Exception e) {
+                try {
+                    result.put(Constants.RESULT_ERROR, reader.getString("message"));
+                    return result;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
         }
+        result.put(Constants.RESULT_ERROR, "Network Error"); //TODO: TRANSLATE
+        return result;
+    }
+
+    /*
+    Returns new messages ordered ASC for better insertion in top-RecyclerView
+     */
+
+    public Map<String, Object> getNewMessages(Subject s, SubjectGroup g, Message last) {
+
+        Map<String, Object> result = new HashMap<>();
+        List<User> usersDbList = User.listAll(User.class);
+        List<Message> messagesDbList = Message.find(Message.class,
+                "SUBJECT_GROUP = ? AND ID_API > ? ORDER BY ID_API ASC",
+                Long.toString(g.getId()),
+                Integer.toString(last.getIdApi())
+        );
+        JSONObject reader = readObjectFromServer(makeMessagesUrl(s, g, last, "asc", "next"));
+        if (reader != null) {
+            try {
+                manageMessages(reader, messagesDbList, usersDbList, g);
+                Boolean x = reader.getBoolean("more");
+                while (x) {
+                    Message middle = messagesDbList.get(messagesDbList.size()-1);
+                    reader = readObjectFromServer(makeMessagesUrl(s, g, middle, "asc", "next"));
+                    if (reader != null) {
+                        x = reader.getBoolean("more");
+                        manageMessages(reader, messagesDbList, usersDbList, g);
+                    } else {
+                        x = false;
+                    }
+                }
+                result.put(Constants.RESULT_MESSAGES, messagesDbList);
+                return result;
+            } catch (Exception e) {
+                try {
+                    result.put(Constants.RESULT_ERROR, reader.getString("message"));
+                    return result;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+        result.put(Constants.RESULT_ERROR, "Network Error"); //TODO: TRANSLATE
+        return result;
+    }
+
+
+    /*
+    Returns older messages ordered DESC for better insertion in bottom-RecyclerView
+     */
+
+    public Map<String, Object> getOlderMessages(Subject s, SubjectGroup g, Message first) {
+
+        Map<String, Object> result = new HashMap<>();
+        List<User> usersDbList = User.listAll(User.class);
+        List<Message> messagesDbList = Message.find(Message.class,
+                "SUBJECT_GROUP = ? AND ID_API < ? ORDER BY ID_API DESC",
+                Long.toString(g.getId()),
+                Integer.toString(first.getIdApi())
+        );
+        JSONObject reader = readObjectFromServer(makeMessagesUrl(s, g, first, "desc", "previous"));
         if (reader != null) {
             try {
                 manageMessages(reader, messagesDbList, usersDbList, g);
@@ -352,5 +423,32 @@ public class Server {
             }
         }
         return null;
+    }
+
+        /*
+            PARAMS PAGINATION
+            message_id
+            order (asc, desc)
+            direction (next, previous)
+     */
+
+    private String makeMessagesUrl(Subject s, SubjectGroup g, Message m, String order, String direction) {
+        String result;
+        if (g.getIdApi()==Constants.DEFAULT_GROUP_ID) {
+            result = SERVER_URL + "user/subjects/" + s.getIdApi() + "/messages/";
+        } else {
+            result = SERVER_URL + "user/subjects/" + s.getIdApi() + "/groups/"+ g.getIdApi() + "/messages/";
+        }
+        if (m != null) {
+            result += "?message_id="+m.getIdApi();
+            if (order != null) {
+                result += "&order="+order;
+            }
+            if (direction != null) {
+                result += "&direction="+direction;
+            }
+
+        }
+        return result;
     }
 }

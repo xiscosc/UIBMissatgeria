@@ -1,4 +1,4 @@
-package com.fsc.uibmissatgeria.fragments;
+package com.fsc.uibmissatgeria.ui.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,7 +9,7 @@ import android.widget.ListView;
 
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.models.Conversation;
-import com.fsc.uibmissatgeria.adapters.ConversationAdapter;
+import com.fsc.uibmissatgeria.ui.adapters.ConversationAdapter;
 
 
 public class ConversationsFragment extends Fragment {

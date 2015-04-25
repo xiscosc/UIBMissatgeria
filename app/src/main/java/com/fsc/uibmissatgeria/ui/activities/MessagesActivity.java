@@ -1,4 +1,4 @@
-package com.fsc.uibmissatgeria.activities;
+package com.fsc.uibmissatgeria.ui.activities;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
@@ -8,7 +8,7 @@ import android.view.MenuItem;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
-import com.fsc.uibmissatgeria.fragments.MessagesFragment;
+import com.fsc.uibmissatgeria.ui.fragments.MessagesFragment;
 import com.fsc.uibmissatgeria.models.SubjectGroup;
 import com.fsc.uibmissatgeria.models.Subject;
 

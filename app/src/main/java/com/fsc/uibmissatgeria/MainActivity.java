@@ -6,10 +6,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.fsc.uibmissatgeria.activities.LoginActivity;
-import com.fsc.uibmissatgeria.activities.PrincipalActivity;
+import com.fsc.uibmissatgeria.ui.activities.LoginActivity;
+import com.fsc.uibmissatgeria.ui.activities.PrincipalActivity;
 import com.fsc.uibmissatgeria.api.AccountUIB;
-import com.fsc.uibmissatgeria.api.Server;
 
 
 public class MainActivity extends ActionBarActivity {

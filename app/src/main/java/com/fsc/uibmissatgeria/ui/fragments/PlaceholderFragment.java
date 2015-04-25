@@ -1,4 +1,4 @@
-package com.fsc.uibmissatgeria.fragments;
+package com.fsc.uibmissatgeria.ui.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

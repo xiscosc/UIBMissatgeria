@@ -1,4 +1,4 @@
-package com.fsc.uibmissatgeria.fragments;
+package com.fsc.uibmissatgeria.ui.fragments;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -13,8 +13,8 @@ import android.widget.ProgressBar;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
-import com.fsc.uibmissatgeria.activities.SubjectActivity;
-import com.fsc.uibmissatgeria.adapters.SubjectAdapter;
+import com.fsc.uibmissatgeria.ui.activities.SubjectActivity;
+import com.fsc.uibmissatgeria.ui.adapters.SubjectAdapter;
 import com.fsc.uibmissatgeria.models.ModelsManager;
 import com.fsc.uibmissatgeria.models.Subject;
 

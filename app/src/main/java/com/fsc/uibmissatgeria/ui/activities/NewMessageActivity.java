@@ -1,4 +1,4 @@
-package com.fsc.uibmissatgeria.activities;
+package com.fsc.uibmissatgeria.ui.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;

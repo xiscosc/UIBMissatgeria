@@ -1,4 +1,4 @@
-package com.fsc.uibmissatgeria.adapters;
+package com.fsc.uibmissatgeria.ui.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

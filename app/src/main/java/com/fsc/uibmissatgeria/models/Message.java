@@ -51,13 +51,16 @@ public class Message extends SugarRecord<Message>{
         return user;
     }
 
-    public Date getDate() {
-        return date;
+    public Boolean isToday() {
+        Date today = new Date();
+        int result = today.compareTo(date);
+        return result == 0;
     }
 
     public int getIdApi() {
         return idApi;
     }
+
 
     public String getStringDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd-MM-yyyy", Locale.GERMAN);

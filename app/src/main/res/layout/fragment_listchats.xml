@@ -4,7 +4,7 @@
     android:paddingRight="2dp"
     android:paddingTop="2dp"
     android:paddingBottom="2dp"
-    tools:context="com.fsc.uibmissatgeria.fragments.ConversationsFragment">
+    tools:context="com.fsc.uibmissatgeria.ui.fragments.ConversationsFragment">
 
     <ListView
         android:layout_width="match_parent"

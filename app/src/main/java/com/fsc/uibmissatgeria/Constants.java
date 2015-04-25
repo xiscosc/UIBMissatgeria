@@ -25,6 +25,8 @@ public class Constants {
 
     public static final int MAX_CHAR = 400;
     public static final int DEFAULT_GROUP_ID = -1;
+    public static final int MAX_LIST_SIZE = 25;
+    public static final int MAX_LIST_OLDER_SIZE = 25;
 
 
     public static void showToast(Context ctx, String message) {

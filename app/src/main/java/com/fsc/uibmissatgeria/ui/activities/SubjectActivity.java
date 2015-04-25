@@ -1,4 +1,4 @@
-package com.fsc.uibmissatgeria.activities;
+package com.fsc.uibmissatgeria.ui.activities;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
-import com.fsc.uibmissatgeria.adapters.GroupAdapter;
+import com.fsc.uibmissatgeria.ui.adapters.GroupAdapter;
 import com.fsc.uibmissatgeria.models.SubjectGroup;
 import com.fsc.uibmissatgeria.models.Subject;
 

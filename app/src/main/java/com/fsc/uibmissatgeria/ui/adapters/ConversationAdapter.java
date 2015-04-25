@@ -1,4 +1,4 @@
-package com.fsc.uibmissatgeria.adapters;
+package com.fsc.uibmissatgeria.ui.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
