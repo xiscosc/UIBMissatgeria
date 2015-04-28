@@ -42,8 +42,10 @@ public class NewMessageActivity extends ActionBarActivity {
         Intent i = getIntent();
 
         Long idSubject = i.getLongExtra(Constants.SUBJECT_OBJ, 0);
+        System.out.println("test1");
         sbj = Subject.findById(Subject.class, idSubject);
         Long idSubjectGroup = i.getLongExtra(Constants.GROUP_OBJ, 0);
+        System.out.println("test2");
         gr = SubjectGroup.findById(SubjectGroup.class, idSubjectGroup);
 
         setContentView(R.layout.activity_new_message);
@@ -97,7 +99,7 @@ public class NewMessageActivity extends ActionBarActivity {
 
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_log_out) {
             return true;
         }
 

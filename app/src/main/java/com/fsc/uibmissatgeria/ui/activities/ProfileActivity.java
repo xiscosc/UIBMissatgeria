@@ -18,8 +18,8 @@ public class ProfileActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        name = (TextView) findViewById(R.id.user_name_profile);
-        uibdigital = (TextView) findViewById(R.id.uibdigital_profile);
+        name = (TextView) findViewById(R.id.profile_user_name);
+        uibdigital = (TextView) findViewById(R.id.profile_uibdigital);
 
         setProfile();
     }

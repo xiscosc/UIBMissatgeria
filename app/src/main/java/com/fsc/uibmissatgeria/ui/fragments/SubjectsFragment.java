@@ -13,11 +13,13 @@ import android.widget.ProgressBar;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
+import com.fsc.uibmissatgeria.ui.activities.PrincipalActivity;
 import com.fsc.uibmissatgeria.ui.activities.SubjectActivity;
 import com.fsc.uibmissatgeria.ui.adapters.SubjectAdapter;
 import com.fsc.uibmissatgeria.models.ModelsManager;
 import com.fsc.uibmissatgeria.models.Subject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -28,6 +30,7 @@ public class SubjectsFragment extends Fragment {
     private List<Subject> subjects;
     private SubjectAdapter subjectAdapter;
     private ProgressBar loadingBar;
+    private ModelsManager mm;
 
 
 
@@ -39,10 +42,11 @@ public class SubjectsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_subject, container, false);
 
-        recView = (RecyclerView) rootView.findViewById(R.id.list_subjects);
+        recView = (RecyclerView) rootView.findViewById(R.id.subjects_list);
         recView.setLayoutManager(
                 new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
         loadingBar = (ProgressBar) rootView.findViewById(R.id.subjects_loading);
+        mm = new ModelsManager(getActivity());
         loadSubjects();
         return rootView;
     }
@@ -70,6 +74,17 @@ public class SubjectsFragment extends Fragment {
         startActivity(intent);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        PrincipalActivity ctx = (PrincipalActivity) getActivity();
+        if (ctx.auib.isLogged() && subjects != null && !ModelsManager.thereAreSubjects()) {
+            loadingBar.setVisibility(View.VISIBLE);
+            loadSubjects();
+        }
+    }
+
+
     private class ObtainSubjectsTask extends AsyncTask<Void, Void, List<Subject>> {
 
         private SubjectsFragment ctx;
@@ -81,12 +96,12 @@ public class SubjectsFragment extends Fragment {
 
         @Override
         protected List<Subject> doInBackground(Void... params) {
-            ModelsManager mm = new ModelsManager(ctx.getActivity());
-            return mm.getSubjects();
+            return ctx.mm.getSubjects();
         }
 
         @Override
         protected void onPostExecute(List<Subject> subjects) {
+            ctx.mm.showError();
             ctx.subjects =  subjects;
             ctx.createAdapter();
             loadingBar.setVisibility(View.GONE);

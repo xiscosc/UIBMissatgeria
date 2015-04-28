@@ -1,5 +1,6 @@
 package com.fsc.uibmissatgeria.models;
 
+import com.fsc.uibmissatgeria.Constants;
 import com.orm.SugarRecord;
 
 import java.text.ParseException;
@@ -15,10 +16,10 @@ public class Message extends SugarRecord<Message>{
     private User user;
     private Date date;
     private SubjectGroup subjectGroup;
-    private int idApi;
+    private Long idApi;
 
 
-    public Message(int id, String body, User user, Date date, SubjectGroup g) {
+    public Message(Long id, String body, User user, Date date, SubjectGroup g) {
         this.body = body;
         this.user = user;
         this.date = date;
@@ -26,11 +27,11 @@ public class Message extends SugarRecord<Message>{
         this.idApi = id;
     }
 
-    public Message(int id, String body, User user, String date, SubjectGroup g) {
+    public Message(Long id, String body, User user, String date, SubjectGroup g) {
         this.body = body;
         this.user = user;
         this.subjectGroup = g;
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat(Constants.DATE_FORMAT_SERVER);
         try {
             this.date = formatter.parse(date);
         } catch (ParseException e) {
@@ -57,13 +58,13 @@ public class Message extends SugarRecord<Message>{
         return result == 0;
     }
 
-    public int getIdApi() {
+    public Long getIdApi() {
         return idApi;
     }
 
 
     public String getStringDate() {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd-MM-yyyy", Locale.GERMAN);
+        SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_FORMAT, Locale.GERMAN);
         return sdf.format(this.date);
     }
 

@@ -59,6 +59,14 @@
             android:name=".ui.activities.ProfileActivity"
             android:label="@string/title_activity_profile" >
         </activity>
+        <activity
+            android:name=".ui.activities.PeerSelectionActivity"
+            android:label="@string/title_activity_peer_selection" >
+        </activity>
+        <activity
+            android:name=".ui.activities.OptionsActivity"
+            android:label="@string/title_activity_peer_selection" >
+        </activity>
     </application>
 
 </manifest>

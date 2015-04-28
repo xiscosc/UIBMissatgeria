@@ -130,6 +130,7 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     private void getOlder() {
+        loadingBar.setVisibility(View.VISIBLE);
         MessagesActivity ma = (MessagesActivity) getActivity();
         OlderMessagesTask task = new OlderMessagesTask(
                 MessagesFragment.this,
@@ -179,6 +180,7 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         @Override
         protected void onPostExecute(List<Message> messages) {
+                ctx.mm.showError();
                 ctx.messages = messages;
                 ctx.createAdapter();
                 ctx.loadingBar.setVisibility(View.GONE);
@@ -207,7 +209,7 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         @Override
         protected List<Message> doInBackground(Void... params) {
-            if (!ctx.messages.isEmpty()) {
+            if (ctx.messages != null && !ctx.messages.isEmpty()) {
                 Message last = ctx.messages.get(0);
                 return ctx.mm.getNewMessages(subject, subjectGroup, last);
             } else {
@@ -218,7 +220,8 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         @Override
         protected void onPostExecute(List<Message> messages) {
-            if (!ctx.messages.isEmpty()) {
+            ctx.mm.showError();
+            if (ctx.messages !=null && !ctx.messages.isEmpty()) {
                 for (Message me: messages) {
                     ctx.messages.add(0, me);
                 }
@@ -254,7 +257,7 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
         protected List<Message> doInBackground(Void... params) {
             if (!ctx.messages.isEmpty()) {
                 Message last = ctx.messages.get(messages.size()-1);
-                return ctx.mm.getNewMessages(subject, subjectGroup, last);
+                return ctx.mm.getOlderMessages(subject, subjectGroup, last);
             } else {
                 return ctx.mm.getMessages(subject, subjectGroup);
             }
@@ -263,6 +266,7 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         @Override
         protected void onPostExecute(List<Message> messages) {
+            ctx.mm.showError();
             if (!messages.isEmpty()) {
                 if (!ctx.messages.isEmpty()) {
                     for (Message me: messages) {
@@ -277,7 +281,7 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
             } else {
                 ctx.olderAvaiable = false;
             }
-
+            ctx.loadingBar.setVisibility(View.GONE);
             ctx.swipeLayout.setRefreshing(false);
         }
 

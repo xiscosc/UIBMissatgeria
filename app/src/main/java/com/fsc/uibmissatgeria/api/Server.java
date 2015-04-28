@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
+import com.fsc.uibmissatgeria.models.Conversation;
+import com.fsc.uibmissatgeria.models.MessageConversation;
 import com.fsc.uibmissatgeria.models.ModelsManager;
 import com.fsc.uibmissatgeria.models.Subject;
 import com.fsc.uibmissatgeria.models.SubjectGroup;
@@ -141,7 +143,7 @@ public class Server {
         List<Message> messagesDbList = Message.find(Message.class,
                 "SUBJECT_GROUP = ? AND ID_API > ? ORDER BY ID_API ASC",
                 Long.toString(g.getId()),
-                Integer.toString(last.getIdApi())
+                Long.toString(last.getIdApi())
         );
         JSONObject reader = readObjectFromServer(makeMessagesUrl(s, g, last, "asc", "next"));
         if (reader != null) {
@@ -185,7 +187,7 @@ public class Server {
         List<Message> messagesDbList = Message.find(Message.class,
                 "SUBJECT_GROUP = ? AND ID_API < ? ORDER BY ID_API DESC",
                 Long.toString(g.getId()),
-                Integer.toString(first.getIdApi())
+                Long.toString(first.getIdApi())
         );
         JSONObject reader = readObjectFromServer(makeMessagesUrl(s, g, first, "desc", "previous"));
         if (reader != null) {
@@ -219,7 +221,7 @@ public class Server {
                     userJson.getString("first_name"),
                     userJson.getString("last_name"),
                     userJson.getString("user"),
-                    userJson.getString("type")
+                    userJson.getInt("type")
             );
 
             if (!usersDbList.contains(sender)) {
@@ -231,7 +233,7 @@ public class Server {
             }
 
             Message msg  = new Message(
-                    messageJson.getInt("id"),
+                    messageJson.getLong("id"),
                     messageJson.getString("body"),
                     sender,
                     messageJson.getString("created_at"),
@@ -416,7 +418,7 @@ public class Server {
                         reader.getString("first_name"),
                         reader.getString("last_name"),
                         reader.getString("user"),
-                        reader.getString("type")
+                        reader.getInt("type")
                 );
             } catch (Exception e) {
                 e.printStackTrace();
@@ -440,15 +442,165 @@ public class Server {
             result = SERVER_URL + "user/subjects/" + s.getIdApi() + "/groups/"+ g.getIdApi() + "/messages/";
         }
         if (m != null) {
-            result += "?message_id="+m.getIdApi();
-            if (order != null) {
-                result += "&order="+order;
-            }
+            result += m.getIdApi()+"/";
+
             if (direction != null) {
-                result += "&direction="+direction;
+                result += direction+"/";
+            }
+
+            if (order != null) {
+                result += "?order="+order;
             }
 
         }
         return result;
+    }
+
+    public Map<String, Object> getConversations() {
+        Map<String, Object> result = new HashMap<>();
+        AccountUIB accountUIB = new AccountUIB(c);
+        List<Conversation> converDB = Conversation.listAll(Conversation.class);
+        List<User> peers = User.listAll(User.class);
+        User usr = accountUIB.getUser();
+        JSONArray reader;
+
+        try {
+            reader = readArrayFromServer(SERVER_URL + "user/chats/");
+            if (reader != null) {
+                manageConversations(reader, converDB, peers, usr);
+                if (converDB.isEmpty()) {
+                    result.put(Constants.RESULT_ERROR, "Error getting conversations"); //TODO: TRANSLATE
+                } else {
+                    result.put(Constants.RESULT_CONVERSATIONS, converDB);
+                }
+            } else {
+                result.put(Constants.RESULT_ERROR, "Error getting conversations"); //TODO: TRANSLATE
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            result.put(Constants.RESULT_ERROR, "Network Error"); //TODO: TRANSLATE
+        }
+
+        return result;
+    }
+
+    private void manageConversations(JSONArray reader, List<Conversation> converDB, List<User> peers, User usr) throws JSONException{
+        for (int x = 0; x < reader.length(); x++) {
+            JSONObject conversation = reader.getJSONObject(x);
+            JSONObject userJson = conversation.getJSONObject("user");
+
+            User peer = new User(
+                    userJson.getInt("id"),
+                    userJson.getString("first_name"),
+                    userJson.getString("last_name"),
+                    userJson.getString("user"),
+                    userJson.getInt("type"),
+                    true
+            );
+
+            if (peers.contains(peer)) {
+                int index = peers.indexOf(peer);
+                peer = peers.get(index);
+                peer.setPeer(true);
+                peer.save();
+            } else {
+                peer.save();
+                peers.add(peer);
+            }
+
+            Conversation c = new Conversation(peer);
+
+            if (converDB.contains(c)) {
+                int index = converDB.indexOf(c);
+                c = converDB.get(index);
+            }  else {
+                c.save();
+            }
+            JSONObject messageJson = conversation.getJSONObject("last_message");
+            JSONObject userJson2 = messageJson.getJSONObject("recipient");
+
+            User recipient = new User(
+                    userJson2.getInt("id"),
+                    userJson2.getString("first_name"),
+                    userJson2.getString("last_name"),
+                    userJson2.getString("user"),
+                    userJson2.getInt("type")
+            );
+
+            MessageConversation mc = new MessageConversation(
+                messageJson.getLong("id"),
+                    messageJson.getString("body"),
+                    messageJson.getString("created_at"),
+                    c,
+                    recipient.equals(usr)
+            );
+
+           MessageConversation lastc = c.getLastMessage();
+
+            if (lastc == null || !mc.equals(lastc)) {
+                mc.save();
+                c.setLastMessageId(mc.getIdApi());
+                c.save();
+            }
+
+        }
+    }
+
+    public Map<String, Object> getPeers() {
+        Map<String, Object> result = new HashMap<>();
+        AccountUIB accountUIB = new AccountUIB(c);
+        List<User> usersDB = User.listAll(User.class);
+        List<User> peers = new ArrayList<>();
+        User usr = accountUIB.getUser();
+        JSONArray reader;
+        try {
+            if (usr.getType() == Constants.TYPE_TEACHER) {
+                reader = readArrayFromServer(SERVER_URL + "user/students/");
+                if (reader!=null) {
+                    managePeers(reader, usersDB, peers);
+                }
+            }
+            reader = readArrayFromServer(SERVER_URL + "user/teachers/");
+            if (reader!=null) {
+                managePeers(reader, usersDB, peers);
+            }
+            if (peers.isEmpty()) {
+                result.put(Constants.RESULT_ERROR, "Error getting peers"); //TODO: TRANSLATE
+            } else {
+                result.put(Constants.RESULT_PEERS, peers);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            result.put(Constants.RESULT_ERROR, "Network Error"); //TODO: TRANSLATE
+        }
+
+        return result;
+    }
+
+    private void managePeers(JSONArray reader, List<User> usersDB, List<User> peers) throws JSONException{
+        for (int x = 0; x < reader.length(); x++) {
+            JSONObject userJson = reader.getJSONObject(x);
+            User peer = new User(
+                    userJson.getInt("id"),
+                    userJson.getString("first_name"),
+                    userJson.getString("last_name"),
+                    userJson.getString("user"),
+                    userJson.getInt("type"),
+                    true
+            );
+
+            if (usersDB.contains(peer)) {
+                int index = usersDB.indexOf(peer);
+                peer = usersDB.get(index);
+                peer.setPeer(true);
+                peer.save();
+                peers.add(peer);
+            } else {
+                peer.save();
+                usersDB.add(peer);
+                peers.add(peer);
+            }
+        }
+
     }
 }

@@ -40,6 +40,7 @@ public class PrincipalActivity extends ActionBarActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
+    public AccountUIB auib;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,7 @@ public class PrincipalActivity extends ActionBarActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        auib = new AccountUIB(this);
 
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
@@ -108,17 +110,17 @@ public class PrincipalActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
         if (id == R.id.menu_edit_profille) {
             startProfileEdit();
+        }
+        if (id == R.id.action_settings) {
+            return true;
         }
 
 
         return super.onOptionsItemSelected(item);
     }
+
 
     private void startProfileEdit() {
         Intent i = new Intent(this, ProfileActivity.class);
@@ -126,13 +128,20 @@ public class PrincipalActivity extends ActionBarActivity {
 
     }
 
-    public void logout(MenuItem item) {
-        AccountUIB auib = new AccountUIB(this);
-        auib.logOut();
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        this.finish();
-        startActivity(intent);
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!auib.isLogged()) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            this.finish();
+            startActivity(intent);
+        }
+    }
+
+    public void loadSettings(MenuItem item) {
+        Intent i = new Intent(getApplicationContext(), OptionsActivity.class);
+        startActivityForResult(i, 1);
     }
 
     /**
