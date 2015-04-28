@@ -151,6 +151,8 @@ public class ModelsManager {
     }
 
     public static void resetDB() {
+        MessageConversation.deleteAll(MessageConversation.class);
+        Conversation.deleteAll(Conversation.class);
         User.deleteAll(User.class);
         Message.deleteAll(Message.class);
         Subject.deleteAll(Subject.class);
