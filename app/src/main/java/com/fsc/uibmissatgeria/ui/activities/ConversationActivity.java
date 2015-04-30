@@ -3,6 +3,7 @@ package com.fsc.uibmissatgeria.ui.activities;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,6 +22,8 @@ import com.fsc.uibmissatgeria.models.ModelsManager;
 import com.fsc.uibmissatgeria.ui.adapters.MessageConversationAdapter;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ConversationActivity extends ActionBarActivity {
 
@@ -112,6 +115,23 @@ public class ConversationActivity extends ActionBarActivity {
 
     }
 
+    private void startTimeReload() {
+        final ConversationActivity self = this;
+        final Handler handler = new Handler();
+        Timer timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(new Runnable() {
+                    public void run() {
+                        new NewMessagesTask(self).execute();
+                    }
+                });
+            }
+        };
+        timer.schedule(task, 0, 25000);
+    }
+
     private class ConversationTask extends AsyncTask<Void, Void, List<MessageConversation>> {
 
         private ConversationActivity ctx;
@@ -136,13 +156,14 @@ public class ConversationActivity extends ActionBarActivity {
             if (!messages.isEmpty()) {
                 recView.scrollToPosition(messages.size() - 1);
             }
-            ctx.updateMessages();
-            //ctx.loadingBar.setVisibility(View.GONE);
+            ctx.loadingBar_new.setVisibility(View.GONE);
+            ctx.startTimeReload();
+
         }
 
         @Override
         protected void onPreExecute() {
-            //swipeLayout.setRefreshing(true);
+
         }
     }
 
@@ -179,7 +200,7 @@ public class ConversationActivity extends ActionBarActivity {
                 messageAdapter.notifyDataSetChanged();
 
             }
-            if (!messages.isEmpty()) {
+            if (!msgs.isEmpty()) {
                 recView.scrollToPosition(messages.size() - 1);
             }
             olderAvaiable = messages.size() >= 15; //TODO: MOVE TO CONSTANTS
@@ -188,7 +209,7 @@ public class ConversationActivity extends ActionBarActivity {
 
         @Override
         protected void onPreExecute() {
-
+            ctx.loadingBar_new.setVisibility(View.VISIBLE);
         }
     }
 

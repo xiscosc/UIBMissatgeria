@@ -199,10 +199,12 @@ public class ModelsManager {
             messages.add(0, mc);
         }
 
-        MessageConversation ms =messages.get(messages.size()-1);
-        if (!messages.isEmpty()  && !ms.isRead()) {
-            ms.setRead(true);
-            ms.save();
+        if (!messages.isEmpty()) {
+            MessageConversation ms = messages.get(messages.size() - 1);
+            if (!messages.isEmpty() && !ms.isRead()) {
+                ms.setRead(true);
+                ms.save();
+            }
         }
         return messages;
 
@@ -217,10 +219,12 @@ public class ModelsManager {
                 .where("CONVERSATION = "+c.getId()+" AND ID_API > "+m.getIdApi())
                 .orderBy("ID_API ASC")
                 .list();
-        MessageConversation ms =messages.get(messages.size()-1);
-        if (!messages.isEmpty()  && !ms.isRead()) {
-            ms.setRead(true);
-            ms.save();
+        if (!messages.isEmpty()) {
+            MessageConversation ms = messages.get(messages.size() - 1);
+            if (!messages.isEmpty() && !ms.isRead()) {
+                ms.setRead(true);
+                ms.save();
+            }
         }
         return messages;
 
