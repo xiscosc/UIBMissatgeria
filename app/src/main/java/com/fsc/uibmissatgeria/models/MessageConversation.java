@@ -71,7 +71,7 @@ public class MessageConversation extends SugarRecord<MessageConversation>{
         return read;
     }
 
-    public void setReaded(Boolean read) {
+    public void setRead(Boolean read) {
         this.read = read;
     }
 

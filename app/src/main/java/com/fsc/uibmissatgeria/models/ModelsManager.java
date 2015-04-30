@@ -193,13 +193,19 @@ public class ModelsManager {
                 .limit(Integer.toString(Constants.MAX_LIST_SIZE_CONVERSATION))
                 .list();
 
-        List<MessageConversation> result = new ArrayList<>();
+        List<MessageConversation> messages = new ArrayList<>();
 
         for (MessageConversation mc : msgdb) {
-            result.add(0, mc);
+            messages.add(0, mc);
         }
 
-        return result;
+        MessageConversation ms =messages.get(messages.size()-1);
+        if (!messages.isEmpty()  && !ms.isRead()) {
+            ms.setRead(true);
+            ms.save();
+        }
+        return messages;
+
 
     }
 
@@ -207,10 +213,16 @@ public class ModelsManager {
         server = new Server(ctx);
         String errorMessage = server.getNewMessagesConversation(c, m);
         if (errorMessage != null)  this.error_message = errorMessage;
-        return Select.from(MessageConversation.class)
+        List<MessageConversation> messages =  Select.from(MessageConversation.class)
                 .where("CONVERSATION = "+c.getId()+" AND ID_API > "+m.getIdApi())
                 .orderBy("ID_API ASC")
                 .list();
+        MessageConversation ms =messages.get(messages.size()-1);
+        if (!messages.isEmpty()  && !ms.isRead()) {
+            ms.setRead(true);
+            ms.save();
+        }
+        return messages;
 
     }
 
