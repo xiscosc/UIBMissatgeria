@@ -10,6 +10,7 @@ public class Constants {
 
     public static final String SUBJECT_OBJ = "SUBJECT";
     public static final String GROUP_OBJ = "GROUP";
+    public static final String CONVERSATION_OBJ = "CONVERSATION";
 
     public static final String SP_UIB = "shpr_uib";
     public static final String SP_UPDATE = "prefUpdateFrequency";
@@ -29,6 +30,8 @@ public class Constants {
     public static final int DEFAULT_GROUP_ID = -1;
     public static final int MAX_LIST_SIZE = 25;
     public static final int MAX_LIST_OLDER_SIZE = 25;
+    public static final int MAX_LIST_SIZE_CONVERSATION = 15;
+    public static final int MAX_LIST_OLDER_SIZE_CONVERSATION = 15;
 
     public static final String DATE_FORMAT_SERVER = "yyyy-MM-dd HH:mm:ss";
     public static final String DATE_FORMAT = "HH:mm dd-MM-yyyy";

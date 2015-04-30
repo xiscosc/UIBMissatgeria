@@ -13,9 +13,11 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 
+import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.models.Conversation;
 import com.fsc.uibmissatgeria.models.ModelsManager;
+import com.fsc.uibmissatgeria.ui.activities.ConversationActivity;
 import com.fsc.uibmissatgeria.ui.activities.PeerSelectionActivity;
 import com.fsc.uibmissatgeria.ui.adapters.ConversationAdapter;
 
@@ -57,7 +59,7 @@ public class ConversationsFragment extends Fragment implements SwipeRefreshLayou
     }
 
     @Override public void onRefresh() {
-        loadConversations();
+        updateConversations();
     }
 
 
@@ -94,27 +96,46 @@ public class ConversationsFragment extends Fragment implements SwipeRefreshLayou
         });
     }
 
-    /* @Override
+    @Override
     public void onResume() {
         super.onResume();
         swipeLayout.setRefreshing(true);
-        loadConversations();
-    } */
+        updateConversations();
+    }
 
     private void loadConversations() {
         ConversationsTask task = new ConversationsTask(this);
         task.execute();
     }
 
+    private void updateConversations() {
+        swipeLayout.setRefreshing(true);
+        UpdateConversationsTask task = new UpdateConversationsTask(this);
+        task.execute();
+    }
+
     private void createAdapter() {
         recView.setEnabled(true);
         conversationAdapter = new ConversationAdapter(conversations);
+        conversationAdapter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Conversation c = conversations.get(recView.getChildAdapterPosition(v));
+                startConversation(c);
+            }
+        });
         recView.setAdapter(conversationAdapter);
 
     }
 
     private void startPeerSelection() {
         Intent i = new Intent(getActivity(), PeerSelectionActivity.class);
+        startActivity(i);
+    }
+
+    private void startConversation(Conversation c) {
+        Intent i = new Intent(getActivity(), ConversationActivity.class);
+        i.putExtra(Constants.CONVERSATION_OBJ, c.getId());
         startActivity(i);
     }
 
@@ -133,6 +154,38 @@ public class ConversationsFragment extends Fragment implements SwipeRefreshLayou
         @Override
         protected List<Conversation> doInBackground(Void... params) {
             return ctx.mm.getConversations();
+        }
+
+        @Override
+        protected void onPostExecute(List<Conversation> conversations) {
+            ctx.mm.showError();
+            ctx.conversations = conversations;
+            ctx.createAdapter();
+            ctx.loadingBar.setVisibility(View.GONE);
+            ctx.swipeLayout.setRefreshing(false);
+            ctx.updateConversations();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            //swipeLayout.setRefreshing(true);
+        }
+    }
+
+    private class UpdateConversationsTask extends AsyncTask<Void, Void, List<Conversation>> {
+
+        private ConversationsFragment ctx;
+
+
+        public UpdateConversationsTask(ConversationsFragment c) {
+            super();
+            ctx = c;
+
+        }
+
+        @Override
+        protected List<Conversation> doInBackground(Void... params) {
+            return ctx.mm.updateConversations();
         }
 
         @Override

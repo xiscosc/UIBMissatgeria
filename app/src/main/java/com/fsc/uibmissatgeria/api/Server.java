@@ -11,6 +11,7 @@ import com.fsc.uibmissatgeria.models.Subject;
 import com.fsc.uibmissatgeria.models.SubjectGroup;
 import com.fsc.uibmissatgeria.models.Message;
 import com.fsc.uibmissatgeria.models.User;
+import com.orm.query.Select;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,10 +52,10 @@ public class Server {
 
     }
 
-    public Map<String, Object> getSubjects() {
+    public String getSubjects() {
 
         JSONArray subjectJsonArray = readArrayFromServer(SERVER_URL + "user/subjects/");
-        Map<String, Object> result = new HashMap<>();
+        String result;
 
         if (subjectJsonArray != null) {
             try {
@@ -91,68 +92,64 @@ public class Server {
                         }
                     }
                 }
-                result.put(Constants.RESULT_SUBJECTS, subjectDbList);
-                return result;
+                return null;
             } catch (Exception e) {
               e.printStackTrace();
             }
         }
 
-        result.put(Constants.RESULT_ERROR, "Network Error"); //TODO: TRANSLATE
+        result =  "Network Error"; //TODO: TRANSLATE
         return result;
     }
 
 
 
+    public String getMessages(Subject s, SubjectGroup g) {
 
-    public Map<String, Object> getMessages(Subject s, SubjectGroup g) {
-
-        Map<String, Object> result = new HashMap<>();
+        String result = null;
         List<User> usersDbList = User.listAll(User.class);
         List<Message> messagesDbList = Message.find(Message.class,
                 "SUBJECT_GROUP = ?",
                 Long.toString(g.getId())
         );
-        JSONObject reader = readObjectFromServer(makeMessagesUrl(s, g, null, null, null));
+        JSONObject reader = readObjectFromServer(makeMessagesUrl(s, g, null, null));
         if (reader != null) {
             try {
                 manageMessages(reader, messagesDbList, usersDbList, g);
-                result.put(Constants.RESULT_MESSAGES, messagesDbList);
-                return result;
             } catch (Exception e) {
                 try {
-                    result.put(Constants.RESULT_ERROR, reader.getString("message"));
-                    return result;
+                    result = reader.getString("message");
                 } catch (Exception ex) {
                     ex.printStackTrace();
+                    result = "Network Error"; //TODO: TRANSLATE
                 }
             }
+        } else {
+            result = "Network Error"; //TODO: TRANSLATE
         }
-        result.put(Constants.RESULT_ERROR, "Network Error"); //TODO: TRANSLATE
+
         return result;
     }
 
-    /*
-    Returns new messages ordered ASC for better insertion in top-RecyclerView
-     */
 
-    public Map<String, Object> getNewMessages(Subject s, SubjectGroup g, Message last) {
 
-        Map<String, Object> result = new HashMap<>();
+    public String getNewMessages(Subject s, SubjectGroup g, Message last) {
+
+        String result;
         List<User> usersDbList = User.listAll(User.class);
         List<Message> messagesDbList = Message.find(Message.class,
                 "SUBJECT_GROUP = ? AND ID_API > ? ORDER BY ID_API ASC",
                 Long.toString(g.getId()),
                 Long.toString(last.getIdApi())
         );
-        JSONObject reader = readObjectFromServer(makeMessagesUrl(s, g, last, "asc", "next"));
+        JSONObject reader = readObjectFromServer(makeMessagesUrl(s, g, last, "next"));
         if (reader != null) {
             try {
                 manageMessages(reader, messagesDbList, usersDbList, g);
                 Boolean x = reader.getBoolean("more");
                 while (x) {
                     Message middle = messagesDbList.get(messagesDbList.size()-1);
-                    reader = readObjectFromServer(makeMessagesUrl(s, g, middle, "asc", "next"));
+                    reader = readObjectFromServer(makeMessagesUrl(s, g, middle, "next"));
                     if (reader != null) {
                         x = reader.getBoolean("more");
                         manageMessages(reader, messagesDbList, usersDbList, g);
@@ -160,51 +157,46 @@ public class Server {
                         x = false;
                     }
                 }
-                result.put(Constants.RESULT_MESSAGES, messagesDbList);
-                return result;
+                return null;
             } catch (Exception e) {
                 try {
-                    result.put(Constants.RESULT_ERROR, reader.getString("message"));
+                    result =  reader.getString("message");
                     return result;
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
         }
-        result.put(Constants.RESULT_ERROR, "Network Error"); //TODO: TRANSLATE
+        result =   "Network Error"; //TODO: TRANSLATE
         return result;
     }
 
 
-    /*
-    Returns older messages ordered DESC for better insertion in bottom-RecyclerView
-     */
 
-    public Map<String, Object> getOlderMessages(Subject s, SubjectGroup g, Message first) {
+    public String getOlderMessages(Subject s, SubjectGroup g, Message first) {
 
-        Map<String, Object> result = new HashMap<>();
+        String result;
         List<User> usersDbList = User.listAll(User.class);
         List<Message> messagesDbList = Message.find(Message.class,
                 "SUBJECT_GROUP = ? AND ID_API < ? ORDER BY ID_API DESC",
                 Long.toString(g.getId()),
                 Long.toString(first.getIdApi())
         );
-        JSONObject reader = readObjectFromServer(makeMessagesUrl(s, g, first, "desc", "previous"));
+        JSONObject reader = readObjectFromServer(makeMessagesUrl(s, g, first, "previous"));
         if (reader != null) {
             try {
                 manageMessages(reader, messagesDbList, usersDbList, g);
-                result.put(Constants.RESULT_MESSAGES, messagesDbList);
-                return result;
+                return null;
             } catch (Exception e) {
                 try {
-                    result.put(Constants.RESULT_ERROR, reader.getString("message"));
+                    result = reader.getString("message");
                     return result;
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
         }
-        result.put(Constants.RESULT_ERROR, "Network Error"); //TODO: TRANSLATE
+        result = "Network Error"; //TODO: TRANSLATE
         return result;
     }
 
@@ -323,15 +315,26 @@ public class Server {
 
     public void sendMessageToGroup(Subject s, SubjectGroup g, String body) {
         String url;
-        HttpsURLConnection urlConnection = null;
-
         if (g.getIdApi()==Constants.DEFAULT_GROUP_ID) {
             url = SERVER_URL+"user/subjects/"+s.getIdApi()+"/messages/";
         } else {
             url = SERVER_URL+"user/subjects/"+s.getIdApi()+"/groups/"
                     +g.getIdApi()+"/messages/";
         }
+        sendMessage(url, body);
+    }
 
+
+
+    public void sendMessageToConversation(Conversation c, String body) {
+        String url;
+        url = SERVER_URL+"user/chats/"+c.getPeer().getIdApi()+"/messages/";
+        sendMessage(url, body);
+    }
+
+
+    private void sendMessage(String url, String body) {
+        HttpsURLConnection urlConnection = null;
         try {
             urlConnection = setUpConnection(url, "POST");
             urlConnection.setDoOutput(true);
@@ -434,30 +437,32 @@ public class Server {
             direction (next, previous)
      */
 
-    private String makeMessagesUrl(Subject s, SubjectGroup g, Message m, String order, String direction) {
+    private String makeMessagesUrl(Subject s, SubjectGroup g, Message m, String direction) {
         String result;
         if (g.getIdApi()==Constants.DEFAULT_GROUP_ID) {
             result = SERVER_URL + "user/subjects/" + s.getIdApi() + "/messages/";
         } else {
             result = SERVER_URL + "user/subjects/" + s.getIdApi() + "/groups/"+ g.getIdApi() + "/messages/";
         }
-        if (m != null) {
+        if (m != null && direction != null) {
             result += m.getIdApi()+"/";
-
-            if (direction != null) {
-                result += direction+"/";
-            }
-
-            if (order != null) {
-                result += "?order="+order;
-            }
-
+            result += direction+"/";
         }
         return result;
     }
 
-    public Map<String, Object> getConversations() {
-        Map<String, Object> result = new HashMap<>();
+    private String makeConversationsUrl(Conversation c, MessageConversation m, String direction) {
+        String result;
+        result = SERVER_URL + "user/chats/" + c.getPeer().getIdApi() + "/messages/";
+        if (m != null && direction != null) {
+            result += m.getIdApi()+"/";
+            result += direction+"/";
+        }
+        return result;
+    }
+
+    public String getConversations() {
+        String result = null;
         AccountUIB accountUIB = new AccountUIB(c);
         List<Conversation> converDB = Conversation.listAll(Conversation.class);
         List<User> peers = User.listAll(User.class);
@@ -468,17 +473,12 @@ public class Server {
             reader = readArrayFromServer(SERVER_URL + "user/chats/");
             if (reader != null) {
                 manageConversations(reader, converDB, peers, usr);
-                if (converDB.isEmpty()) {
-                    result.put(Constants.RESULT_ERROR, "Error getting conversations"); //TODO: TRANSLATE
-                } else {
-                    result.put(Constants.RESULT_CONVERSATIONS, converDB);
-                }
             } else {
-                result.put(Constants.RESULT_ERROR, "Error getting conversations"); //TODO: TRANSLATE
+                result =  "Error getting conversations"; //TODO: TRANSLATE
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            result.put(Constants.RESULT_ERROR, "Network Error"); //TODO: TRANSLATE
+            result =  "Network Error"; //TODO: TRANSLATE
         }
 
         return result;
@@ -538,7 +538,10 @@ public class Server {
            MessageConversation lastc = c.getLastMessage();
 
             if (lastc == null || !mc.equals(lastc)) {
-                mc.save();
+                List<MessageConversation> mcl = MessageConversation.find(MessageConversation.class, "ID_API = "+mc.getIdApi());
+                if (mcl.isEmpty()) {
+                    mc.save();
+                }
                 c.setLastMessageId(mc.getIdApi());
                 c.save();
             }
@@ -546,8 +549,8 @@ public class Server {
         }
     }
 
-    public Map<String, Object> getPeers() {
-        Map<String, Object> result = new HashMap<>();
+    public String getPeers() {
+        String result = null;
         AccountUIB accountUIB = new AccountUIB(c);
         List<User> usersDB = User.listAll(User.class);
         List<User> peers = new ArrayList<>();
@@ -565,13 +568,11 @@ public class Server {
                 managePeers(reader, usersDB, peers);
             }
             if (peers.isEmpty()) {
-                result.put(Constants.RESULT_ERROR, "Error getting peers"); //TODO: TRANSLATE
-            } else {
-                result.put(Constants.RESULT_PEERS, peers);
+                result = "Error getting peers"; //TODO: TRANSLATE
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            result.put(Constants.RESULT_ERROR, "Network Error"); //TODO: TRANSLATE
+            result = "Network Error"; //TODO: TRANSLATE
         }
 
         return result;
@@ -600,6 +601,140 @@ public class Server {
                 usersDB.add(peer);
                 peers.add(peer);
             }
+        }
+
+    }
+
+    public String getNewMessagesConversation(Conversation c, MessageConversation last) {
+
+        String result;
+        String where;
+
+        if (last!=null) {
+            where = "CONVERSATION = "+c.getId()+" AND ID_API > "+last.getIdApi();
+        } else {
+            where = "CONVERSATION = "+c.getId()+" AND ID_API > 0";
+        }
+
+        List<MessageConversation> messagesDbList = Select
+                .from(MessageConversation.class)
+                .where(where)
+                .list();
+
+
+        JSONObject reader = readObjectFromServer(makeConversationsUrl(c, last, "next"));
+        if (reader != null) {
+            try {
+                manageMessagesConversation(reader, messagesDbList, c);
+                Boolean x = reader.getBoolean("more");
+                while (x) {
+                    MessageConversation middle = messagesDbList.get(messagesDbList.size()-1);
+                    reader = readObjectFromServer(makeConversationsUrl(c, middle, "next"));
+                    if (reader != null) {
+                        x = reader.getBoolean("more");
+                        manageMessagesConversation(reader, messagesDbList, c);
+                    } else {
+                        x = false;
+                    }
+                }
+                return null;
+            } catch (Exception e) {
+                try {
+                    result =  reader.getString("message");
+                    return result;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+        result =   "Network Error"; //TODO: TRANSLATE
+        return result;
+    }
+
+    public String getOlderMessagesConversation(Conversation c, MessageConversation last) {
+
+        String result;
+        List<MessageConversation> messagesDbList = Select
+                .from(MessageConversation.class)
+                .where("CONVERSATION = "+c.getId()+" AND ID_API < "+last.getIdApi())
+                .list();
+
+
+        JSONObject reader = readObjectFromServer(makeConversationsUrl(c, last, "previous"));
+        if (reader != null) {
+            try {
+                manageMessagesConversation(reader, messagesDbList, c);
+                return null;
+            } catch (Exception e) {
+                try {
+                    result =  reader.getString("message");
+                    return result;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+        result =   "Network Error"; //TODO: TRANSLATE
+        return result;
+    }
+
+    public String getMessagesConversation(Conversation c) {
+
+        String result;
+        List<MessageConversation> messagesDbList = Select
+                .from(MessageConversation.class)
+                .where("CONVERSATION = "+c.getId())
+                .list();
+
+
+        JSONObject reader = readObjectFromServer(makeConversationsUrl(c, null, null));
+        if (reader != null) {
+            try {
+                manageMessagesConversation(reader, messagesDbList, c);
+                return null;
+            } catch (Exception e) {
+                try {
+                    result =  reader.getString("message");
+                    return result;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+        result =   "Network Error"; //TODO: TRANSLATE
+        return result;
+    }
+
+    private void manageMessagesConversation(JSONObject reader, List<MessageConversation> messagesDbList, Conversation c) throws JSONException {
+        JSONArray messagesArray = reader.getJSONArray("messages");
+        AccountUIB aUIB = new AccountUIB(this.c);
+        User usr = aUIB.getUser();
+        for (int x =0; x<messagesArray.length(); x++) {
+            JSONObject messageJson = messagesArray.getJSONObject(x);
+
+            JSONObject userJson2 = messageJson.getJSONObject("recipient");
+
+            User recipient = new User(
+                    userJson2.getInt("id"),
+                    userJson2.getString("first_name"),
+                    userJson2.getString("last_name"),
+                    userJson2.getString("user"),
+                    userJson2.getInt("type")
+            );
+
+            MessageConversation mc = new MessageConversation(
+                    messageJson.getLong("id"),
+                    messageJson.getString("body"),
+                    messageJson.getString("created_at"),
+                    c,
+                    recipient.equals(usr)
+            );
+
+            if (!messagesDbList.contains(mc)) {
+                mc.save();
+                messagesDbList.add(mc);
+            }
+
         }
 
     }

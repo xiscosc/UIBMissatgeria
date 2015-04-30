@@ -5,10 +5,10 @@ import android.content.Context;
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.api.AccountUIB;
 import com.fsc.uibmissatgeria.api.Server;
+import com.orm.query.Select;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by xiscosastre on 11/04/15.
@@ -25,10 +25,11 @@ public class ModelsManager {
 }
 
     public List<Message> getMessages(Subject s, SubjectGroup g) {
-        List<Message> messages = Message.find(Message.class,
-                "SUBJECT_GROUP = ? ORDER BY ID_API DESC LIMIT ?",
-                Long.toString(g.getId()),
-                Integer.toString(Constants.MAX_LIST_SIZE));
+        List<Message> messages = Select.from(Message.class)
+                .where("SUBJECT_GROUP = "+g.getId())
+                .orderBy("ID_API DESC")
+                .limit(Integer.toString(Constants.MAX_LIST_SIZE))
+                .list();
         if (messages.isEmpty()) {
             return initMessages(s, g);
         } else {
@@ -48,36 +49,31 @@ public class ModelsManager {
 
 
     public List<Conversation> getConversations() {
+        return Select.from(Conversation.class).orderBy("LAST_MESSAGE_ID DESC").list();
+    }
+
+
+    public List<Conversation> updateConversations() {
         server = new Server(ctx);
-        Map<String, Object> conversationsData = server.getConversations();
-        boolean existsError = conversationsData.containsKey(Constants.RESULT_ERROR);
-        if (existsError) {
-            String error_message = (String) conversationsData.get(Constants.RESULT_ERROR);
-            this.error_message = error_message;
-            return new ArrayList<>();
-        }
-        return (List<Conversation>) conversationsData.get(Constants.RESULT_CONVERSATIONS);
+        String errorMessage = server.getConversations();
+        if (errorMessage != null)  this.error_message = errorMessage;
+        return Select.from(Conversation.class).orderBy("LAST_MESSAGE_ID DESC").list();
     }
 
 
     public List<User> getPeers() {
         server = new Server(ctx);
-        Map<String, Object> peersData = server.getPeers();
-        boolean existsError = peersData.containsKey(Constants.RESULT_ERROR);
-        if (existsError) {
-            String error_message = (String) peersData.get(Constants.RESULT_ERROR);
-            this.error_message = error_message;
-            return new ArrayList<>();
-        }
-        return (List<User>) peersData.get(Constants.RESULT_PEERS);
+        String errorMessage = server.getPeers();
+        if (errorMessage != null)  this.error_message = errorMessage;
+        return User.find(User.class, "PEER = 1");
     }
 
     public List<Message> getOlderMessages(Subject s, SubjectGroup g, Message m) {
-        List<Message> messages = Message.find(Message.class,
-                "SUBJECT_GROUP = ? AND ID_API < ? ORDER BY ID_API DESC LIMIT ?",
-                Long.toString(g.getId()),
-                Long.toString(m.getIdApi()),
-                Integer.toString(Constants.MAX_LIST_OLDER_SIZE));
+        List<Message> messages = Select.from(Message.class)
+                .where("SUBJECT_GROUP = "+g.getId()+" AND ID_API < "+m.getIdApi())
+                .orderBy("ID_API DESC")
+                .limit(Integer.toString(Constants.MAX_LIST_OLDER_SIZE))
+                .list();
 
         if (messages.isEmpty()) {
             return retrieveOlderMessages(s, g, m);
@@ -95,38 +91,35 @@ public class ModelsManager {
 
     private List<Message> initMessages(Subject s, SubjectGroup g) {
         server = new Server(ctx);
-        Map<String, Object> messagesData = server.getMessages(s, g);
-        boolean existsError = messagesData.containsKey(Constants.RESULT_ERROR);
-        if (existsError) {
-            String error_message = (String) messagesData.get(Constants.RESULT_ERROR);
-            this.error_message = error_message;
-            return new ArrayList<>();
-        }
-        return (List<Message>) messagesData.get(Constants.RESULT_MESSAGES);
+        String errorMessage = server.getMessages(s, g);
+        if (errorMessage != null)  this.error_message = errorMessage;
+        return Select.from(Message.class).orderBy("ID_API DESC").list();
     }
 
+     /*
+    Returns new messages ordered ASC for better insertion in top-RecyclerView
+     */
     public List<Message> getNewMessages(Subject s, SubjectGroup g, Message m) {
         server = new Server(ctx);
-        Map<String, Object> messagesData = server.getNewMessages(s, g, m);
-        boolean existsError = messagesData.containsKey(Constants.RESULT_ERROR);
-        if (existsError) {
-            String error_message = (String) messagesData.get(Constants.RESULT_ERROR);
-            this.error_message = error_message;
-            return new ArrayList<>();
-        }
-        return (List<Message>) messagesData.get(Constants.RESULT_MESSAGES);
+        String errorMessage = server.getNewMessages(s, g, m);
+        if (errorMessage != null)  this.error_message = errorMessage;
+        return Select.from(Message.class)
+                .where("SUBJECT_GROUP = "+g.getId()+" AND ID_API > "+m.getIdApi())
+                .orderBy("ID_API ASC")
+                .list();
     }
 
+    /*
+    Returns older messages ordered DESC for better insertion in bottom-RecyclerView
+    */
     private List<Message> retrieveOlderMessages(Subject s, SubjectGroup g, Message m) {
         server = new Server(ctx);
-        Map<String, Object> messagesData = server.getOlderMessages(s, g, m);
-        boolean existsError = messagesData.containsKey(Constants.RESULT_ERROR);
-        if (existsError) {
-            String error_message = (String) messagesData.get(Constants.RESULT_ERROR);
-            this.error_message = error_message;
-            return new ArrayList<>();
-        }
-        return (List<Message>) messagesData.get(Constants.RESULT_MESSAGES);
+        String errorMessage = server.getOlderMessages(s, g, m);
+        if (errorMessage != null)  this.error_message = errorMessage;
+        return Select.from(Message.class)
+                .where("SUBJECT_GROUP = "+g.getId()+" AND ID_API < "+m.getIdApi())
+                .orderBy("ID_API DESC")
+                .list();
     }
 
     public List<Subject> getSubjects() {
@@ -140,14 +133,9 @@ public class ModelsManager {
 
     private List<Subject> initSubjects() {
         server = new Server(ctx);
-        Map<String, Object> subjectsData = server.getSubjects();
-        boolean existsError = subjectsData.containsKey(Constants.RESULT_ERROR);
-        if (existsError) {
-            String error_message = (String) subjectsData.get(Constants.RESULT_ERROR);
-            this.error_message = error_message;
-            return new ArrayList<>();
-        }
-        return (List<Subject>) subjectsData.get(Constants.RESULT_SUBJECTS);
+        String errorMessage = server.getSubjects();
+        if (errorMessage != null)  this.error_message = errorMessage;
+        return Subject.listAll(Subject.class);
     }
 
     public static void resetDB() {
@@ -173,7 +161,7 @@ public class ModelsManager {
     }
 
     public Conversation getConversation(User peer) {
-        List<Conversation> conversations = Conversation.find(Conversation.class, "PEER = ?", Long.toString(peer.getId()));
+        List<Conversation> conversations = Conversation.find(Conversation.class, "PEER = "+peer.getId());
         if (conversations.isEmpty()) {
             Conversation c = new Conversation(peer);
             c.save();
@@ -188,10 +176,73 @@ public class ModelsManager {
         return !subjects.isEmpty();
     }
 
-    public void showError() {
+    public void showError()
+    {
         if (error_message != null) Constants.showToast(ctx, error_message);
+        error_message = null;
     }
 
 
+    public List<MessageConversation> getMessagesConversation(Conversation  c) {
+        server = new Server(ctx);
+        String errorMessage = server.getMessagesConversation(c);
+        if (errorMessage != null)  this.error_message = errorMessage;
+        List<MessageConversation> msgdb = Select.from(MessageConversation.class)
+                .where("CONVERSATION = "+c.getId())
+                .orderBy("ID_API DESC")
+                .limit(Integer.toString(Constants.MAX_LIST_SIZE_CONVERSATION))
+                .list();
 
+        List<MessageConversation> result = new ArrayList<>();
+
+        for (MessageConversation mc : msgdb) {
+            result.add(0, mc);
+        }
+
+        return result;
+
+    }
+
+    public List<MessageConversation> getNewMessagesConversation(Conversation  c, MessageConversation m) {
+        server = new Server(ctx);
+        String errorMessage = server.getNewMessagesConversation(c, m);
+        if (errorMessage != null)  this.error_message = errorMessage;
+        return Select.from(MessageConversation.class)
+                .where("CONVERSATION = "+c.getId()+" AND ID_API > "+m.getIdApi())
+                .orderBy("ID_API ASC")
+                .list();
+
+    }
+
+    private List<MessageConversation> retrieveOlderMessagesConversation(Conversation  c, MessageConversation m) {
+        server = new Server(ctx);
+        String errorMessage = server.getOlderMessagesConversation(c, m);
+        if (errorMessage != null)  this.error_message = errorMessage;
+        return Select.from(MessageConversation.class)
+                .where("CONVERSATION = "+c.getId()+" AND ID_API < "+m.getIdApi())
+                .orderBy("ID_API DESC")
+                .list();
+
+    }
+
+    public List<MessageConversation> getOlderMessagesConversation(Conversation c, MessageConversation m) {
+        List<MessageConversation> messages = Select.from(MessageConversation.class)
+                .where("CONVERSATION = " + c.getId() + " AND ID_API < " + m.getIdApi())
+                .orderBy("ID_API DESC")
+                .limit(Integer.toString(Constants.MAX_LIST_OLDER_SIZE_CONVERSATION))
+                .list();
+
+        if (messages.isEmpty()) {
+            return retrieveOlderMessagesConversation(c, m);
+        } else {
+            if (messages.size()<Constants.MAX_LIST_OLDER_SIZE_CONVERSATION) {
+                MessageConversation me = messages.get(messages.size()-1);
+                List<MessageConversation> new_messages = retrieveOlderMessagesConversation(c, me);
+                for(MessageConversation mes : new_messages) {
+                    messages.add(mes);
+                }
+            }
+            return  messages;
+        }
+    }
 }

@@ -67,6 +67,10 @@
             android:name=".ui.activities.OptionsActivity"
             android:label="@string/title_activity_peer_selection" >
         </activity>
+        <activity
+            android:name=".ui.activities.ConversationActivity"
+            android:label="@string/title_activity_conversation" >
+        </activity>
     </application>
 
 </manifest>

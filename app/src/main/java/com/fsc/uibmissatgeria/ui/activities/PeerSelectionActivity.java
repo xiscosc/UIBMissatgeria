@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.models.Conversation;
 import com.fsc.uibmissatgeria.models.ModelsManager;
@@ -50,14 +51,19 @@ public class PeerSelectionActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 User peer = peers.get(recView.getChildAdapterPosition(v));
-                Conversation c = mm.getConversation(peer);
-                //TODO: ACTIVITY CONVERSATION
+                startConversation(peer);
             }
         });
         recView.setAdapter(peersAdapter);
     }
 
 
+    private void startConversation(User peer) {
+        Conversation c = mm.getConversation(peer);
+        Intent i = new Intent(this, ConversationActivity.class);
+        i.putExtra(Constants.CONVERSATION_OBJ, c.getId());
+        startActivity(i);
+    }
 
     private class ObtainPeersTask extends AsyncTask<Void, Void, List<User>> {
 
