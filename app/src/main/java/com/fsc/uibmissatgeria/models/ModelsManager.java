@@ -93,7 +93,9 @@ public class ModelsManager {
         server = new Server(ctx);
         String errorMessage = server.getMessages(s, g);
         if (errorMessage != null)  this.error_message = errorMessage;
-        return Select.from(Message.class).orderBy("ID_API DESC").list();
+        return Select.from(Message.class)
+                .where("SUBJECT_GROUP = "+g.getId())
+                .orderBy("ID_API DESC").list();
     }
 
      /*
