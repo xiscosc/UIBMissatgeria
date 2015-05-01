@@ -114,9 +114,6 @@ public class NotificationService extends Service {
         }
     }
 
-
-
-
     private class ConversationTask extends AsyncTask<Void, Void, List<Conversation>> {
 
         @Override
