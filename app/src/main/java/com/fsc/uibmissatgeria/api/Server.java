@@ -568,7 +568,7 @@ public class Server {
                 managePeers(reader, usersDB, peers);
             }
             if (peers.isEmpty()) {
-                result = "Error getting peers"; //TODO: TRANSLATE
+                result = "No peers to show"; //TODO: TRANSLATE
             }
         } catch (JSONException e) {
             e.printStackTrace();

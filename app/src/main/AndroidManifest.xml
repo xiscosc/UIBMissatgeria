@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name="com.orm.SugarApp"
@@ -23,6 +25,13 @@
         <meta-data
             android:name="DOMAIN_PACKAGE_NAME"
             android:value="com.fsc.uibmissatgeria" />
+
+        <receiver android:name=".api.NotificationReceiver">
+            <intent-filter>
+                <action    android:name="android.intent.action.BOOT_COMPLETED" />
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".MainActivity"
@@ -61,6 +70,7 @@
         </activity>
         <activity
             android:name=".ui.activities.PeerSelectionActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_peer_selection" >
         </activity>
         <activity
@@ -69,8 +79,21 @@
         </activity>
         <activity
             android:name=".ui.activities.ConversationActivity"
-            android:label="@string/title_activity_conversation" >
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_conversation"
+            android:parentActivityName=".ui.activities.PrincipalActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activities.PrincipalActivity"/>
         </activity>
+
+        <service
+            android:name=".api.NotificationService"
+            android:enabled="true"
+            android:exported="true"
+            android:icon="@drawable/user_avatar">
+        </service>
+
     </application>
 
 </manifest>

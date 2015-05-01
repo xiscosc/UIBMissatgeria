@@ -37,6 +37,8 @@ public class ConversationActivity extends ActionBarActivity {
     private ModelsManager mm;
     private Boolean olderAvaiable;
     private ProgressDialog pDialog;
+    private Timer timer;
+    private TimerTask ttask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,8 +120,8 @@ public class ConversationActivity extends ActionBarActivity {
     private void startTimeReload() {
         final ConversationActivity self = this;
         final Handler handler = new Handler();
-        Timer timer = new Timer();
-        TimerTask task = new TimerTask() {
+        timer = new Timer();
+        ttask = new TimerTask() {
             @Override
             public void run() {
                 handler.post(new Runnable() {
@@ -129,7 +131,31 @@ public class ConversationActivity extends ActionBarActivity {
                 });
             }
         };
-        timer.schedule(task, 0, 25000);
+        timer.schedule(ttask, 0, 25000);
+    }
+
+    private void cancelTimeReload() {
+        timer.cancel();
+        timer.purge();
+        ttask.cancel();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        cancelTimeReload();
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        startTimeReload();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        cancelTimeReload();
     }
 
     private class ConversationTask extends AsyncTask<Void, Void, List<MessageConversation>> {
@@ -157,7 +183,6 @@ public class ConversationActivity extends ActionBarActivity {
                 recView.scrollToPosition(messages.size() - 1);
             }
             ctx.loadingBar_new.setVisibility(View.GONE);
-            ctx.startTimeReload();
 
         }
 
@@ -200,16 +225,21 @@ public class ConversationActivity extends ActionBarActivity {
                 messageAdapter.notifyDataSetChanged();
 
             }
-            if (!msgs.isEmpty()) {
-                recView.scrollToPosition(messages.size() - 1);
-            }
-            olderAvaiable = messages.size() >= 15; //TODO: MOVE TO CONSTANTS
             ctx.loadingBar_new.setVisibility(View.GONE);
+            if (!msgs.isEmpty()) recView.scrollToPosition(messages.size() - 1);
+            olderAvaiable = messages.size() >= 15; //TODO: MOVE TO CONSTANTS
+
         }
 
         @Override
         protected void onPreExecute() {
+            LinearLayoutManager layoutManager = ((LinearLayoutManager)recView.getLayoutManager());
+            int visibleItemCount = layoutManager.getChildCount();
+            int totalItemCount = layoutManager.getItemCount();
+            int pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
+            Boolean visible = ((visibleItemCount+pastVisiblesItems) >= totalItemCount);
             ctx.loadingBar_new.setVisibility(View.VISIBLE);
+            if (visible) recView.scrollToPosition(messages.size() - 1);
         }
     }
 
@@ -284,7 +314,7 @@ public class ConversationActivity extends ActionBarActivity {
             super.onPostExecute(aVoid);
             ctx.editText.setText("");
             pDialog.dismiss();
-            ctx.loadMessages();
+            ctx.updateMessages();
         }
 
         @Override
@@ -298,9 +328,4 @@ public class ConversationActivity extends ActionBarActivity {
             pDialog.show();
         }
     }
-
-
-
-
-
 }

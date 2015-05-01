@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.api.AccountUIB;
+import com.fsc.uibmissatgeria.api.NotificationService;
 
 
 public class LoginActivity extends ActionBarActivity {
@@ -25,6 +26,7 @@ public class LoginActivity extends ActionBarActivity {
     private String passwordString;
     private LinearLayout loginLayout;
     private ProgressBar loadingBar;
+    AccountUIB auib;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,7 @@ public class LoginActivity extends ActionBarActivity {
         password = (EditText) findViewById(R.id.login_password);
         loadingBar = (ProgressBar) findViewById(R.id.login_loading);
         loginLayout = (LinearLayout) findViewById(R.id.login_layout);
+        auib = new AccountUIB(this);
     }
 
 
@@ -76,6 +79,7 @@ public class LoginActivity extends ActionBarActivity {
     }
 
     private void startPrincipalActivity(){
+        auib.startNotificationService();
         Intent intent = new Intent(this, PrincipalActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         this.finish();
@@ -93,7 +97,7 @@ public class LoginActivity extends ActionBarActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            AccountUIB auib = new AccountUIB(ctx);
+
             return auib.initalLogin(ctx.userString, ctx.passwordString);
         }
 

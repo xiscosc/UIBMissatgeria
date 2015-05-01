@@ -3,6 +3,8 @@ package com.fsc.uibmissatgeria;
 import android.content.Context;
 import android.widget.Toast;
 
+import java.lang.ref.SoftReference;
+
 /**
  * Created by xiscosastrecabot on 22/3/15.
  */
@@ -12,19 +14,15 @@ public class Constants {
     public static final String GROUP_OBJ = "GROUP";
     public static final String CONVERSATION_OBJ = "CONVERSATION";
 
-    public static final String SP_UIB = "shpr_uib";
+    public static final String SP_UIB = "com.fsc.uibmissatgeria_preferences";
     public static final String SP_UPDATE = "prefUpdateFrequency";
-
-    public static final String RESULT_ERROR = "result_error";
-    public static final String RESULT_TOTAL = "result_total";
-    public static final String RESULT_MESSAGES = "result_messages";
-    public static final String RESULT_SUBJECTS = "result_subjects";
-    public static final String RESULT_CONVERSATIONS = "result_conversations";
-    public static final String RESULT_PEERS = "result_peers";
-
-    public static final String ACCOUNT_TOKEN =  "UIB_T_ACCOUNT";
-    public static final String ACCOUNT_ID = "UIB_ID_ACCOUNT";
+    public static final String ACCOUNT_TOKEN =  "prefTokenAccount";
+    public static final String ACCOUNT_ID = "prefIdAccount";
     public static final String ACCOUNT_TOKEN_FAILED = "token_failed";
+
+    public static final String SP_UPDATE_DEFAULT = "60";
+
+    public static final String NOTIFICATION_CONVERSATIONS = "NOT_CONVERSATION";
 
     public static final int MAX_CHAR = 400;
     public static final int DEFAULT_GROUP_ID = -1;

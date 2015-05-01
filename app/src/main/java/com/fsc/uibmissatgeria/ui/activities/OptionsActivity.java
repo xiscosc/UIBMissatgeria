@@ -2,6 +2,7 @@ package com.fsc.uibmissatgeria.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 
@@ -20,6 +21,17 @@ public class OptionsActivity extends PreferenceActivity {
         addPreferencesFromResource(R.xml.app_settings);
         Preference reloadPref = findPreference("prefReset");
         Preference logoutPref = findPreference("prefLogout");
+        ListPreference notificationPref = (ListPreference) findPreference("prefUpdateFrequency");
+
+        notificationPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                AccountUIB accountUIB = new AccountUIB(getApplicationContext());
+                accountUIB.startNotificationService();
+                return true;
+            }
+
+        });
 
         reloadPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {

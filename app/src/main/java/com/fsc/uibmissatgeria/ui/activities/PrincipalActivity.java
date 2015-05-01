@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
+import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.api.AccountUIB;
 import com.fsc.uibmissatgeria.ui.fragments.SubjectsFragment;
@@ -93,6 +94,11 @@ public class PrincipalActivity extends ActionBarActivity {
                     }
                 });
 
+        Intent i = getIntent();
+        Boolean fromNotification = i.getBooleanExtra(Constants.NOTIFICATION_CONVERSATIONS, false);
+        if (fromNotification) {
+            getSupportActionBar().setSelectedNavigationItem(1);
+        }
     }
 
 

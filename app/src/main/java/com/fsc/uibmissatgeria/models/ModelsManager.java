@@ -195,16 +195,18 @@ public class ModelsManager {
 
         List<MessageConversation> messages = new ArrayList<>();
 
-        for (MessageConversation mc : msgdb) {
+        for (MessageConversation mc : msgdb) { //LIST INVERTER
             messages.add(0, mc);
         }
 
         if (!messages.isEmpty()) {
             MessageConversation ms = messages.get(messages.size() - 1);
-            if (!messages.isEmpty() && !ms.isRead()) {
+            if (!ms.isRead()) {
                 ms.setRead(true);
                 ms.save();
             }
+            c.setLastMessageId(ms.getIdApi());
+            c.save();
         }
         return messages;
 
@@ -221,10 +223,12 @@ public class ModelsManager {
                 .list();
         if (!messages.isEmpty()) {
             MessageConversation ms = messages.get(messages.size() - 1);
-            if (!messages.isEmpty() && !ms.isRead()) {
+            if (!ms.isRead()) {
                 ms.setRead(true);
                 ms.save();
             }
+            c.setLastMessageId(ms.getIdApi());
+            c.save();
         }
         return messages;
 

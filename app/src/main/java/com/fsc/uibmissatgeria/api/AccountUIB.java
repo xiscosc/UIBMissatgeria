@@ -1,6 +1,7 @@
 package com.fsc.uibmissatgeria.api;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.fsc.uibmissatgeria.Constants;
@@ -85,6 +86,7 @@ public class AccountUIB {
             SharedPreferences settings = c.getSharedPreferences(Constants.SP_UIB, 0);
             SharedPreferences.Editor editor = settings.edit();
             editor.putInt(Constants.ACCOUNT_ID, usr.getIdApi());
+            editor.putString(Constants.SP_UPDATE, Constants.SP_UPDATE_DEFAULT);
             editor.commit();
             return true;
         } catch (Exception e) {
@@ -111,6 +113,19 @@ public class AccountUIB {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public Long getPeriodMS() {
+        SharedPreferences settings = c.getSharedPreferences(Constants.SP_UIB, 0);
+        String freqStr = settings.getString(Constants.SP_UPDATE, Constants.SP_UPDATE_DEFAULT);
+        return Long.parseLong(freqStr) * 1000;
+    }
+
+    public void startNotificationService() {
+        if (isLogged() && getPeriodMS()>0) {
+            Intent serviceIntent = new Intent(c, NotificationService.class);
+            if(!NotificationService.isRunning()) c.startService(serviceIntent);
+        }
     }
 
 }
