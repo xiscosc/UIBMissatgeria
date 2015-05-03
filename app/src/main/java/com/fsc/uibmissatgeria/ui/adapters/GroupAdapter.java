@@ -20,20 +20,23 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupsViewHo
     public static class GroupsViewHolder extends RecyclerView.ViewHolder {
 
         private TextView groupTitle;
+        private String group;
 
         public GroupsViewHolder(View itemView) {
             super(itemView);
             itemView.setClickable(true);
+            group = itemView.getContext().getResources().getString(R.string.group);
             groupTitle = (TextView) itemView.findViewById(R.id.group_title);
         }
 
         public void bindGroup(SubjectGroup g) {
-            groupTitle.setText("Group "+g.getName()); //TODO: TRANSLATE
+            groupTitle.setText(group+" "+g.getName());
         }
     }
 
     private List<SubjectGroup> subjectGroups;
     private View.OnClickListener listener;
+
 
     public GroupAdapter(List<SubjectGroup> subjectGroups) {
         this.subjectGroups = subjectGroups;

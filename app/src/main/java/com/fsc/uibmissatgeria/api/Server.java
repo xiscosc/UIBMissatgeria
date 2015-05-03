@@ -33,9 +33,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -45,11 +43,12 @@ public class Server {
 
     private final String SERVER_URL = "https://rhodes.joan-font.com/";
     private Context c;
+    private String netError;
     private String token;
 
     public Server(Context c) {
         this.c = c;
-
+        netError = c.getResources().getString(R.string.network_error);
     }
 
     public String getSubjects() {
@@ -98,7 +97,7 @@ public class Server {
             }
         }
 
-        result =  "Network Error"; //TODO: TRANSLATE
+        result =  netError;  
         return result;
     }
 
@@ -121,11 +120,11 @@ public class Server {
                     result = reader.getString("message");
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    result = "Network Error"; //TODO: TRANSLATE
+                    result = netError;  
                 }
             }
         } else {
-            result = "Network Error"; //TODO: TRANSLATE
+            result = netError;  
         }
 
         return result;
@@ -167,7 +166,7 @@ public class Server {
                 }
             }
         }
-        result =   "Network Error"; //TODO: TRANSLATE
+        result =   netError;  
         return result;
     }
 
@@ -196,7 +195,7 @@ public class Server {
                 }
             }
         }
-        result = "Network Error"; //TODO: TRANSLATE
+        result = netError;  
         return result;
     }
 
@@ -474,11 +473,11 @@ public class Server {
             if (reader != null) {
                 manageConversations(reader, converDB, peers, usr);
             } else {
-                result =  "Error getting conversations"; //TODO: TRANSLATE
+                result =  c.getResources().getString(R.string.error_conversations);  
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            result =  "Network Error"; //TODO: TRANSLATE
+            result =  netError;  
         }
 
         return result;
@@ -568,11 +567,11 @@ public class Server {
                 managePeers(reader, usersDB, peers);
             }
             if (peers.isEmpty()) {
-                result = "No peers to show"; //TODO: TRANSLATE
+                result = c.getResources().getString(R.string.error_peers);  
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            result = "Network Error"; //TODO: TRANSLATE
+            result = netError;  
         }
 
         return result;
@@ -647,7 +646,7 @@ public class Server {
                 }
             }
         }
-        result =   "Network Error"; //TODO: TRANSLATE
+        result =   netError;  
         return result;
     }
 
@@ -674,7 +673,7 @@ public class Server {
                 }
             }
         }
-        result =   "Network Error"; //TODO: TRANSLATE
+        result =   netError;  
         return result;
     }
 
@@ -701,7 +700,7 @@ public class Server {
                 }
             }
         }
-        result =   "Network Error"; //TODO: TRANSLATE
+        result =   netError;  
         return result;
     }
 

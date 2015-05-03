@@ -63,7 +63,7 @@ public class NewMessageActivity extends ActionBarActivity {
         if (gr.getIdApi() != Constants.DEFAULT_GROUP_ID) {
             group.setText(gr.getName());
         } else {
-            group.setText("GENERAL"); // TODO: TRANSLATE
+            group.setText(getResources().getString(R.string.general));
         }
 
         body.addTextChangedListener(new TextWatcher() {
@@ -88,23 +88,6 @@ public class NewMessageActivity extends ActionBarActivity {
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-        if (id == R.id.action_log_out) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
 
 
@@ -116,7 +99,7 @@ public class NewMessageActivity extends ActionBarActivity {
                 && bodyString.length()<=Constants.MAX_CHAR) {
             pDialog = new ProgressDialog(this);
             pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            pDialog.setMessage("Sending message..."); //TODO: TRANSLATE
+            pDialog.setMessage(getResources().getString(R.string.sending_message));
             pDialog.setCancelable(false);
             pDialog.setMax(100);
             SendMessageTask task = new SendMessageTask(
@@ -126,9 +109,9 @@ public class NewMessageActivity extends ActionBarActivity {
                     bodyString);
             task.execute();
         } else if (bodyString.length()>Constants.MAX_CHAR) {
-            Constants.showToast(this, "MAX CHAR ERROR"); //TODO: TRANSLATE
+            Constants.showToast(this, getResources().getString(R.string.error_max_char));
         } else {
-            Constants.showToast(this, "The message can't be empty"); //TODO: TRANSLATE
+            Constants.showToast(this, getResources().getString(R.string.error_empty));
         }
 
 

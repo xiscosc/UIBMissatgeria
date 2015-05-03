@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">UIBMissatgeria</string>
+    <string name="action_settings">Configuració</string>
+    <string name="auth_error">Error d\'autentificació</string>
+    <string name="conversations">Conversacions</string>
+    <string name="data_cleaned">Dades restaurades</string>
+    <string name="error_conversations">Error obtenint les conversacions</string>
+    <string name="error_empty">Hi ha algun camp buit</string>
+    <string name="error_max_char">Has escrit massa caràcters</string>
+    <string name="error_peers">No hi ha usuaris per mostrar</string>
+    <string name="general">General</string>
+    <string name="group">Grup</string>
+    <string name="log_button">Entrar</string>
+    <string name="log_out">Desconnectar</string>
+    <string name="login_password_hint">Contrasenya</string>
+    <string name="login_username_hint">Usuari d\'UIBdigital</string>
+    <string name="network_error">Error de xarxa</string>
+    <string name="new_message_button">Enviar</string>
+    <string name="new_message_from">Nou missatge de</string>
+    <string name="new_message_hint">Escriu aquí el teu missatge</string>
+    <string name="new_messages">Nous missatges</string>
+    <string name="profile_edit">Editar perfil</string>
+    <string name="sending_message">Enviant missatge…</string>
+    <string name="subject_general_description">Missatges globals de l\'assignatura</string>
+    <string name="subject_general_forum">Fòrum de l\'assignatura</string>
+    <string name="title_activity_peer_selection">Tria un usuari</string>
+    <string name="title_activity_profile">Perfil</string>
+    <string name="title_section1">Assignatures</string>
+    <string name="title_section2">Missatges</string>
+    <string name="you_new_messages">Tens nous missatges a</string>
+    <string name="title_activity_new_message">Nou Missatge</string>
+    <string name="account_settings">Configuració de compte</string>
+    <string name="chec_freq">Freqüència de comprovació</string>
+    <string name="chec_freq_sum">Freqüència de comprovació per a nous missatges</string>
+    <string name="notification_settings">Configuració de notificacions</string>
+    <string name="reset_data">Restablir dades</string>
+    <string name="find">Cercar usuaris</string>
+</resources>

@@ -6,9 +6,12 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.fsc.uibmissatgeria.Constants;
@@ -18,15 +21,18 @@ import com.fsc.uibmissatgeria.models.ModelsManager;
 import com.fsc.uibmissatgeria.models.User;
 import com.fsc.uibmissatgeria.ui.adapters.PeerAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PeerSelectionActivity extends ActionBarActivity {
 
     private RecyclerView recView;
     private List<User> peers;
+    private List<User> peersOriginal;
     private PeerAdapter peersAdapter;
     private ProgressBar loadingBar;
     private ModelsManager mm;
+    private EditText finder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +43,36 @@ public class PeerSelectionActivity extends ActionBarActivity {
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false));
         loadingBar = (ProgressBar) findViewById(R.id.peers_loading);
         mm = new ModelsManager(this);
+        finder = (EditText) findViewById(R.id.peers_search);
+        finder.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+                int total =  s.toString().length();
+                if (total > 0) {
+                    peers = getListFiltered(s.toString());
+                    createAdapter();
+                } else {
+                   peers = peersOriginal;
+                   createAdapter();
+                }
+            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
         loadPeers();
+    }
+
+    private List<User> getListFiltered(String s) {
+        List <User> listClone = new ArrayList<>();
+        for (User p : peersOriginal) {
+            String name = p.getName().toLowerCase();
+            String comp = s.toLowerCase();
+            if(name.contains(comp)){
+                listClone.add(p);
+            }
+        }
+        return listClone;
     }
 
     private void loadPeers() {
@@ -83,8 +118,10 @@ public class PeerSelectionActivity extends ActionBarActivity {
         protected void onPostExecute(List<User> peers) {
             ctx.mm.showError();
             ctx.peers =  peers;
+            ctx.peersOriginal = peers;
             ctx.createAdapter();
             loadingBar.setVisibility(View.GONE);
+            finder.setVisibility(View.VISIBLE);
         }
 
     }

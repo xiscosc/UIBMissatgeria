@@ -39,6 +39,7 @@ public class ConversationActivity extends ActionBarActivity {
     private ProgressDialog pDialog;
     private Timer timer;
     private TimerTask ttask;
+    private Boolean firstRun;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,7 @@ public class ConversationActivity extends ActionBarActivity {
 
             }
         });
+        firstRun = true;
 
         mm = new ModelsManager(this);
         loadingBar_new = (ProgressBar) findViewById(R.id.conversation_loading_new);
@@ -109,9 +111,9 @@ public class ConversationActivity extends ActionBarActivity {
                     InputMethodManager.HIDE_NOT_ALWAYS);
             task.execute();
         } else if (bodyString.length()>Constants.MAX_CHAR) {
-            Constants.showToast(this, "MAX CHAR ERROR"); //TODO: TRANSLATE
+            Constants.showToast(this, getResources().getString(R.string.error_max_char));
         } else {
-            Constants.showToast(this, "The message can't be empty"); //TODO: TRANSLATE
+            Constants.showToast(this, getResources().getString(R.string.error_empty));
         }
 
 
@@ -149,7 +151,10 @@ public class ConversationActivity extends ActionBarActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        startTimeReload();
+        if (!firstRun) {
+            startTimeReload();
+        }
+
     }
 
     @Override
@@ -182,7 +187,12 @@ public class ConversationActivity extends ActionBarActivity {
             if (!messages.isEmpty()) {
                 recView.scrollToPosition(messages.size() - 1);
             }
-            ctx.loadingBar_new.setVisibility(View.GONE);
+            if (firstRun) {
+                ctx.startTimeReload();
+                firstRun = false;
+            } else {
+                ctx.loadingBar_new.setVisibility(View.GONE);
+            }
 
         }
 
@@ -321,7 +331,7 @@ public class ConversationActivity extends ActionBarActivity {
         protected void onPreExecute() {
             pDialog = new ProgressDialog(ctx);
             pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            pDialog.setMessage("Sending message..."); //TODO: TRANSLATE
+            pDialog.setMessage(getResources().getString(R.string.sending_message));
             pDialog.setCancelable(false);
             pDialog.setMax(100);
             pDialog.setProgress(0);

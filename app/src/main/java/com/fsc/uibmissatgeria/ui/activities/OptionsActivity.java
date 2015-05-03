@@ -51,7 +51,7 @@ public class OptionsActivity extends PreferenceActivity {
     private void ResetData() {
         ModelsManager m = new ModelsManager(this);
         m.reloadData();
-        Constants.showToast(getApplicationContext(), "Data cleaned"); //TODO: TRANSLATE
+        Constants.showToast(getApplicationContext(), getResources().getString(R.string.data_cleaned));
     }
 
     public void LogOut() {

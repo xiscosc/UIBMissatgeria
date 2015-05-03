@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">UIBMissatgeria</string>
+    <string name="action_settings">Configuración</string>
+    <string name="auth_error">Error de autentificación</string>
+    <string name="conversations">Conversaciones</string>
+    <string name="data_cleaned">Datos restaurados</string>
+    <string name="error_conversations">Error obteniendo las conversaciones</string>
+    <string name="error_empty">Hay algún campo vacío</string>
+    <string name="error_max_char">Has escrito demasiados caracteres</string>
+    <string name="error_peers">No hay usuarios para mostrar</string>
+    <string name="general">General</string>
+    <string name="group">Grupo</string>
+    <string name="log_button">Entrar</string>
+    <string name="log_out">Desconectar</string>
+    <string name="login_password_hint">Contraseña</string>
+    <string name="login_username_hint">Usuario de UIBdigital</string>
+    <string name="network_error">Error de red</string>
+    <string name="new_message_button">Enviar</string>
+    <string name="new_message_from">Nuevo mensaje de</string>
+    <string name="new_message_hint">Escribe aquí tu mensaje</string>
+    <string name="new_messages">Nuevos mensajes</string>
+    <string name="profile_edit">Editar perfil</string>
+    <string name="sending_message">Enviando mensaje…</string>
+    <string name="subject_general_description">Mensajes globales de la asignatura</string>
+    <string name="subject_general_forum">Foro de la asignatura</string>
+    <string name="title_activity_peer_selection">Elige un usuario</string>
+    <string name="title_activity_profile">Perfil</string>
+    <string name="title_section1">Asignaturas</string>
+    <string name="title_section2">Mensajes</string>
+    <string name="you_new_messages">Tienes nuevos mensajes en</string>
+    <string name="title_activity_new_message">Nuevo Mensaje</string>
+    <string name="account_settings">Configuración de cuenta</string>
+    <string name="chec_freq">Frecuencia de comprovación</string>
+    <string name="chec_freq_sum">Frecuencia de comprovación para nuevos mensajes</string>
+    <string name="notification_settings">Configuración de notificaciones</string>
+    <string name="reset_data">Restablecer datos</string>
+    <string name="find">Buscar usuarios</string>
+</resources>

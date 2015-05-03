@@ -1,32 +1,44 @@
 <resources>
     <string name="app_name">UIBMissatgeria</string>
-
-    <string name="hello_world">Please, log in</string>
     <string name="log_button">Sign In</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_logged">Courses</string>
-
-    <string name="title_activity_principal">UIBMissatgeria</string>
-
-
+    <string name="title_activity_logged" translatable="false">Courses</string>
     <string name="title_section1">Subjects</string>
     <string name="title_section2">Messages</string>
-    <string name="title_section3">You</string>
-    <string name="title_activity_messages">Subject</string>
-    <string name="menu_new_message">New Message</string>
+    <string name="title_activity_messages" translatable="false">Subject</string>
     <string name="title_activity_new_message">New Message</string>
+    <string name="new_messages">New Messages</string>
     <string name="new_message_hint">Write here your message</string>
     <string name="new_message_button">Send</string>
-    <string name="login_username_hint">Enter your username</string>
-    <string name="login_password_hint">Enter your password</string>
-    <string name="title_activity_subject">SubjectActivity</string>
+    <string name="login_username_hint">UIBdigital User</string>
+    <string name="login_password_hint">Password</string>
+    <string name="title_activity_subject" translatable="false">SubjectActivity</string>
     <string name="subject_general_forum">Subject Forum</string>
     <string name="subject_general_description">Subject\'s global messages</string>
     <string name="profile_edit">Edit Profile</string>
     <string name="title_activity_profile">Profile</string>
     <string name="log_out">Log Out</string>
-    <string name="principal_settings">Settings</string>
     <string name="title_activity_peer_selection">Choose a user</string>
-    <string name="title_activity_conversation">User Name</string>
+    <string name="title_activity_conversation" translatable="false">User Name</string>
+    <string name="network_error">Network Error</string>
+    <string name="error_peers">No users to show</string>
+    <string name="error_conversations">Error getting conversations</string>
+    <string name="new_message_from">New message from</string>
+    <string name="conversations">conversations</string>
+    <string name="you_new_messages">You have new messages in</string>
+    <string name="group">Group</string>
+    <string name="error_empty">There is an empty field</string>
+    <string name="error_max_char">Too much characters</string>
+    <string name="sending_message">Sending message…</string>
+    <string name="general">General</string>
+    <string name="data_cleaned">Data cleaned</string>
+    <string name="auth_error">Authentification error</string>
+    <string name="reset_data">Reset Data</string>
+    <string name="account_settings">Account Settings</string>
+    <string name="notification_settings">Notification Settings</string>
+    <string name="chec_freq">Check Frequency</string>
+    <string name="chec_freq_sum">Time checking for new messages</string>
+    <string name="find">Find users</string>
+
 
 </resources>

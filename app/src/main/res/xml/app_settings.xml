@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-    <PreferenceCategory android:title="Account Settings" >
+    <PreferenceCategory android:title="@string/account_settings" >
         <Preference
-            android:title="Reset Data"
+            android:title="@string/reset_data"
             android:key="prefReset"
             />
         <Preference
-            android:title="Log Out"
+            android:title="@string/log_out"
             android:key="prefLogout"
             />
     </PreferenceCategory>
 
 
-    <PreferenceCategory android:title="Notifications Settings" >
+    <PreferenceCategory android:title="@string/notification_settings" >
         <ListPreference
             android:key="prefUpdateFrequency"
-            android:title="Check frequency"
-            android:summary="Set frequency check for new messages"
+            android:title="@string/chec_freq"
+            android:summary="@string/chec_freq_sum"
             android:entries="@array/updateFrequency"
             android:entryValues="@array/updateFrequencyValues"
             />

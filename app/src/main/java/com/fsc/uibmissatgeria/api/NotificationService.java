@@ -133,15 +133,19 @@ public class NotificationService extends Service {
                         .setDefaults(Notification.DEFAULT_VIBRATE);
 
                 if (conversations.size()>1) {
-                    mBuilder.setContentTitle("New Messages") //TODO: TRANSLATE
-                            .setContentText("You have new messages in " + conversations.size() + " conversations"); //TODO: TRANSLATE
+                    String new_messages = getResources().getString(R.string.new_messages);
+                    String you_have = getResources().getString(R.string.you_new_messages);
+                    String converString = getResources().getString(R.string.conversations);
+                    mBuilder.setContentTitle(new_messages)
+                            .setContentText(you_have + " " + conversations.size() + " "  +converString);
                     resultIntent = new Intent(getApplicationContext(), PrincipalActivity.class);
                     resultIntent.putExtra(Constants.NOTIFICATION_CONVERSATIONS, true);
                     stackBuilder.addParentStack(PrincipalActivity.class);
                 } else {
+                    String new_message = getResources().getString(R.string.new_message_from);
                     Conversation c = conversations.get(0);
                     MessageConversation m = c.getLastMessage();
-                    mBuilder.setContentTitle("New message from "+c.getPeerName()) //TODO: TRANSLATE
+                    mBuilder.setContentTitle(new_message + " "+c.getPeerName())
                             .setContentText(m.getBody());
 
                     resultIntent = new Intent(getApplicationContext(), ConversationActivity.class);

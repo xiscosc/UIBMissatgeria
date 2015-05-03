@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="updateFrequency">
+        <item name="30s">30 segundos</item>
+        <item name="1">1 minuto</item>
+        <item name="5">5 minutos</item>
+        <item name="10">10 minutos</item>
+        <item name="20">20 minutos</item>
+        <item name="-1">Desactivado</item>
+    </string-array>
+    <string-array name="updateFrequencyValues">
+        <item name="30s">30</item>
+        <item name="1">60</item>
+        <item name="5">300</item>
+        <item name="10">600</item>
+        <item name="20">1200</item>
+        <item name="-1">-1</item>
+    </string-array>
+
+</resources>

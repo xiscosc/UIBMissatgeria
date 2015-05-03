@@ -41,25 +41,6 @@ public class LoginActivity extends ActionBarActivity {
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_log_out) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     public void logIn(View view) {
         InputMethodManager inputManager = (InputMethodManager)
@@ -74,7 +55,7 @@ public class LoginActivity extends ActionBarActivity {
             LogInTask lt = new LogInTask(this);
             lt.execute();
         } else {
-            Constants.showToast(this, "There is an empty field"); //TODO: TRANSLATE
+            Constants.showToast(this, getResources().getString(R.string.error_empty));
         }
     }
 
@@ -97,7 +78,6 @@ public class LoginActivity extends ActionBarActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-
             return auib.initalLogin(ctx.userString, ctx.passwordString);
         }
 
@@ -109,7 +89,7 @@ public class LoginActivity extends ActionBarActivity {
             } else {
                 loginLayout.setVisibility(View.VISIBLE);
                 loadingBar.setVisibility(View.GONE);
-                Constants.showToast(ctx, "Auth Error"); //TODO: TRANSLATE
+                Constants.showToast(ctx, getResources().getString(R.string.auth_error));
             }
 
         }
