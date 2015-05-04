@@ -16,6 +16,7 @@ import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.api.AccountUIB;
 import com.fsc.uibmissatgeria.api.NotificationService;
+import com.fsc.uibmissatgeria.api.ServerSettings;
 
 
 public class LoginActivity extends ActionBarActivity {
@@ -78,7 +79,9 @@ public class LoginActivity extends ActionBarActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            return auib.initalLogin(ctx.userString, ctx.passwordString);
+            Boolean result = auib.initalLogin(ctx.userString, ctx.passwordString);
+            if (result) (new ServerSettings(ctx)).loadSettings();
+            return result;
         }
 
         @Override

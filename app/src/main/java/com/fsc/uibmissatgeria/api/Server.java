@@ -33,7 +33,10 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -736,5 +739,18 @@ public class Server {
 
         }
 
+    }
+
+    public Map<String, Object> getSettings() {
+        Map<String, Object> result = new HashMap<>();
+        JSONObject reader = readObjectFromServer(SERVER_URL + "config/");
+        if (reader != null) {
+            try {
+                result.put("message_max_length", reader.getInt("message_max_length"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
     }
 }

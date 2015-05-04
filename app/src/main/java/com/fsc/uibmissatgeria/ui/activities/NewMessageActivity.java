@@ -8,8 +8,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,20 +16,22 @@ import android.widget.TextView;
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.api.Server;
+import com.fsc.uibmissatgeria.api.ServerSettings;
 import com.fsc.uibmissatgeria.models.SubjectGroup;
 import com.fsc.uibmissatgeria.models.Subject;
 
 
 public class NewMessageActivity extends ActionBarActivity {
 
-    Subject sbj;
-    SubjectGroup gr;
-    TextView subject;
-    TextView group;
-    EditText body;
-    TextView numChar;
-    Button button;
-    int defaultColor;
+    private Subject sbj;
+    private SubjectGroup gr;
+    private TextView subject;
+    private TextView group;
+    private EditText body;
+    private TextView numChar;
+    private Button button;
+    private int defaultColor;
+    private int max_char;
 
     private ProgressDialog pDialog;
 
@@ -39,15 +39,7 @@ public class NewMessageActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent i = getIntent();
-
-        Long idSubject = i.getLongExtra(Constants.SUBJECT_OBJ, 0);
-        System.out.println("test1");
-        sbj = Subject.findById(Subject.class, idSubject);
-        Long idSubjectGroup = i.getLongExtra(Constants.GROUP_OBJ, 0);
-        System.out.println("test2");
-        gr = SubjectGroup.findById(SubjectGroup.class, idSubjectGroup);
-
+        getAttrFromIntent();
         setContentView(R.layout.activity_new_message);
 
         subject =(TextView)findViewById(R.id.new_message_subject);
@@ -55,8 +47,9 @@ public class NewMessageActivity extends ActionBarActivity {
         body =  (EditText)findViewById(R.id.new_message_text);
         numChar = (TextView)findViewById(R.id.new_message_chars);
         button = (Button) findViewById(R.id.new_message_button);
+        max_char = (new ServerSettings(this)).getMaxChar();
 
-        numChar.setText(Constants.MAX_CHAR+"");
+        numChar.setText(Integer.toString(max_char));
         defaultColor = numChar.getCurrentTextColor();
 
         subject.setText(sbj.getName());
@@ -69,7 +62,7 @@ public class NewMessageActivity extends ActionBarActivity {
         body.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {
-                int total = Constants.MAX_CHAR - s.toString().length();
+                int total = max_char - s.toString().length();
                 if (total < 0 ) {
                     button.setEnabled(false);
                     numChar.setTextColor(Color.RED);
@@ -88,7 +81,16 @@ public class NewMessageActivity extends ActionBarActivity {
     }
 
 
+    private void getAttrFromIntent() {
+        Intent i = getIntent();
 
+        Long idSubject = i.getLongExtra(Constants.SUBJECT_OBJ, 0);
+        System.out.println("test1");
+        sbj = Subject.findById(Subject.class, idSubject);
+        Long idSubjectGroup = i.getLongExtra(Constants.GROUP_OBJ, 0);
+        System.out.println("test2");
+        gr = SubjectGroup.findById(SubjectGroup.class, idSubjectGroup);
+    }
 
 
     public void sendMessage(View view) {
@@ -96,7 +98,7 @@ public class NewMessageActivity extends ActionBarActivity {
 
         if (!bodyString.replaceAll("\\s+","").isEmpty()
                 && bodyString.replaceAll("\\s+","")!=null
-                && bodyString.length()<=Constants.MAX_CHAR) {
+                && bodyString.length() <= max_char) {
             pDialog = new ProgressDialog(this);
             pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             pDialog.setMessage(getResources().getString(R.string.sending_message));
@@ -108,7 +110,7 @@ public class NewMessageActivity extends ActionBarActivity {
                     gr,
                     bodyString);
             task.execute();
-        } else if (bodyString.length()>Constants.MAX_CHAR) {
+        } else if (bodyString.length() > max_char) {
             Constants.showToast(this, getResources().getString(R.string.error_max_char));
         } else {
             Constants.showToast(this, getResources().getString(R.string.error_empty));

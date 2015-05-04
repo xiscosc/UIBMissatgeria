@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.api.Server;
+import com.fsc.uibmissatgeria.api.ServerSettings;
 import com.fsc.uibmissatgeria.models.Conversation;
 import com.fsc.uibmissatgeria.models.MessageConversation;
 import com.fsc.uibmissatgeria.models.ModelsManager;
@@ -96,11 +97,13 @@ public class ConversationActivity extends ActionBarActivity {
     }
 
     public void sendMessage(View view) {
+        ServerSettings ss = new ServerSettings(this);
         String bodyString = editText.getText().toString();
+        int max_char = ss.getMaxChar();
 
         if (!bodyString.replaceAll("\\s+","").isEmpty()
                 && bodyString.replaceAll("\\s+","")!=null
-                && bodyString.length()<=Constants.MAX_CHAR) {
+                && bodyString.length() <= max_char) {
             SendMessageTask task = new SendMessageTask(
                     this,
                     bodyString);
@@ -110,7 +113,7 @@ public class ConversationActivity extends ActionBarActivity {
             inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
                     InputMethodManager.HIDE_NOT_ALWAYS);
             task.execute();
-        } else if (bodyString.length()>Constants.MAX_CHAR) {
+        } else if (bodyString.length() > max_char) {
             Constants.showToast(this, getResources().getString(R.string.error_max_char));
         } else {
             Constants.showToast(this, getResources().getString(R.string.error_empty));

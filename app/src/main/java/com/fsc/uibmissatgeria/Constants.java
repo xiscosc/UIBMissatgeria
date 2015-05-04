@@ -19,12 +19,14 @@ public class Constants {
     public static final String ACCOUNT_TOKEN =  "prefTokenAccount";
     public static final String ACCOUNT_ID = "prefIdAccount";
     public static final String ACCOUNT_TOKEN_FAILED = "token_failed";
-
     public static final String SP_UPDATE_DEFAULT = "60";
+
+    public static final String SP_MAX_CHAR = "max_char";
+    public static final int SP_MAX_CHAR_DEFAULT = 400;
 
     public static final String NOTIFICATION_CONVERSATIONS = "NOT_CONVERSATION";
 
-    public static final int MAX_CHAR = 400;
+
     public static final int DEFAULT_GROUP_ID = -1;
     public static final int MAX_LIST_SIZE = 25;
     public static final int MAX_LIST_OLDER_SIZE = 25;
@@ -37,6 +39,7 @@ public class Constants {
 
     public static final int TYPE_TEACHER = 1;
     public static final int TYPE_STUDENT = 2;
+
 
 
     public static void showToast(Context ctx, String message) {
