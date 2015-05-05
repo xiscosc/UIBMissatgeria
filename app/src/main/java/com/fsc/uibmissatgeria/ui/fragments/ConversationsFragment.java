@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
+import com.fsc.uibmissatgeria.api.AccountUIB;
 import com.fsc.uibmissatgeria.models.Conversation;
 import com.fsc.uibmissatgeria.models.ModelsManager;
 import com.fsc.uibmissatgeria.ui.activities.ConversationActivity;
@@ -33,6 +34,7 @@ public class ConversationsFragment extends Fragment implements SwipeRefreshLayou
     private ImageButton fabImageButton;
     private ProgressBar loadingBar;
     private ModelsManager mm;
+    private AccountUIB accountUIB;
 
     public ConversationsFragment() {
     }
@@ -54,6 +56,7 @@ public class ConversationsFragment extends Fragment implements SwipeRefreshLayou
         loadingBar = (ProgressBar) rootView.findViewById(R.id.conversations_loading);
 
         mm = new ModelsManager(getActivity());
+        accountUIB = new AccountUIB(getActivity());
         setListeners();
         return rootView;
     }
@@ -99,8 +102,10 @@ public class ConversationsFragment extends Fragment implements SwipeRefreshLayou
     @Override
     public void onResume() {
         super.onResume();
-        swipeLayout.setRefreshing(true);
-        updateConversations();
+        if (accountUIB.isLogged()) {
+            swipeLayout.setRefreshing(true);
+            updateConversations();
+        }
     }
 
     private void loadConversations() {

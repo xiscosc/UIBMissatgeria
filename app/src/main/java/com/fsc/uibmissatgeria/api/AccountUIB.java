@@ -122,9 +122,18 @@ public class AccountUIB {
     }
 
     public void startNotificationService() {
-        if (isLogged() && getPeriodMS()>0) {
+        if (isLogged() && getPeriodMS() > 0) {
             Intent serviceIntent = new Intent(c, NotificationService.class);
-            if(!NotificationService.isRunning()) c.startService(serviceIntent);
+            Boolean isRunning = NotificationService.isRunning();
+            if(!isRunning) c.startService(serviceIntent);
+        }
+    }
+
+    public void startNotificationServiceFromSettings(long period) {
+        if (isLogged() && period > 0) {
+            Intent serviceIntent = new Intent(c, NotificationService.class);
+            Boolean isRunning = NotificationService.isRunning();
+            if(!isRunning) c.startService(serviceIntent);
         }
     }
 

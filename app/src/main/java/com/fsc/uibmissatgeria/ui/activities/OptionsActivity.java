@@ -27,7 +27,7 @@ public class OptionsActivity extends PreferenceActivity {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 AccountUIB accountUIB = new AccountUIB(getApplicationContext());
-                accountUIB.startNotificationService();
+                accountUIB.startNotificationServiceFromSettings(Long.parseLong((String) newValue));
                 return true;
             }
 

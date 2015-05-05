@@ -84,9 +84,10 @@ public class NotificationService extends Service {
             public void run() {
                 handler.post(new Runnable() {
                     public void run() {
-                        if (accountUIB.getPeriodMS().equals(current)) {
+                        Boolean isLogged = accountUIB.isLogged();
+                        if (isLogged && accountUIB.getPeriodMS().equals(current)) {
                             (new ConversationTask()).execute();
-                        } else if (accountUIB.getPeriodMS()>0) {
+                        } else if (isLogged && accountUIB.getPeriodMS()>0) {
                             cancelTimeReload();
                             prepareTimer();
                         } else {
