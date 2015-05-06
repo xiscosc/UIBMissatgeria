@@ -11,7 +11,7 @@
         <ImageView
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:layout_marginRight="5dp"
+            android:layout_margin="@dimen/margin_message"
             android:id="@+id/user_avatar"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"

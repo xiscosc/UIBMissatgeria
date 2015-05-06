@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.models.Message;
 
@@ -24,8 +25,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Messages
         private TextView messageUser;
         private TextView messageDate;
         private TextView messageBody;
-        private ImageView avatar;
-
 
 
         public MessagesViewHolder(View itemView) {
@@ -34,19 +33,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Messages
             messageUser = (TextView)itemView.findViewById(R.id.message_user);
             messageDate = (TextView)itemView.findViewById(R.id.message_date);
             messageBody = (TextView)itemView.findViewById(R.id.message_body);
-            avatar = (ImageView)itemView.findViewById(R.id.user_avatar);
 
         }
 
-        public void bindGroup(Message m, Boolean sameUser) {
+        public void bindGroup(Message m) {
             messageDate.setText(m.getStringDate());
             messageBody.setText(m.getBody());
-            if (sameUser) {
-                avatar.setVisibility(View.INVISIBLE);
-                messageUser.setVisibility(View.GONE);
-            } else {
-                messageUser.setText(m.getUser().getName());
-            }
+            messageUser.setText(m.getUser().getName());
         }
     }
 
@@ -58,10 +51,29 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Messages
     }
 
     @Override
+    public int getItemViewType(int position) {
+        if (messages.get(position).getUser().getType() == Constants.TYPE_TEACHER) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
+    @Override
     public MessagesViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
+        int lay;
+        switch (viewType){
+            case 0:
+                lay = R.layout.listitem_message_other;
+                break;
+            default:
+                lay = R.layout.listitem_message;
+                break;
+        }
+
         View itemView = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.listitem_message, viewGroup, false);
+                .inflate(lay, viewGroup, false);
 
         itemView.setOnClickListener(this);
 
@@ -71,12 +83,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Messages
     @Override
     public void onBindViewHolder(MessagesViewHolder viewHolder, int pos) {
         Message item = messages.get(pos);
-        Boolean isSame = false;
-        if (pos > 0) {
-            Message item2 = messages.get(pos-1);
-            isSame = item2.getUser().equals(item.getUser());
-        }
-        viewHolder.bindGroup(item, isSame);
+        viewHolder.bindGroup(item);
     }
 
     @Override

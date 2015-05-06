@@ -27,7 +27,6 @@ public class MessageConversationAdapter extends RecyclerView.Adapter<MessageConv
         private TextView messageUser;
         private TextView messageDate;
         private TextView messageBody;
-        private ImageView avatar;
 
 
         public MessagesViewHolder(View itemView) {
@@ -36,19 +35,14 @@ public class MessageConversationAdapter extends RecyclerView.Adapter<MessageConv
             messageUser = (TextView)itemView.findViewById(R.id.message_user);
             messageDate = (TextView)itemView.findViewById(R.id.message_date);
             messageBody = (TextView)itemView.findViewById(R.id.message_body);
-            avatar = (ImageView)itemView.findViewById(R.id.user_avatar);
         }
 
-        public void bindGroup(MessageConversation m, User u, Boolean isSame) {
+        public void bindGroup(MessageConversation m, User u) {
 
             messageDate.setText(m.getStringDate());
             messageBody.setText(m.getBody());
-            if (isSame) {
-                avatar.setVisibility(View.INVISIBLE);
-                messageUser.setVisibility(View.GONE);
-            } else {
-                messageUser.setText(u.getName());
-            }
+            messageUser.setText(u.getName());
+
         }
     }
 
@@ -95,12 +89,7 @@ public class MessageConversationAdapter extends RecyclerView.Adapter<MessageConv
     public void onBindViewHolder(MessagesViewHolder viewHolder, int pos) {
         MessageConversation item = messages.get(pos);
         User from = item.getUser(c);
-        Boolean isSame = false;
-        if (pos > 0) {
-            MessageConversation item2 = messages.get(pos-1);
-            isSame = item2.getUser(c).equals(from);
-        }
-        viewHolder.bindGroup(item, from, isSame);
+        viewHolder.bindGroup(item, from);
     }
 
     @Override
