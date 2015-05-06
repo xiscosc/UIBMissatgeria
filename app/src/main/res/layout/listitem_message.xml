@@ -1,22 +1,18 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_marginTop="2dp">
+
 
     <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp">
 
         <ImageView
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:layout_marginRight="5dp"
-            android:layout_marginLeft="3dp"
+            android:id="@+id/user_avatar"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:src="@drawable/user_avatar"/>
@@ -27,12 +23,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
-            android:layout_marginRight="2dp"
+
+            android:background="@drawable/bg_message"
             android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
                 <TextView android:id="@+id/message_user"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -55,6 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
+                android:layout_margin="5dp"
                 android:autoLink="all"
                 android:text="Message Content"
                 />
@@ -62,9 +61,3 @@
 
     </LinearLayout>
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"/>
-
-</LinearLayout>

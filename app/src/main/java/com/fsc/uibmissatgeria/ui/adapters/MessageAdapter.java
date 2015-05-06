@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fsc.uibmissatgeria.R;
@@ -23,6 +24,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Messages
         private TextView messageUser;
         private TextView messageDate;
         private TextView messageBody;
+        private ImageView avatar;
+
 
 
         public MessagesViewHolder(View itemView) {
@@ -31,12 +34,19 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Messages
             messageUser = (TextView)itemView.findViewById(R.id.message_user);
             messageDate = (TextView)itemView.findViewById(R.id.message_date);
             messageBody = (TextView)itemView.findViewById(R.id.message_body);
+            avatar = (ImageView)itemView.findViewById(R.id.user_avatar);
+
         }
 
-        public void bindGroup(Message m) {
-            messageUser.setText(m.getUser().getName());
+        public void bindGroup(Message m, Boolean sameUser) {
             messageDate.setText(m.getStringDate());
             messageBody.setText(m.getBody());
+            if (sameUser) {
+                avatar.setVisibility(View.INVISIBLE);
+                messageUser.setVisibility(View.GONE);
+            } else {
+                messageUser.setText(m.getUser().getName());
+            }
         }
     }
 
@@ -61,7 +71,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Messages
     @Override
     public void onBindViewHolder(MessagesViewHolder viewHolder, int pos) {
         Message item = messages.get(pos);
-        viewHolder.bindGroup(item);
+        Boolean isSame = false;
+        if (pos > 0) {
+            Message item2 = messages.get(pos-1);
+            isSame = item2.getUser().equals(item.getUser());
+        }
+        viewHolder.bindGroup(item, isSame);
     }
 
     @Override

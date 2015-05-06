@@ -1,36 +1,32 @@
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_marginTop="2dp">
-
-    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginRight="2dp"
             android:orientation="vertical"
+            android:background="@drawable/bg_other"
             android:layout_weight="1">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
                 <TextView android:id="@+id/message_user"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
                     android:textSize="13sp"
                     android:gravity="end"
+                    android:textColor="@android:color/white"
                     android:text="User name"
                     />
                 <TextView android:id="@+id/message_date"
@@ -39,33 +35,29 @@
                     android:textStyle="normal"
                     android:textSize="12sp"
                     android:gravity="start"
+                    android:textColor="@android:color/white"
                     android:text="20:40 10/10/1992"
                     />
             </RelativeLayout>
 
             <TextView android:id="@+id/message_body"
+                android:layout_margin="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
                 android:autoLink="all"
+                android:textColor="@android:color/white"
                 android:text="Message Content"
                 />
         </LinearLayout>
 
         <ImageView
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/user_avatar"
             android:src="@drawable/user_avatar"/>
 
     </LinearLayout>
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"/>
-</LinearLayout>
 
