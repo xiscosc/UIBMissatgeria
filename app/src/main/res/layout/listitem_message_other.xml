@@ -41,8 +41,8 @@
             </RelativeLayout>
 
             <TextView android:id="@+id/message_body"
-                android:layout_marginEnd="@dimen/margin_message"
-                android:layout_marginStart="@dimen/margin_message"
+                android:layout_marginRight="@dimen/margin_message"
+                android:layout_marginLeft="@dimen/margin_message"
                 android:layout_marginBottom="@dimen/margin_message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

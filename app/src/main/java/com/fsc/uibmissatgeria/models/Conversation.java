@@ -36,7 +36,7 @@ public class Conversation extends SugarRecord<Conversation> {
         if (lastMessage != null && lastMessage.getIdApi().equals(lastMessageId)) {
             return lastMessage;
         } else {
-            if (!lastMessageId.equals(Long.valueOf(0))) {
+            if (lastMessageId > 0) {
                 List<MessageConversation> messages = MessageConversation.find(MessageConversation.class, "ID_API = ?", Long.toString(lastMessageId));
                 if (!messages.isEmpty()) {
                     lastMessage = messages.get(0);

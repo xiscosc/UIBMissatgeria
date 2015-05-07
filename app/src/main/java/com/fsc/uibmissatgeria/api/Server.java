@@ -512,7 +512,16 @@ public class Server {
             Conversation c = new Conversation(peer);
 
             if (!converDB.contains(c)) {
+                c.setLastMessageId(Long.valueOf(-1));
                 c.save();
+                converDB.add(c);
+            } else {
+                int index = converDB.indexOf(c);
+                c = converDB.get(index);
+                if (c.getLastMessageId().equals(Long.valueOf(0))) {
+                    c.setLastMessageId(Long.valueOf(-1));
+                    c.save();
+                }
             }
 
         }

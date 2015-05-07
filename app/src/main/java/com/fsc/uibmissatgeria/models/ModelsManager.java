@@ -166,7 +166,7 @@ public class ModelsManager {
     }
 
     public List<Conversation> getConversations() {
-        return Select.from(Conversation.class).orderBy("LAST_MESSAGE_ID DESC").list();
+        return Select.from(Conversation.class).where("LAST_MESSAGE_ID != 0").orderBy("LAST_MESSAGE_ID DESC").list();
     }
 
 
@@ -174,7 +174,7 @@ public class ModelsManager {
         server = new Server(ctx);
         String errorMessage = server.getConversations();
         if (errorMessage != null)  this.error_message = errorMessage;
-        return Select.from(Conversation.class).orderBy("LAST_MESSAGE_ID DESC").list();
+        return Select.from(Conversation.class).where("LAST_MESSAGE_ID != 0").orderBy("LAST_MESSAGE_ID DESC").list();
     }
 
 
