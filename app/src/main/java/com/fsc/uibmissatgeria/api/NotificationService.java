@@ -19,19 +19,25 @@ import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.models.Conversation;
 import com.fsc.uibmissatgeria.models.MessageConversation;
 import com.fsc.uibmissatgeria.models.ModelsManager;
+import com.fsc.uibmissatgeria.models.Subject;
+import com.fsc.uibmissatgeria.models.SubjectGroup;
 import com.fsc.uibmissatgeria.ui.activities.ConversationActivity;
+import com.fsc.uibmissatgeria.ui.activities.MessagesActivity;
 import com.fsc.uibmissatgeria.ui.activities.PrincipalActivity;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class NotificationService extends Service {
     private static NotificationService instance  = null;
     private AccountUIB accountUIB;
-    private ModelsManager mm;
     private  Timer timer;
     private  TimerTask ttask;
+    private Server server;
 
 
     public NotificationService() {
@@ -51,8 +57,8 @@ public class NotificationService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mm = new ModelsManager(getApplicationContext());
         this.accountUIB = new AccountUIB(getApplicationContext());
+        this.server = new Server(getApplicationContext());
         instance = this;
     }
 
@@ -115,79 +121,131 @@ public class NotificationService extends Service {
         }
     }
 
-    private class ConversationTask extends AsyncTask<Void, Void, List<Conversation>> {
+    private class ConversationTask extends AsyncTask<Void, Void, Map<String, Object>> {
 
         @Override
-        protected List<Conversation> doInBackground(Void... params) {
-            return checkConversations();
+        protected Map<String, Object> doInBackground(Void... params) {
+            return server.getNotifications();
         }
 
         @Override
-        protected void onPostExecute(List<Conversation> conversations) {
-            if (!conversations.isEmpty()) {
-                Intent resultIntent;
-                TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
-                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext())
-                        .setSmallIcon(R.drawable.ic_stat_action_speaker_notes)
-                        .setAutoCancel(true)
-                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                        .setDefaults(Notification.DEFAULT_VIBRATE);
+        protected void onPostExecute(Map<String, Object> notifications) {
 
-                if (conversations.size()>1) {
-                    String new_messages = getResources().getString(R.string.new_messages);
-                    String you_have = getResources().getString(R.string.you_new_messages);
-                    String converString = getResources().getString(R.string.conversations);
-                    mBuilder.setContentTitle(new_messages)
-                            .setContentText(you_have + " " + conversations.size() + " "  +converString);
-                    resultIntent = new Intent(getApplicationContext(), PrincipalActivity.class);
-                    resultIntent.putExtra(Constants.NOTIFICATION_CONVERSATIONS, true);
-                    stackBuilder.addParentStack(PrincipalActivity.class);
-                } else {
-                    String new_message = getResources().getString(R.string.new_message_from);
-                    Conversation c = conversations.get(0);
-                    MessageConversation m = c.getLastMessage();
-                    mBuilder.setContentTitle(new_message + " "+c.getPeerName())
-                            .setContentText(m.getBody());
-
-                    resultIntent = new Intent(getApplicationContext(), ConversationActivity.class);
-                    resultIntent.putExtra(Constants.CONVERSATION_OBJ, c.getId());
-                    stackBuilder.addParentStack(ConversationActivity.class);
-
-                }
-                stackBuilder.addNextIntent(resultIntent);
-                PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                mBuilder.setContentIntent(resultPendingIntent);
-                NotificationManager mNotificationManager = (NotificationManager) getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
-                mNotificationManager.notify(1, mBuilder.build());
+            if (notifications.containsKey(Constants.RESULT_CONVERSATIONS)) {
+                notificateConversations((List<Conversation>) notifications.get(Constants.RESULT_CONVERSATIONS));
             }
+
+            if (notifications.containsKey(Constants.RESULT_SUBJECTS) && notifications.containsKey(Constants.RESULT_GROUPS)) {
+                notificateGroups((List<SubjectGroup>) notifications.get(Constants.RESULT_SUBJECTS), (List<SubjectGroup>) notifications.get(Constants.RESULT_GROUPS));
+            }
+
         }
 
     }
 
-    private List<Conversation> checkConversations() {
-        List<Conversation> currentConversations = mm.getConversations();
-        List<Conversation> newConversations = mm.updateConversations();
+    private void notificateGroups(List<SubjectGroup> subjects, List<SubjectGroup> groups) {
+        List<SubjectGroup> toNotificate = new ArrayList<>();
+        if (!subjects.isEmpty() || !groups.isEmpty()) {
+            for (SubjectGroup sg : subjects) {
+                toNotificate.add(sg);
+            }
+            for (SubjectGroup sg : groups) {
+                toNotificate.add(sg);
+            }
 
-        for (Conversation c : currentConversations) {
-            if (newConversations.contains(c)) {
-                int index = newConversations.indexOf(c);
-                Conversation c2 = newConversations.get(index);
-                if (c2.getLastMessageId().equals(c.getLastMessageId())) {
-                    newConversations.remove(index);
-                } else {
-                    MessageConversation m = c2.getLastMessage();
-                    if (m != null && m.isRead()) {
-                        newConversations.remove(index);
+            Intent resultIntent;
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext())
+                    .setSmallIcon(R.drawable.ic_stat_action_speaker_notes)
+                    .setAutoCancel(true)
+                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                    .setDefaults(Notification.DEFAULT_VIBRATE);
+
+            if (toNotificate.size()>1) {
+                String new_messages = getResources().getString(R.string.new_messages_group);
+                String text = "";
+                for(SubjectGroup g: toNotificate) {
+                    String nameGroup;
+                    if (g.getIdApi() == Constants.DEFAULT_GROUP_ID) {
+                        nameGroup = getResources().getString(R.string.general);
+                    } else {
+                        nameGroup = g.getName();
                     }
+                    text += g.getSubject().getName() +" - " +nameGroup+"\n";
                 }
 
-            }
-        }
-        return newConversations;
+                mBuilder.setContentTitle(new_messages)
+                        .setContentText(text);
+                resultIntent = new Intent(getApplicationContext(), PrincipalActivity.class);
+                stackBuilder.addParentStack(PrincipalActivity.class);
+            } else {
+                String new_message = getResources().getString(R.string.new_message_group);
+                SubjectGroup g = toNotificate.get(0);
+                String nameGroup;
+                if (g.getIdApi() == Constants.DEFAULT_GROUP_ID) {
+                    nameGroup = getResources().getString(R.string.general);
+                } else {
+                    nameGroup = g.getName();
+                }
+                mBuilder.setContentTitle(new_message)
+                        .setContentText(g.getSubject().getName() +" - " +nameGroup);
 
+                resultIntent = new Intent(getApplicationContext(), MessagesActivity.class);
+                resultIntent.putExtra(Constants.SUBJECT_OBJ, g.getSubject().getId());
+                resultIntent.putExtra(Constants.GROUP_OBJ, g.getId());
+                stackBuilder.addParentStack(MessagesActivity.class);
+
+            }
+            stackBuilder.addNextIntent(resultIntent);
+            PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+            mBuilder.setContentIntent(resultPendingIntent);
+            NotificationManager mNotificationManager = (NotificationManager) getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
+            mNotificationManager.notify(1, mBuilder.build());
+
+
+
+        }
     }
 
 
+    private void notificateConversations(List<Conversation> conversations) {
+        if (!conversations.isEmpty()) {
+            Intent resultIntent;
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext())
+                    .setSmallIcon(R.drawable.ic_stat_action_speaker_notes)
+                    .setAutoCancel(true)
+                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                    .setDefaults(Notification.DEFAULT_VIBRATE);
+
+            if (conversations.size()>1) {
+                String new_messages = getResources().getString(R.string.new_messages);
+                String you_have = getResources().getString(R.string.you_new_messages);
+                String converString = getResources().getString(R.string.conversations);
+                mBuilder.setContentTitle(new_messages)
+                        .setContentText(you_have + " " + conversations.size() + " "  +converString);
+                resultIntent = new Intent(getApplicationContext(), PrincipalActivity.class);
+                resultIntent.putExtra(Constants.NOTIFICATION_CONVERSATIONS, true);
+                stackBuilder.addParentStack(PrincipalActivity.class);
+            } else {
+                String new_message = getResources().getString(R.string.new_message_from);
+                Conversation c = conversations.get(0);
+                MessageConversation m = c.getLastMessage();
+                mBuilder.setContentTitle(new_message + " "+c.getPeerName())
+                        .setContentText(m.getBody());
+
+                resultIntent = new Intent(getApplicationContext(), ConversationActivity.class);
+                resultIntent.putExtra(Constants.CONVERSATION_OBJ, c.getId());
+                stackBuilder.addParentStack(ConversationActivity.class);
+
+            }
+            stackBuilder.addNextIntent(resultIntent);
+            PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+            mBuilder.setContentIntent(resultPendingIntent);
+            NotificationManager mNotificationManager = (NotificationManager) getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
+            mNotificationManager.notify(1, mBuilder.build());
+        }
+    }
 
     @Override
     public IBinder onBind(Intent intent) {

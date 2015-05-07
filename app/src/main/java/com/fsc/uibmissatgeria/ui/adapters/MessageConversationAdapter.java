@@ -27,7 +27,7 @@ public class MessageConversationAdapter extends RecyclerView.Adapter<MessageConv
         private TextView messageUser;
         private TextView messageDate;
         private TextView messageBody;
-
+        private ImageView avatar;
 
         public MessagesViewHolder(View itemView) {
             super(itemView);
@@ -35,6 +35,7 @@ public class MessageConversationAdapter extends RecyclerView.Adapter<MessageConv
             messageUser = (TextView)itemView.findViewById(R.id.message_user);
             messageDate = (TextView)itemView.findViewById(R.id.message_date);
             messageBody = (TextView)itemView.findViewById(R.id.message_body);
+            avatar = (ImageView)itemView.findViewById(R.id.user_avatar);
         }
 
         public void bindGroup(MessageConversation m, User u) {
@@ -42,6 +43,7 @@ public class MessageConversationAdapter extends RecyclerView.Adapter<MessageConv
             messageDate.setText(m.getStringDate());
             messageBody.setText(m.getBody());
             messageUser.setText(u.getName());
+            avatar.setVisibility(View.INVISIBLE);
 
         }
     }

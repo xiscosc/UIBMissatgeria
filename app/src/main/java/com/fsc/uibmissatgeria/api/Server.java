@@ -29,6 +29,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.acl.Group;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -215,7 +216,8 @@ public class Server {
                     userJson.getString("first_name"),
                     userJson.getString("last_name"),
                     userJson.getString("user"),
-                    userJson.getInt("type")
+                    userJson.getInt("type"),
+                    userJson.getInt("type") == Constants.TYPE_TEACHER
             );
 
             if (!usersDbList.contains(sender)) {
@@ -341,7 +343,7 @@ public class Server {
             urlConnection = setUpConnection(url, "POST");
             urlConnection.setDoOutput(true);
             OutputStreamWriter writer = new OutputStreamWriter(urlConnection.getOutputStream());
-            writer.write("body="+body);
+            writer.write("body=" + body);
             writer.flush();
             String line;
             BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
@@ -465,16 +467,14 @@ public class Server {
 
     public String getConversations() {
         String result = null;
-        AccountUIB accountUIB = new AccountUIB(c);
         List<Conversation> converDB = Conversation.listAll(Conversation.class);
         List<User> peers = User.listAll(User.class);
-        User usr = accountUIB.getUser();
         JSONArray reader;
 
         try {
             reader = readArrayFromServer(SERVER_URL + "user/chats/");
             if (reader != null) {
-                manageConversations(reader, converDB, peers, usr);
+                manageConversations(reader, converDB, peers);
             } else {
                 result =  c.getResources().getString(R.string.error_conversations);  
             }
@@ -486,10 +486,9 @@ public class Server {
         return result;
     }
 
-    private void manageConversations(JSONArray reader, List<Conversation> converDB, List<User> peers, User usr) throws JSONException{
+    private void manageConversations(JSONArray reader, List<Conversation> converDB, List<User> peers) throws JSONException{
         for (int x = 0; x < reader.length(); x++) {
-            JSONObject conversation = reader.getJSONObject(x);
-            JSONObject userJson = conversation.getJSONObject("user");
+            JSONObject userJson = reader.getJSONObject(x);
 
             User peer = new User(
                     userJson.getInt("id"),
@@ -512,39 +511,7 @@ public class Server {
 
             Conversation c = new Conversation(peer);
 
-            if (converDB.contains(c)) {
-                int index = converDB.indexOf(c);
-                c = converDB.get(index);
-            }  else {
-                c.save();
-            }
-            JSONObject messageJson = conversation.getJSONObject("last_message");
-            JSONObject userJson2 = messageJson.getJSONObject("recipient");
-
-            User recipient = new User(
-                    userJson2.getInt("id"),
-                    userJson2.getString("first_name"),
-                    userJson2.getString("last_name"),
-                    userJson2.getString("user"),
-                    userJson2.getInt("type")
-            );
-
-            MessageConversation mc = new MessageConversation(
-                messageJson.getLong("id"),
-                    messageJson.getString("body"),
-                    messageJson.getString("created_at"),
-                    c,
-                    recipient.equals(usr)
-            );
-
-           MessageConversation lastc = c.getLastMessage();
-
-            if (lastc == null || !mc.equals(lastc)) {
-                List<MessageConversation> mcl = MessageConversation.find(MessageConversation.class, "ID_API = "+mc.getIdApi());
-                if (mcl.isEmpty()) {
-                    mc.save();
-                }
-                c.setLastMessageId(mc.getIdApi());
+            if (!converDB.contains(c)) {
                 c.save();
             }
 
@@ -751,6 +718,165 @@ public class Server {
                 e.printStackTrace();
             }
         }
+        return result;
+    }
+
+    public Map<String, Object> getNotifications() {
+        Map<String, Object> result = new HashMap<>();
+        JSONObject reader = readObjectFromServer(SERVER_URL + "user/notifications/");
+        if (reader != null) {
+            try {
+                JSONArray chats = reader.getJSONArray("chats");
+                JSONArray subjects = reader.getJSONArray("subjects");
+                JSONArray groups = reader.getJSONArray("groups");
+
+                List<Conversation> resultConversations = manageConversationsNotifications(chats);
+                List<SubjectGroup> resultSubjects = manageSubjectsNotifications(subjects);
+                List<SubjectGroup> resultSubjectGroups = manageSubjectGroupsNotifications(groups);
+
+                result.put(Constants.RESULT_CONVERSATIONS, resultConversations);
+                result.put(Constants.RESULT_SUBJECTS, resultSubjects);
+                result.put(Constants.RESULT_GROUPS, resultSubjectGroups);
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+
+    private List<SubjectGroup> manageSubjectGroupsNotifications(JSONArray groups) throws JSONException {
+        Boolean onlyTeacher = (new AccountUIB(c)).OnlyTeacherNotifications();
+        List<SubjectGroup> result = new ArrayList<>();
+        for (int x=0; x<groups.length(); x++) {
+            JSONObject message = groups.getJSONObject(x);
+            int groupId = message.getInt("group_id");
+            List<SubjectGroup> gs = SubjectGroup.find(SubjectGroup.class, "ID_API = "+ groupId);
+            if (!gs.isEmpty() && gs.size() == 1) {
+                SubjectGroup g = gs.get(0);
+                Long last = message.getLong("id");
+                if (!last.equals(g.getLastMessageId())) {
+                    if (onlyTeacher) {
+                        JSONObject sender = message.getJSONObject("sender");
+                        if (sender.getInt("type") == Constants.TYPE_TEACHER) {
+                            g.setLastMessageId(last);
+                            g.save();
+                            result.add(g);
+                        }
+                    } else {
+                        g.setLastMessageId(last);
+                        g.save();
+                        result.add(g);
+                    }
+
+                }
+            }
+        }
+        return result;
+    }
+
+    private List<SubjectGroup> manageSubjectsNotifications(JSONArray subjects) throws JSONException {
+        Boolean onlyTeacher = (new AccountUIB(c)).OnlyTeacherNotifications();
+        List<SubjectGroup> result = new ArrayList<>();
+        for (int x=0; x<subjects.length(); x++) {
+            JSONObject message = subjects.getJSONObject(x);
+            int subjectID = message.getInt("subject_id");
+            List<SubjectGroup> groups = SubjectGroup.find(SubjectGroup.class, "SUBJECT = "+subjectID+" AND ID_API = "+Constants.DEFAULT_GROUP_ID);
+            if (!groups.isEmpty() && groups.size() == 1) {
+                SubjectGroup g = groups.get(0);
+                Long last = message.getLong("id");
+                if (!last.equals(g.getLastMessageId())) {
+                    if (onlyTeacher) {
+                        JSONObject sender = message.getJSONObject("sender");
+                        if (sender.getInt("type") == Constants.TYPE_TEACHER) {
+                            g.setLastMessageId(last);
+                            g.save();
+                            result.add(g);
+                        }
+                    } else {
+                        g.setLastMessageId(last);
+                        g.save();
+                        result.add(g);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    private List<Conversation> manageConversationsNotifications(JSONArray chats) throws JSONException {
+        List<Conversation> result = new ArrayList<>();
+        List<User> users = User.listAll(User.class);
+        List<Conversation> conversations = Conversation.listAll(Conversation.class);
+        AccountUIB aUIB = new AccountUIB(this.c);
+        User usr = aUIB.getUser();
+        for (int x=0; x<chats.length(); x++) {
+            JSONObject messageJson = chats.getJSONObject(x);
+            JSONObject userJson2 = messageJson.getJSONObject("sender");
+
+            User sender = new User(
+                    userJson2.getInt("id"),
+                    userJson2.getString("first_name"),
+                    userJson2.getString("last_name"),
+                    userJson2.getString("user"),
+                    userJson2.getInt("type")
+            );
+
+            if (!sender.equals(usr)) {
+                Conversation conver;
+                if (users.contains(sender)) {
+                    int i = users.indexOf(sender);
+                    User u = users.get(i);
+                    if (u.isPeer()) {
+                        sender = u;
+                        conver = new Conversation(sender);
+                        if (conversations.contains(conver)) {
+                            int index = conversations.indexOf(conver);
+                            conver = conversations.get(index);
+                        } else {
+                            conver.save();
+                            conversations.add(conver);
+                        }
+                    } else {
+                        u.setPeer(true);
+                        u.save();
+                        sender = u;
+                        conver = new Conversation(sender);
+                        conver.save();
+                        conversations.add(conver);
+                    }
+
+                } else {
+                    sender.setPeer(true);
+                    sender.save();
+                    users.add(sender);
+                    conver = new Conversation(sender);
+                    conver.save();
+                    conversations.add(conver);
+                }
+
+
+                if (!conver.getLastMessageId().equals(messageJson.getLong("id"))) {
+                    MessageConversation mc = new MessageConversation(
+                            messageJson.getLong("id"),
+                            messageJson.getString("body"),
+                            messageJson.getString("created_at"),
+                            conver,
+                            true
+                    );
+
+                    mc.save();
+                    conver.setLastMessageId(mc.getIdApi());
+                    conver.save();
+                    result.add(conver);
+                }
+
+            }
+
+
+        }
+
         return result;
     }
 }

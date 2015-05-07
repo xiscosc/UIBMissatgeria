@@ -39,6 +39,9 @@
     <string name="chec_freq">Check Frequency</string>
     <string name="chec_freq_sum">Time checking for new messages</string>
     <string name="find">Find users</string>
+    <string name="new_messages_group">New messages in subjects</string>
+    <string name="new_message_group">New message in subject</string>
+    <string name="only_teacher">Only notifications from teachers</string>
 
 
 </resources>

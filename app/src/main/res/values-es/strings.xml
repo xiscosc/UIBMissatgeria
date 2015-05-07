@@ -36,4 +36,7 @@
     <string name="notification_settings">Configuración de notificaciones</string>
     <string name="reset_data">Restablecer datos</string>
     <string name="find">Buscar usuarios</string>
+    <string name="new_message_group">Nuevo mensaje en una asignatura</string>
+    <string name="new_messages_group">Nuevos mensajes en asignaturas</string>
+    <string name="only_teacher">Sólo notificaciones de profesores</string>
 </resources>

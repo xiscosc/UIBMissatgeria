@@ -43,6 +43,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             } else {
                 date.setText("");
                 body.setText("");
+                circleUnread.setVisibility(View.VISIBLE);
             }
 
         }

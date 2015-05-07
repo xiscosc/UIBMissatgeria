@@ -87,6 +87,7 @@ public class AccountUIB {
             SharedPreferences.Editor editor = settings.edit();
             editor.putInt(Constants.ACCOUNT_ID, usr.getIdApi());
             editor.putString(Constants.SP_UPDATE, Constants.SP_UPDATE_DEFAULT);
+            editor.putBoolean(Constants.SP_ONLY_TEACHER, false);
             editor.commit();
             return true;
         } catch (Exception e) {
@@ -135,6 +136,11 @@ public class AccountUIB {
             Boolean isRunning = NotificationService.isRunning();
             if(!isRunning) c.startService(serviceIntent);
         }
+    }
+
+    public boolean OnlyTeacherNotifications() {
+        SharedPreferences settings = c.getSharedPreferences(Constants.SP_UIB, 0);
+        return settings.getBoolean(Constants.SP_ONLY_TEACHER, false);
     }
 
 }

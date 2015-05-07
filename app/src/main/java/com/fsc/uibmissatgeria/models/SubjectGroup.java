@@ -6,6 +6,7 @@ public class SubjectGroup extends SugarRecord<SubjectGroup>{
     private String name;
     private int idApi;
     private Subject subject;
+    private Long lastMessageId;
 
     public SubjectGroup() {
     }
@@ -14,6 +15,7 @@ public class SubjectGroup extends SugarRecord<SubjectGroup>{
         this.name = name;
         this.idApi = id;
         this.subject = s;
+        this.lastMessageId = Long.valueOf(0);
     }
 
     public String getName() {
@@ -26,6 +28,14 @@ public class SubjectGroup extends SugarRecord<SubjectGroup>{
 
     public Subject getSubject() {
         return subject;
+    }
+
+    public Long getLastMessageId() {
+        return lastMessageId;
+    }
+
+    public void setLastMessageId(Long lastMessageId) {
+        this.lastMessageId = lastMessageId;
     }
 
     @Override

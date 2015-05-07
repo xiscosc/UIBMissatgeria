@@ -16,6 +16,7 @@ public class Constants {
 
     public static final String SP_UIB = "com.fsc.uibmissatgeria_preferences";
     public static final String SP_UPDATE = "prefUpdateFrequency";
+    public static final String SP_ONLY_TEACHER = "prefOnlyTeacher";
     public static final String ACCOUNT_TOKEN =  "prefTokenAccount";
     public static final String ACCOUNT_ID = "prefIdAccount";
     public static final String ACCOUNT_TOKEN_FAILED = "token_failed";
@@ -40,6 +41,10 @@ public class Constants {
     public static final int TYPE_TEACHER = 1;
     public static final int TYPE_STUDENT = 2;
 
+
+    public static final String RESULT_CONVERSATIONS = "result_conversations";
+    public static final String RESULT_SUBJECTS = "result_subjects";
+    public static final String RESULT_GROUPS = "result_groups";
 
 
     public static void showToast(Context ctx, String message) {

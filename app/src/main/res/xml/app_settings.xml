@@ -20,6 +20,10 @@
             android:entries="@array/updateFrequency"
             android:entryValues="@array/updateFrequencyValues"
             />
+        <CheckBoxPreference
+            android:key="prefOnlyTeacher"
+            android:title="@string/only_teacher"
+            />
     </PreferenceCategory>
 
 

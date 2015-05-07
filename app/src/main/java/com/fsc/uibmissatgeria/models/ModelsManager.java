@@ -25,48 +25,34 @@ public class ModelsManager {
 }
 
     public List<Message> getMessages(Subject s, SubjectGroup g) {
+        Long lastID = g.getLastMessageId();
         List<Message> messages = Select.from(Message.class)
                 .where("SUBJECT_GROUP = "+g.getId())
                 .orderBy("ID_API DESC")
                 .limit(Integer.toString(Constants.MAX_LIST_SIZE))
                 .list();
         if (messages.isEmpty()) {
-            return initMessages(s, g);
+            messages = initMessages(s, g);
+            if (!messages.isEmpty()) {
+                g.setLastMessageId(messages.get(0).getIdApi());
+                g.save();
+            }
+            return messages;
         } else {
             Message m = messages.get(0);
-            if (!m.isToday()) {
+            if (!m.isToday() || !m.getIdApi().equals(lastID)) {
                 List<Message> new_messages = getNewMessages(s, g, m);
                 for(Message me : new_messages) {
                     messages.add(0, me);
                 }
                 if (messages.size()> Constants.MAX_LIST_SIZE) {
-                    return messages.subList(0, Constants.MAX_LIST_SIZE-1);
+                    messages = messages.subList(0, Constants.MAX_LIST_SIZE-1);
                  }
             }
             return  messages;
         }
     }
 
-
-    public List<Conversation> getConversations() {
-        return Select.from(Conversation.class).orderBy("LAST_MESSAGE_ID DESC").list();
-    }
-
-
-    public List<Conversation> updateConversations() {
-        server = new Server(ctx);
-        String errorMessage = server.getConversations();
-        if (errorMessage != null)  this.error_message = errorMessage;
-        return Select.from(Conversation.class).orderBy("LAST_MESSAGE_ID DESC").list();
-    }
-
-
-    public List<User> getPeers() {
-        server = new Server(ctx);
-        String errorMessage = server.getPeers();
-        if (errorMessage != null)  this.error_message = errorMessage;
-        return User.find(User.class, "PEER = 1");
-    }
 
     public List<Message> getOlderMessages(Subject s, SubjectGroup g, Message m) {
         List<Message> messages = Select.from(Message.class)
@@ -105,10 +91,16 @@ public class ModelsManager {
         server = new Server(ctx);
         String errorMessage = server.getNewMessages(s, g, m);
         if (errorMessage != null)  this.error_message = errorMessage;
-        return Select.from(Message.class)
+        List<Message> nMessages = Select.from(Message.class)
                 .where("SUBJECT_GROUP = "+g.getId()+" AND ID_API > "+m.getIdApi())
                 .orderBy("ID_API ASC")
                 .list();
+
+        if (!nMessages.isEmpty()) {
+            g.setLastMessageId(nMessages.get(nMessages.size()-1).getIdApi());
+            g.save();
+        }
+        return nMessages;
     }
 
     /*
@@ -171,6 +163,26 @@ public class ModelsManager {
         } else {
             return conversations.get(0);
         }
+    }
+
+    public List<Conversation> getConversations() {
+        return Select.from(Conversation.class).orderBy("LAST_MESSAGE_ID DESC").list();
+    }
+
+
+    public List<Conversation> updateConversations() {
+        server = new Server(ctx);
+        String errorMessage = server.getConversations();
+        if (errorMessage != null)  this.error_message = errorMessage;
+        return Select.from(Conversation.class).orderBy("LAST_MESSAGE_ID DESC").list();
+    }
+
+
+    public List<User> getPeers() {
+        server = new Server(ctx);
+        String errorMessage = server.getPeers();
+        if (errorMessage != null)  this.error_message = errorMessage;
+        return User.find(User.class, "PEER = 1");
     }
 
     public static boolean thereAreSubjects() {
