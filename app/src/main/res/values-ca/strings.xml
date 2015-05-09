@@ -39,4 +39,5 @@
     <string name="new_message_group">Nou missatge a una assignatura</string>
     <string name="new_messages_group">Nous missatges a assignatures</string>
     <string name="only_teacher">Només notificacions de professors</string>
+    <string name="new_messages_group_you">Tens nous missatges a diferents assignatures</string>
 </resources>

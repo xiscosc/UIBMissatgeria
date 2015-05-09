@@ -52,7 +52,12 @@ public class Subject extends SugarRecord<Subject> {
                 Long.toString(this.getId()),
                 Integer.toString(Constants.DEFAULT_GROUP_ID)
         );
-        return groups.get(0);
+        if (groups.isEmpty()) {
+            return null;
+        } else {
+            return groups.get(0);
+        }
+
     }
 
     @Override

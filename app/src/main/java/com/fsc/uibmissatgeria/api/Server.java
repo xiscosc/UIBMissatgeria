@@ -791,22 +791,24 @@ public class Server {
         for (int x=0; x<subjects.length(); x++) {
             JSONObject message = subjects.getJSONObject(x);
             int subjectID = message.getInt("subject_id");
-            List<SubjectGroup> groups = SubjectGroup.find(SubjectGroup.class, "SUBJECT = "+subjectID+" AND ID_API = "+Constants.DEFAULT_GROUP_ID);
-            if (!groups.isEmpty() && groups.size() == 1) {
-                SubjectGroup g = groups.get(0);
-                Long last = message.getLong("id");
-                if (!last.equals(g.getLastMessageId())) {
-                    if (onlyTeacher) {
-                        JSONObject sender = message.getJSONObject("sender");
-                        if (sender.getInt("type") == Constants.TYPE_TEACHER) {
+            List<Subject> subject = Subject.find(Subject.class, "ID_API = "+subjectID);
+            if (!subject.isEmpty() && subject.size() == 1) {
+                SubjectGroup g = subject.get(0).getDefaultGroup();
+                if (g != null) {
+                    Long last = message.getLong("id");
+                    if (!last.equals(g.getLastMessageId())) {
+                        if (onlyTeacher) {
+                            JSONObject sender = message.getJSONObject("sender");
+                            if (sender.getInt("type") == Constants.TYPE_TEACHER) {
+                                g.setLastMessageId(last);
+                                g.save();
+                                result.add(g);
+                            }
+                        } else {
                             g.setLastMessageId(last);
                             g.save();
                             result.add(g);
                         }
-                    } else {
-                        g.setLastMessageId(last);
-                        g.save();
-                        result.add(g);
                     }
                 }
             }

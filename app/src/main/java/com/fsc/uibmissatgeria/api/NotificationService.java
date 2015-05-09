@@ -163,7 +163,8 @@ public class NotificationService extends Service {
 
             if (toNotificate.size()>1) {
                 String new_messages = getResources().getString(R.string.new_messages_group);
-                String text = "";
+                NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+                inboxStyle.setBigContentTitle(getResources().getString(R.string.new_messages)+":");
                 for(SubjectGroup g: toNotificate) {
                     String nameGroup;
                     if (g.getIdApi() == Constants.DEFAULT_GROUP_ID) {
@@ -171,11 +172,12 @@ public class NotificationService extends Service {
                     } else {
                         nameGroup = g.getName();
                     }
-                    text += g.getSubject().getName() +" - " +nameGroup+"\n";
+                    inboxStyle.addLine(g.getSubject().getName() +" - " +nameGroup);
                 }
 
                 mBuilder.setContentTitle(new_messages)
-                        .setContentText(text);
+                        .setContentText(getResources().getString(R.string.new_messages_group_you))
+                        .setStyle(inboxStyle);
                 resultIntent = new Intent(getApplicationContext(), PrincipalActivity.class);
                 stackBuilder.addParentStack(PrincipalActivity.class);
             } else {
