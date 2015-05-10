@@ -16,28 +16,31 @@ import java.util.List;
 public class AccountUIB {
 
     private Context c;
+    private User usr;
 
     public AccountUIB(Context c) {
         this.c = c;
+        this.usr = null;
     }
 
 
     private boolean addAcount(String username, String password) {
         Server s = new Server(this.c);
-        boolean result = s.doLogin(username, password);
-        if (result) {
+        User usr = s.doLogin(username, password);
+        if (usr != null) {
             try {
                 String token = s.getTokenRaw();
                 SharedPreferences settings = c.getSharedPreferences(Constants.SP_UIB, 0);
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString(Constants.ACCOUNT_TOKEN, token);
                 editor.commit();
-                result = true;
+                this.usr = usr;
+                return true;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return result;
+        return false;
     }
 
 
@@ -78,9 +81,6 @@ public class AccountUIB {
     }
 
     private boolean saveUser() {
-        Server s = new Server(this.c);
-        User usr = s.getUserByToken();
-        //USER DB MUST BE EMPTY
         usr.save();
         try {
             SharedPreferences settings = c.getSharedPreferences(Constants.SP_UIB, 0);

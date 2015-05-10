@@ -398,40 +398,29 @@ public class Server {
         return  urlConnection;
     }
 
-    public boolean doLogin(String user, String password) {
+    public User doLogin(String user, String password) {
 
         Boolean result = false;
         try {
             String url = SERVER_URL+"login/?user="+user+"&password="+password;
             JSONObject reader = readObjectFromServer(url);
             this.token = reader.getString("token");
-            result = true;
+            JSONObject usr = reader.getJSONObject("user");
+            return new User(
+                    usr.getInt("id"),
+                    usr.getString("first_name"),
+                    usr.getString("last_name"),
+                    usr.getString("user"),
+                    usr.getInt("type")
+            );
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return result;
+        return null;
     }
 
     public String getTokenRaw() {
         return this.token;
-    }
-
-    public User getUserByToken() {
-        JSONObject reader = readObjectFromServer(SERVER_URL + "user/");
-        if (reader != null) {
-            try {
-                return new User(
-                        reader.getInt("id"),
-                        reader.getString("first_name"),
-                        reader.getString("last_name"),
-                        reader.getString("user"),
-                        reader.getInt("type")
-                );
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
     }
 
         /*
