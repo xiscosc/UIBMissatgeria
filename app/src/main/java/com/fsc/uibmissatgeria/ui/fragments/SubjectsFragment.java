@@ -19,7 +19,6 @@ import com.fsc.uibmissatgeria.ui.adapters.SubjectAdapter;
 import com.fsc.uibmissatgeria.models.ModelsManager;
 import com.fsc.uibmissatgeria.models.Subject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -78,7 +77,7 @@ public class SubjectsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         PrincipalActivity ctx = (PrincipalActivity) getActivity();
-        if (ctx.auib.isLogged() && subjects != null && !ModelsManager.thereAreSubjects()) {
+        if (ctx.accountUIB.isLogged()) {
             loadingBar.setVisibility(View.VISIBLE);
             loadSubjects();
         }

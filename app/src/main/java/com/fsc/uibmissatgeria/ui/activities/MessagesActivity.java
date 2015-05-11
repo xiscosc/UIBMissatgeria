@@ -3,8 +3,9 @@ package com.fsc.uibmissatgeria.ui.activities;
 import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -15,14 +16,17 @@ import com.fsc.uibmissatgeria.models.SubjectGroup;
 import com.fsc.uibmissatgeria.models.Subject;
 
 
-public class MessagesActivity extends ActionBarActivity {
+public class MessagesActivity extends AppCompatActivity {
     public Subject sbj;
     public SubjectGroup gr;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
+
+
 
         Intent i = getIntent();
 
@@ -35,12 +39,19 @@ public class MessagesActivity extends ActionBarActivity {
         if (gr.getIdApi()!=Constants.DEFAULT_GROUP_ID) {
           name +=" "+gr.getName();
         }
-        setTitle(name);
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container_messages, new MessagesFragment())
                     .commit();
         }
+
+        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        toolbar.setTitle(name);
+        setSupportActionBar(toolbar);
+
+        gr.setRead(true);
+        gr.save();
     }
 
 

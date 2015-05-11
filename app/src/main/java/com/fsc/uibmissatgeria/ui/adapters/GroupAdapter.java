@@ -21,16 +21,19 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupsViewHo
 
         private TextView groupTitle;
         private String group;
+        private View unRead;
 
         public GroupsViewHolder(View itemView) {
             super(itemView);
             itemView.setClickable(true);
             group = itemView.getContext().getResources().getString(R.string.group);
             groupTitle = (TextView) itemView.findViewById(R.id.group_title);
+            unRead = itemView.findViewById(R.id.group_circle_unread);
         }
 
         public void bindGroup(SubjectGroup g) {
             groupTitle.setText(group+" "+g.getName());
+            if (!g.isRead()) unRead.setVisibility(View.VISIBLE);
         }
     }
 

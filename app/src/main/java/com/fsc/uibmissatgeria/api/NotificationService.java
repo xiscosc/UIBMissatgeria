@@ -224,8 +224,14 @@ public class NotificationService extends Service {
                 String new_messages = getResources().getString(R.string.new_messages);
                 String you_have = getResources().getString(R.string.you_new_messages);
                 String converString = getResources().getString(R.string.conversations);
+                NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+                inboxStyle.setBigContentTitle(new_messages+":");
+                for(Conversation c: conversations) {
+                    inboxStyle.addLine(c.getPeerName());
+                }
                 mBuilder.setContentTitle(new_messages)
-                        .setContentText(you_have + " " + conversations.size() + " "  +converString);
+                        .setContentText(you_have + " " + conversations.size() + " "  +converString)
+                        .setStyle(inboxStyle);
                 resultIntent = new Intent(getApplicationContext(), PrincipalActivity.class);
                 resultIntent.putExtra(Constants.NOTIFICATION_CONVERSATIONS, true);
                 stackBuilder.addParentStack(PrincipalActivity.class);

@@ -22,17 +22,20 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.Subjects
 
         private TextView subjectTitle;
         private TextView subjectSubTitle;
+        private View unRead;
 
         public SubjectsViewHolder(View itemView) {
             super(itemView);
             itemView.setClickable(true);
             subjectTitle = (TextView) itemView.findViewById(R.id.subject_title);
             subjectSubTitle = (TextView) itemView.findViewById(R.id.subject_subtitle);
+            unRead = itemView.findViewById(R.id.subject_circle_unread);
         }
 
         public void bindSubject(Subject s) {
             subjectTitle.setText(s.getName());
             subjectSubTitle.setText(Integer.toString(s.getCode()));
+            if (s.hasUnreadGroups()) unRead.setVisibility(View.VISIBLE);
         }
     }
 

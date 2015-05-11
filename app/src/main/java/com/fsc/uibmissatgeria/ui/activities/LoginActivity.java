@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,7 +20,7 @@ import com.fsc.uibmissatgeria.api.NotificationService;
 import com.fsc.uibmissatgeria.api.ServerSettings;
 
 
-public class LoginActivity extends ActionBarActivity {
+public class LoginActivity extends AppCompatActivity {
 
     private EditText user;
     private EditText password;

@@ -1,40 +1,58 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-android:layout_height="match_parent" android:paddingLeft="2dp"
-android:paddingRight="2dp"
-android:paddingTop="2dp"
-android:paddingBottom="2dp"
+android:layout_height="match_parent"
 android:orientation="vertical"
 tools:context="com.fsc.uibmissatgeria.ui.activities.PeerSelectionActivity">
 
-    <EditText
-        android:layout_width="match_parent"
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/tool_bar"
         android:layout_height="wrap_content"
-        android:hint="@string/find"
-        android:id="@+id/peers_search"
-        android:lines="1"
-        android:visibility="gone"/>
-
-    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/peers_list"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:paddingBottom="2dp"
+        >
+
+        <EditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <ProgressBar
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:layout_gravity="center"
-            android:id="@+id/peers_loading"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            />
+            android:hint="@string/find"
+            android:id="@+id/peers_search"
+            android:lines="1"
+            android:visibility="gone"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/peers_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:layout_gravity="center"
+                android:id="@+id/peers_loading"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                />
 
 
-    </RelativeLayout>
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
 
 </LinearLayout>

@@ -4,12 +4,21 @@
 
 
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primaryDark</item>
         <item name="colorAccent">@color/primary</item>
         <item name="actionModeBackground">@color/primary</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
+
+    <style name="toolBarTheme" parent="@style/Base.ThemeOverlay.AppCompat.Light">
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="colorControlNormal">@android:color/white</item>
+        <item name="colorControlHighlight">@android:color/white</item>
+    </style>
+
 
     <color name="transparent">#00000000</color>
     <color name="tab_highlight">#ff9ecfbf</color>
@@ -17,6 +26,7 @@
     <color name="primary">#0060A8</color>
     <color name="message">#E6E5EB</color>
     <color name="message_other">#0196F2</color>
+    <color name="tabsScrollColor">@android:color/white</color>
 
 
 </resources>

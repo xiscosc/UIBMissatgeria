@@ -759,11 +759,13 @@ public class Server {
                         JSONObject sender = message.getJSONObject("sender");
                         if (sender.getInt("type") == Constants.TYPE_TEACHER) {
                             g.setLastMessageId(last);
+                            g.setRead(false);
                             g.save();
                             result.add(g);
                         }
                     } else {
                         g.setLastMessageId(last);
+                        g.setRead(false);
                         g.save();
                         result.add(g);
                     }
@@ -790,11 +792,13 @@ public class Server {
                             JSONObject sender = message.getJSONObject("sender");
                             if (sender.getInt("type") == Constants.TYPE_TEACHER) {
                                 g.setLastMessageId(last);
+                                g.setRead(false);
                                 g.save();
                                 result.add(g);
                             }
                         } else {
                             g.setLastMessageId(last);
+                            g.setRead(false);
                             g.save();
                             result.add(g);
                         }

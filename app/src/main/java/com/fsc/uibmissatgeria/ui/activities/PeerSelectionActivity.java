@@ -2,14 +2,14 @@ package com.fsc.uibmissatgeria.ui.activities;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
+
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -24,7 +24,7 @@ import com.fsc.uibmissatgeria.ui.adapters.PeerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PeerSelectionActivity extends ActionBarActivity {
+public class PeerSelectionActivity extends AppCompatActivity {
 
     private RecyclerView recView;
     private List<User> peers;
@@ -33,11 +33,16 @@ public class PeerSelectionActivity extends ActionBarActivity {
     private ProgressBar loadingBar;
     private ModelsManager mm;
     private EditText finder;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_peer_selection);
+
+        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
+
         recView = (RecyclerView) findViewById(R.id.peers_list);
         recView.setLayoutManager(
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false));

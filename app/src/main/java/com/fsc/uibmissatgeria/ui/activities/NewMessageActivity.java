@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
@@ -24,7 +24,7 @@ import com.fsc.uibmissatgeria.models.SubjectGroup;
 import com.fsc.uibmissatgeria.models.Subject;
 
 
-public class NewMessageActivity extends ActionBarActivity {
+public class NewMessageActivity extends AppCompatActivity {
 
     private Subject sbj;
     private SubjectGroup gr;

@@ -6,10 +6,11 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,7 +31,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class ConversationActivity extends ActionBarActivity {
+public class ConversationActivity extends AppCompatActivity {
 
     private Conversation conversation;
     private MessageConversationAdapter messageAdapter;
@@ -45,6 +46,7 @@ public class ConversationActivity extends ActionBarActivity {
     private Timer timer;
     private TimerTask ttask;
     private Boolean firstRun;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +54,10 @@ public class ConversationActivity extends ActionBarActivity {
         Intent i = getIntent();
         Long id = i.getLongExtra(Constants.CONVERSATION_OBJ, 0);
         conversation = Conversation.findById(Conversation.class, id);
-        setTitle(conversation.getPeerName());
         setContentView(R.layout.activity_conversation);
+        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        toolbar.setTitle(conversation.getPeerName());
+        setSupportActionBar(toolbar);
         editText = (EditText) findViewById(R.id.conversation_text);
         recView = (RecyclerView) findViewById(R.id.conversation_list);
 

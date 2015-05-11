@@ -4,15 +4,14 @@ import java.util.Locale;
 
 import android.content.Intent;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -23,81 +22,45 @@ import com.fsc.uibmissatgeria.api.AccountUIB;
 import com.fsc.uibmissatgeria.ui.fragments.SubjectsFragment;
 import com.fsc.uibmissatgeria.ui.fragments.ConversationsFragment;
 import com.fsc.uibmissatgeria.ui.fragments.PlaceholderFragment;
+import com.fsc.uibmissatgeria.ui.widgets.SlidingTabLayout;
 
 
-public class PrincipalActivity extends ActionBarActivity {
+public class PrincipalActivity extends AppCompatActivity {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-    SectionsPagerAdapter mSectionsPagerAdapter;
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    ViewPager mViewPager;
-    public AccountUIB auib;
+    private SectionsPagerAdapter adapter;
+    private ViewPager pager;
+    public AccountUIB accountUIB;
+    private Toolbar toolbar;
+    private SlidingTabLayout tabs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        accountUIB = new AccountUIB(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_principal);
-        final ActionBar actionBar = getSupportActionBar();
+        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
+        adapter =  new SectionsPagerAdapter(getSupportFragmentManager());
+        pager = (ViewPager) findViewById(R.id.pager);
+        pager.setAdapter(adapter);
+        tabs = (SlidingTabLayout) findViewById(R.id.tabs);
+        tabs.setDistributeEvenly(true);
 
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-        auib = new AccountUIB(this);
-
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-        // Create a tab listener that is called when the user changes tabs.
-        ActionBar.TabListener tabListener = new ActionBar.TabListener() {
-            public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-                mViewPager.setCurrentItem(tab.getPosition());
+        tabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
+            @Override
+            public int getIndicatorColor(int position) {
+                return getResources().getColor(R.color.tabsScrollColor);
             }
 
-            public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
-                // hide the given tab
-            }
+        });
 
-            public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
-                // probably ignore this event
-            }
-        };
-
-        // Add 3 tabs, specifying the tab's text and TabListener
-        for (int i = 0; i < 2; i++) {
-            actionBar.addTab(
-                    actionBar.newTab()
-                            .setText(mSectionsPagerAdapter.getPageTitle(i))
-                            .setTabListener(tabListener));
-        }
-
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setOnPageChangeListener(
-                new ViewPager.SimpleOnPageChangeListener() {
-                    @Override
-                    public void onPageSelected(int position) {
-                        // When swiping between pages, select the
-                        // corresponding tab.
-                        getSupportActionBar().setSelectedNavigationItem(position);
-                    }
-                });
+        tabs.setViewPager(pager);
 
         Intent i = getIntent();
         Boolean fromNotification = i.getBooleanExtra(Constants.NOTIFICATION_CONVERSATIONS, false);
         if (fromNotification) {
-            getSupportActionBar().setSelectedNavigationItem(1);
+            //TODO
         }
     }
 
@@ -137,7 +100,7 @@ public class PrincipalActivity extends ActionBarActivity {
     @Override
     public void onResume() {
         super.onResume();
-        if (!auib.isLogged()) {
+        if (!accountUIB.isLogged()) {
             Intent intent = new Intent(this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             this.finish();
@@ -176,7 +139,6 @@ public class PrincipalActivity extends ActionBarActivity {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
             return 2;
         }
 

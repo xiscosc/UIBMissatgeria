@@ -1,8 +1,8 @@
 package com.fsc.uibmissatgeria.ui.activities;
 
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.fsc.uibmissatgeria.R;
@@ -10,7 +10,7 @@ import com.fsc.uibmissatgeria.api.AccountUIB;
 import com.fsc.uibmissatgeria.models.User;
 
 
-public class ProfileActivity extends ActionBarActivity {
+public class ProfileActivity extends AppCompatActivity {
     private TextView name;
     private TextView uibdigital;
 

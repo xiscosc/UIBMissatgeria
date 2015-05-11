@@ -68,4 +68,17 @@ public class Subject extends SugarRecord<Subject> {
         Subject otherMyClass = (Subject) other;
         return (this.idApi == otherMyClass.idApi);
     }
+
+    public Boolean hasUnreadGroups() {
+        Boolean result = false;
+        List<SubjectGroup> groups = SubjectGroup.find(
+                SubjectGroup.class,
+                "SUBJECT = ?",
+                Long.toString(this.getId())
+        );
+        for (SubjectGroup g: groups) {
+            result = result || !g.isRead();
+        }
+        return result;
+    }
 }

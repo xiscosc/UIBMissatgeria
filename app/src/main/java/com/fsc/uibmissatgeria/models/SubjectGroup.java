@@ -7,6 +7,7 @@ public class SubjectGroup extends SugarRecord<SubjectGroup>{
     private int idApi;
     private Subject subject;
     private Long lastMessageId;
+    private Boolean read;
 
     public SubjectGroup() {
     }
@@ -16,6 +17,7 @@ public class SubjectGroup extends SugarRecord<SubjectGroup>{
         this.idApi = id;
         this.subject = s;
         this.lastMessageId = Long.valueOf(0);
+        this.read = true;
     }
 
     public String getName() {
@@ -45,5 +47,13 @@ public class SubjectGroup extends SugarRecord<SubjectGroup>{
         if (!(other instanceof SubjectGroup)) return false;
         SubjectGroup otherSG = (SubjectGroup) other;
         return (idApi == otherSG.idApi && subject.equals(otherSG.subject));
+    }
+
+    public Boolean isRead() {
+        return read;
+    }
+
+    public void setRead(Boolean read) {
+        this.read = read;
     }
 }
