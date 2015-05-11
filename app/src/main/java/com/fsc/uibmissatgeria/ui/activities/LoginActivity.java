@@ -1,10 +1,12 @@
 package com.fsc.uibmissatgeria.ui.activities;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.PasswordTransformationMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +39,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         user = (EditText) findViewById(R.id.login_username);
         password = (EditText) findViewById(R.id.login_password);
+        password.setTypeface(Typeface.DEFAULT);
+        password.setTransformationMethod(new PasswordTransformationMethod());
         loadingBar = (ProgressBar) findViewById(R.id.login_loading);
         loginLayout = (LinearLayout) findViewById(R.id.login_layout);
         auib = new AccountUIB(this);
