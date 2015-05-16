@@ -3,6 +3,8 @@ package com.fsc.uibmissatgeria.ui.activities;
 import java.util.Locale;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,6 +21,7 @@ import android.view.MenuItem;
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.api.AccountUIB;
+import com.fsc.uibmissatgeria.models.Avatar;
 import com.fsc.uibmissatgeria.ui.fragments.SubjectsFragment;
 import com.fsc.uibmissatgeria.ui.fragments.ConversationsFragment;
 import com.fsc.uibmissatgeria.ui.fragments.PlaceholderFragment;
@@ -33,6 +36,7 @@ public class PrincipalActivity extends AppCompatActivity {
     public AccountUIB accountUIB;
     private Toolbar toolbar;
     private SlidingTabLayout tabs;
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +73,15 @@ public class PrincipalActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_principal, menu);
+        this.menu = menu;
+        Avatar avatar = accountUIB.getUser().getAvatar();
+        if (avatar != null) {
+            MenuItem avatarMenu = menu.getItem(0);
+            Bitmap m = avatar.getCroppedBitmap(this);
+            BitmapDrawable bmDrawable=new BitmapDrawable(this.getResources(), m);
+            avatarMenu.setIcon(bmDrawable);
+
+        }
         return true;
     }
 
@@ -105,6 +118,14 @@ public class PrincipalActivity extends AppCompatActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             this.finish();
             startActivity(intent);
+        } else if (menu!=null){
+            Avatar avatar = accountUIB.getUser().getAvatar();
+            if (avatar != null) {
+                MenuItem avatarMenu = menu.getItem(0);
+                Bitmap m = avatar.getCroppedBitmap(this);
+                BitmapDrawable bmDrawable=new BitmapDrawable(this.getResources(), m);
+                avatarMenu.setIcon(bmDrawable);
+            }
         }
     }
 

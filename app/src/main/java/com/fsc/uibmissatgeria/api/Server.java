@@ -6,7 +6,7 @@ import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.models.Conversation;
 import com.fsc.uibmissatgeria.models.MessageConversation;
-import com.fsc.uibmissatgeria.models.ModelsManager;
+import com.fsc.uibmissatgeria.managers.ModelManager;
 import com.fsc.uibmissatgeria.models.Subject;
 import com.fsc.uibmissatgeria.models.SubjectGroup;
 import com.fsc.uibmissatgeria.models.Message;
@@ -29,7 +29,6 @@ import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.acl.Group;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -37,7 +36,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -75,7 +73,7 @@ public class Server {
                     );
                     if (!subjectDbList.contains(sbj)) {
                         sbj.save();
-                        ModelsManager.generateSGDefault(sbj);
+                        ModelManager.generateSGDefault(sbj);
                         subjectDbList.add(sbj);
                     } else {
                         int index = subjectDbList.indexOf(sbj);

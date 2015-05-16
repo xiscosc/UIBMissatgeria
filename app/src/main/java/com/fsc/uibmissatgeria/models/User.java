@@ -2,6 +2,8 @@ package com.fsc.uibmissatgeria.models;
 
 import com.orm.SugarRecord;
 
+import java.util.List;
+
 /**
  * Created by xiscosastrecabot on 7/3/15.
  */
@@ -60,6 +62,15 @@ public class User extends SugarRecord<User> {
         return new User(
                 idApi, firstName, lastName, uibDigitalUser, type
         );
+    }
+
+    public Avatar getAvatar() {
+        List<Avatar> avatars = Avatar.find(Avatar.class, "USER = "+this.getId());
+        if (avatars.isEmpty()) {
+            return null;
+        } else {
+            return avatars.get(0);
+        }
     }
 
     @Override

@@ -4,15 +4,19 @@ import android.app.ProgressDialog;
 import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.NavUtils;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -22,6 +26,13 @@ import com.fsc.uibmissatgeria.api.Server;
 import com.fsc.uibmissatgeria.api.ServerSettings;
 import com.fsc.uibmissatgeria.models.SubjectGroup;
 import com.fsc.uibmissatgeria.models.Subject;
+import com.fsc.uibmissatgeria.managers.ImageManager;
+
+import com.fsc.uibmissatgeria.ui.adapters.FileAdapter;
+import com.gc.materialdesign.views.ButtonRectangle;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class NewMessageActivity extends AppCompatActivity {
@@ -32,11 +43,15 @@ public class NewMessageActivity extends AppCompatActivity {
     private TextView group;
     private EditText body;
     private TextView numChar;
-    private Button button;
+    private ButtonRectangle button;
     private int defaultColor;
     private int max_char;
+    private Toolbar toolbar;
 
     private ProgressDialog pDialog;
+    private List<String> files;
+    private RecyclerView recView;
+    private FileAdapter fileAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +64,16 @@ public class NewMessageActivity extends AppCompatActivity {
         group =(TextView)findViewById(R.id.new_message_group);
         body =  (EditText)findViewById(R.id.new_message_text);
         numChar = (TextView)findViewById(R.id.new_message_chars);
-        button = (Button) findViewById(R.id.new_message_button);
+        button = (ButtonRectangle) findViewById(R.id.new_message_button);
+        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        recView = (RecyclerView) findViewById(R.id.new_message_list);
         max_char = (new ServerSettings(this)).getMaxChar();
+
+        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        setSupportActionBar(toolbar);
+
+        recView.setLayoutManager(
+                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         numChar.setText(Integer.toString(max_char));
         defaultColor = numChar.getCurrentTextColor();
@@ -62,6 +85,7 @@ public class NewMessageActivity extends AppCompatActivity {
             group.setText(getResources().getString(R.string.general));
         }
 
+        files = new ArrayList<>();
         body.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {
@@ -123,6 +147,13 @@ public class NewMessageActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_new_message, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
@@ -144,8 +175,43 @@ public class NewMessageActivity extends AppCompatActivity {
                     NavUtils.navigateUpTo(this, upIntent);
                 }
                 return true;
+            case R.id.menu_conversation_attach:
+                getFile();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void getFile() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent,
+                "Select Picture"), 1);
+    }
+
+    private void createAdapter() {
+        fileAdapter = new FileAdapter(files, this);
+        recView.setAdapter(fileAdapter);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK){
+                Uri image = data.getData();
+                ImageManager imageManager = new ImageManager(this);
+                String f = imageManager.saveImageToStorage(image);
+                if (f != null) {
+                    files.add(f);
+                    createAdapter();
+                }
+            }
+            if (resultCode == RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
     }
 
     private class SendMessageTask extends AsyncTask<Void, Void, Void> {

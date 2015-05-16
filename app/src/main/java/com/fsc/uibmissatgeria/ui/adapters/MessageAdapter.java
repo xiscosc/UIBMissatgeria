@@ -1,5 +1,6 @@
 package com.fsc.uibmissatgeria.ui.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,9 +10,12 @@ import android.widget.TextView;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
+import com.fsc.uibmissatgeria.models.Avatar;
 import com.fsc.uibmissatgeria.models.Message;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Xisco on 04/03/2015.
@@ -25,6 +29,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Messages
         private TextView messageUser;
         private TextView messageDate;
         private TextView messageBody;
+        private CircleImageView avatar;
 
 
         public MessagesViewHolder(View itemView) {
@@ -33,21 +38,28 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Messages
             messageUser = (TextView)itemView.findViewById(R.id.message_user);
             messageDate = (TextView)itemView.findViewById(R.id.message_date);
             messageBody = (TextView)itemView.findViewById(R.id.message_body);
+            avatar = (CircleImageView)itemView.findViewById(R.id.user_avatar);
 
         }
 
-        public void bindGroup(Message m) {
+        public void bindGroup(Message m, Context c) {
             messageDate.setText(m.getStringDate());
             messageBody.setText(m.getBody());
             messageUser.setText(m.getUser().getName());
+            Avatar avatarObj = m.getUser().getAvatar();
+            if (avatarObj!=null && avatarObj.haveFile()) {
+                avatar.setImageBitmap(avatarObj.getBitmap(c));
+            }
         }
     }
 
     private List<Message> messages;
     private View.OnClickListener listener;
+    private Context c;
 
-    public MessageAdapter(List<Message> messages) {
+    public MessageAdapter(List<Message> messages, Context c) {
         this.messages = messages;
+        this.c = c;
     }
 
     @Override
@@ -83,7 +95,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Messages
     @Override
     public void onBindViewHolder(MessagesViewHolder viewHolder, int pos) {
         Message item = messages.get(pos);
-        viewHolder.bindGroup(item);
+        viewHolder.bindGroup(item, c);
     }
 
     @Override

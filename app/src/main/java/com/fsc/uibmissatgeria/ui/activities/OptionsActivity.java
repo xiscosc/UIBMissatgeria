@@ -1,6 +1,5 @@
 package com.fsc.uibmissatgeria.ui.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -9,7 +8,7 @@ import android.preference.PreferenceActivity;
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.api.AccountUIB;
-import com.fsc.uibmissatgeria.models.ModelsManager;
+import com.fsc.uibmissatgeria.managers.ModelManager;
 
 /**
  * Created by xiscosastre on 28/4/15.
@@ -49,7 +48,7 @@ public class OptionsActivity extends PreferenceActivity {
     }
 
     private void ResetData() {
-        ModelsManager m = new ModelsManager(this);
+        ModelManager m = new ModelManager(this);
         m.reloadData();
         Constants.showToast(getApplicationContext(), getResources().getString(R.string.data_cleaned));
     }

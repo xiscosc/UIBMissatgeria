@@ -7,13 +7,14 @@
     android:orientation="vertical"
     tools:context="com.fsc.uibmissatgeria.ui.activities.ProfileActivity">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/user_avatar"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
         android:src="@drawable/user_avatar"
         android:layout_gravity="center_horizontal"
-        android:paddingBottom="52dp"
-
+        android:layout_marginBottom="52dp"
+        android:onClick="changeImage"
         />
 
     <TextView

@@ -17,7 +17,7 @@ import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.api.AccountUIB;
 import com.fsc.uibmissatgeria.models.Conversation;
-import com.fsc.uibmissatgeria.models.ModelsManager;
+import com.fsc.uibmissatgeria.managers.ModelManager;
 import com.fsc.uibmissatgeria.ui.activities.ConversationActivity;
 import com.fsc.uibmissatgeria.ui.activities.PeerSelectionActivity;
 import com.fsc.uibmissatgeria.ui.adapters.ConversationAdapter;
@@ -33,7 +33,7 @@ public class ConversationsFragment extends Fragment implements SwipeRefreshLayou
     private SwipeRefreshLayout swipeLayout;
     private ImageButton fabImageButton;
     private ProgressBar loadingBar;
-    private ModelsManager mm;
+    private ModelManager mm;
     private AccountUIB accountUIB;
 
     public ConversationsFragment() {
@@ -55,7 +55,7 @@ public class ConversationsFragment extends Fragment implements SwipeRefreshLayou
         fabImageButton = (ImageButton) rootView.findViewById(R.id.conversationsfab_image_button);
         loadingBar = (ProgressBar) rootView.findViewById(R.id.conversations_loading);
 
-        mm = new ModelsManager(getActivity());
+        mm = new ModelManager(getActivity());
         accountUIB = new AccountUIB(getActivity());
         setListeners();
         return rootView;

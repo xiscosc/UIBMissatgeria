@@ -38,7 +38,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             MessageConversation m = c.getLastMessage();
             if (m != null) {
                 date.setText(m.getStringDate());
-                body.setText(m.getBody());
+                body.setText(m.getBodyForList());
                 if (!m.isRead()) circleUnread.setVisibility(View.VISIBLE);
             } else {
                 date.setText("");

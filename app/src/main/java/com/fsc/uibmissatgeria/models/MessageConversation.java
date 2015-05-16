@@ -52,6 +52,15 @@ public class MessageConversation extends SugarRecord<MessageConversation>{
         return body;
     }
 
+    public String getBodyForList() {
+        int max = Constants.MAX_BODY_MESSAGE_ON_LIST;
+        if (body.length() > max) {
+            return body.substring(0, max+1)+"...";
+        } else {
+            return body;
+        }
+    }
+
     public User getUser(Context ctx) {
         if (fromOther) {
             return conversation.getPeer();

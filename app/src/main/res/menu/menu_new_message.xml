@@ -1,15 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.fsc.uibmissatgeria.ui.activities.ConversationActivity">
+    tools:context="com.fsc.uibmissatgeria.ui.activities.NewMessageActivity">
     <item
         android:title=" "
         android:id="@+id/menu_conversation_attach"
         android:icon="@drawable/ic_action_file_attachment"
         app:showAsAction="ifRoom"/>
-    <item
-        android:title=" "
-        android:id="@+id/menu_edit_profille"
-        android:icon="@drawable/user_avatar_menu"
-        app:showAsAction="ifRoom"/>
+
 </menu>

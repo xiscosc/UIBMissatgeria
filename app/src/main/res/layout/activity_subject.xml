@@ -4,23 +4,11 @@
     tools:context="com.fsc.uibmissatgeria.ui.activities.SubjectActivity"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/tool_bar"
         android:layout_height="wrap_content"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:background="@color/primary">
-
-        <TextView android:text="Subject Name Large"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="45dp"
-            android:id="@+id/subject_name"
-            android:textColor="@android:color/white"/>
-
-    </RelativeLayout>
+        android:layout_width="match_parent" />
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"

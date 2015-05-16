@@ -24,7 +24,7 @@ import com.fsc.uibmissatgeria.api.Server;
 import com.fsc.uibmissatgeria.api.ServerSettings;
 import com.fsc.uibmissatgeria.models.Conversation;
 import com.fsc.uibmissatgeria.models.MessageConversation;
-import com.fsc.uibmissatgeria.models.ModelsManager;
+import com.fsc.uibmissatgeria.managers.ModelManager;
 import com.fsc.uibmissatgeria.ui.adapters.MessageConversationAdapter;
 
 import java.util.List;
@@ -40,7 +40,7 @@ public class ConversationActivity extends AppCompatActivity {
     private EditText editText;
     private ProgressBar loadingBar_new;
     private ProgressBar loadingBar_older;
-    private ModelsManager mm;
+    private ModelManager mm;
     private Boolean olderAvaiable;
     private ProgressDialog pDialog;
     private Timer timer;
@@ -58,8 +58,10 @@ public class ConversationActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         toolbar.setTitle(conversation.getPeerName());
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         editText = (EditText) findViewById(R.id.conversation_text);
         recView = (RecyclerView) findViewById(R.id.conversation_list);
+
 
         recView.setLayoutManager(
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false));
@@ -67,7 +69,7 @@ public class ConversationActivity extends AppCompatActivity {
         recView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                LinearLayoutManager layoutManager = ((LinearLayoutManager)recView.getLayoutManager());
+                LinearLayoutManager layoutManager = ((LinearLayoutManager) recView.getLayoutManager());
                 if (olderAvaiable && layoutManager.findFirstVisibleItemPosition() == 0) {
                     olderAvaiable = false;
                     getOlderMessages();
@@ -77,7 +79,7 @@ public class ConversationActivity extends AppCompatActivity {
         });
         firstRun = true;
 
-        mm = new ModelsManager(this);
+        mm = new ModelManager(this);
         loadingBar_new = (ProgressBar) findViewById(R.id.conversation_loading_new);
         loadingBar_older = (ProgressBar) findViewById(R.id.conversation_loading_older);
         olderAvaiable = false;

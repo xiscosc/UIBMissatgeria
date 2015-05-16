@@ -1,15 +1,18 @@
 package com.fsc.uibmissatgeria.ui.activities;
 
+import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.os.AsyncTask;
 
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -17,7 +20,7 @@ import android.widget.ProgressBar;
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.models.Conversation;
-import com.fsc.uibmissatgeria.models.ModelsManager;
+import com.fsc.uibmissatgeria.managers.ModelManager;
 import com.fsc.uibmissatgeria.models.User;
 import com.fsc.uibmissatgeria.ui.adapters.PeerAdapter;
 
@@ -31,7 +34,7 @@ public class PeerSelectionActivity extends AppCompatActivity {
     private List<User> peersOriginal;
     private PeerAdapter peersAdapter;
     private ProgressBar loadingBar;
-    private ModelsManager mm;
+    private ModelManager mm;
     private EditText finder;
     private Toolbar toolbar;
 
@@ -42,12 +45,13 @@ public class PeerSelectionActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
 
         recView = (RecyclerView) findViewById(R.id.peers_list);
         recView.setLayoutManager(
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false));
         loadingBar = (ProgressBar) findViewById(R.id.peers_loading);
-        mm = new ModelsManager(this);
+        mm = new ModelManager(this);
         finder = (EditText) findViewById(R.id.peers_search);
         finder.addTextChangedListener(new TextWatcher() {
 
@@ -55,11 +59,10 @@ public class PeerSelectionActivity extends AppCompatActivity {
                 int total =  s.toString().length();
                 if (total > 0) {
                     peers = getListFiltered(s.toString());
-                    createAdapter();
                 } else {
-                   peers = peersOriginal;
-                   createAdapter();
+                    peers = peersOriginal;
                 }
+                createAdapter();
             }
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
@@ -103,6 +106,31 @@ public class PeerSelectionActivity extends AppCompatActivity {
         Intent i = new Intent(this, ConversationActivity.class);
         i.putExtra(Constants.CONVERSATION_OBJ, c.getId());
         startActivity(i);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                Intent upIntent = NavUtils.getParentActivityIntent(this);
+                upIntent.putExtra(Constants.NOTIFICATION_CONVERSATIONS, true);
+                if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
+                    // This activity is NOT part of this app's task, so create a new task
+                    // when navigating up, with a synthesized back stack.
+                    TaskStackBuilder.create(this)
+                            // Add all of this activity's parents to the back stack
+                            .addNextIntentWithParentStack(upIntent)
+                                    // Navigate up to the closest parent
+                            .startActivities();
+                } else {
+                    // This activity is part of this app's task, so simply
+                    // navigate up to the logical parent activity.
+                    NavUtils.navigateUpTo(this, upIntent);
+                }
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private class ObtainPeersTask extends AsyncTask<Void, Void, List<User>> {

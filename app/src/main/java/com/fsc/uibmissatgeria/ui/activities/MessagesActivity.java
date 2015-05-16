@@ -48,6 +48,7 @@ public class MessagesActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         toolbar.setTitle(name);
+        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         setSupportActionBar(toolbar);
 
         gr.setRead(true);

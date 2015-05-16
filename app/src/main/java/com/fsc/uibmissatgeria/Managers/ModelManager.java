@@ -1,10 +1,16 @@
-package com.fsc.uibmissatgeria.models;
+package com.fsc.uibmissatgeria.managers;
 
 import android.content.Context;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.api.AccountUIB;
 import com.fsc.uibmissatgeria.api.Server;
+import com.fsc.uibmissatgeria.models.Conversation;
+import com.fsc.uibmissatgeria.models.Message;
+import com.fsc.uibmissatgeria.models.MessageConversation;
+import com.fsc.uibmissatgeria.models.Subject;
+import com.fsc.uibmissatgeria.models.SubjectGroup;
+import com.fsc.uibmissatgeria.models.User;
 import com.orm.query.Select;
 
 import java.util.ArrayList;
@@ -13,13 +19,13 @@ import java.util.List;
 /**
  * Created by xiscosastre on 11/04/15.
  */
-public class ModelsManager {
+public class ModelManager {
 
     private Context ctx;
     private Server server;
     private String error_message;
 
-    public ModelsManager(Context c) {
+    public ModelManager(Context c) {
         ctx = c;
 
 }

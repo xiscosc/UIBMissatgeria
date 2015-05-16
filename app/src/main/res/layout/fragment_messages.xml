@@ -4,20 +4,21 @@
     android:paddingTop="2dp"
     android:paddingBottom="2dp"
     tools:context="com.fsc.uibmissatgeria.ui.fragments.MessagesFragment"
-    android:id="@+id/swipe_messages">
+    android:id="@+id/messages_swipe">
 
     <RelativeLayout
+        xmlns:materialdesign="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/list_messages"
+            android:id="@+id/messages_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
 
         <ImageButton
-            android:id="@+id/fab_image_button_messages"
+            android:id="@+id/messages_fab"
             android:layout_width="@dimen/fab_button_diameter"
             android:layout_height="@dimen/fab_button_diameter"
             android:layout_alignParentRight="true"
@@ -35,7 +36,7 @@
             android:layout_height="wrap_content"
             android:indeterminate="true"
             android:layout_gravity="center"
-            android:id="@+id/loading_messages"
+            android:id="@+id/messages_loading"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"/>
 

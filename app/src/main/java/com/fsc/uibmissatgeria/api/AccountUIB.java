@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.fsc.uibmissatgeria.Constants;
-import com.fsc.uibmissatgeria.models.ModelsManager;
+import com.fsc.uibmissatgeria.managers.ModelManager;
 import com.fsc.uibmissatgeria.models.User;
 
 import java.util.List;
@@ -63,7 +63,7 @@ public class AccountUIB {
 
     public void logOut() {
         this.removeAccount();
-        ModelsManager.resetDB();
+        ModelManager.resetDB();
     }
 
     public boolean isLogged() {

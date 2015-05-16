@@ -16,7 +16,7 @@ import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.ui.activities.PrincipalActivity;
 import com.fsc.uibmissatgeria.ui.activities.SubjectActivity;
 import com.fsc.uibmissatgeria.ui.adapters.SubjectAdapter;
-import com.fsc.uibmissatgeria.models.ModelsManager;
+import com.fsc.uibmissatgeria.managers.ModelManager;
 import com.fsc.uibmissatgeria.models.Subject;
 
 import java.util.List;
@@ -29,7 +29,7 @@ public class SubjectsFragment extends Fragment {
     private List<Subject> subjects;
     private SubjectAdapter subjectAdapter;
     private ProgressBar loadingBar;
-    private ModelsManager mm;
+    private ModelManager mm;
 
 
 
@@ -45,7 +45,7 @@ public class SubjectsFragment extends Fragment {
         recView.setLayoutManager(
                 new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
         loadingBar = (ProgressBar) rootView.findViewById(R.id.subjects_loading);
-        mm = new ModelsManager(getActivity());
+        mm = new ModelManager(getActivity());
         loadSubjects();
         return rootView;
     }

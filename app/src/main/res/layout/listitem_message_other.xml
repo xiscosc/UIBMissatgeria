@@ -53,7 +53,7 @@
                 />
         </LinearLayout>
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_margin="@dimen/margin_message"

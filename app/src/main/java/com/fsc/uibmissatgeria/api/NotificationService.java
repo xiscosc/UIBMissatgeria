@@ -11,15 +11,11 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.view.View;
-import android.widget.Toast;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.models.Conversation;
 import com.fsc.uibmissatgeria.models.MessageConversation;
-import com.fsc.uibmissatgeria.models.ModelsManager;
-import com.fsc.uibmissatgeria.models.Subject;
 import com.fsc.uibmissatgeria.models.SubjectGroup;
 import com.fsc.uibmissatgeria.ui.activities.ConversationActivity;
 import com.fsc.uibmissatgeria.ui.activities.MessagesActivity;
@@ -28,7 +24,6 @@ import com.fsc.uibmissatgeria.ui.activities.PrincipalActivity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 

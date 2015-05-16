@@ -15,7 +15,7 @@ import android.widget.ProgressBar;
 import com.fsc.uibmissatgeria.ui.activities.MessagesActivity;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.ui.adapters.MessageAdapter;
-import com.fsc.uibmissatgeria.models.ModelsManager;
+import com.fsc.uibmissatgeria.managers.ModelManager;
 import com.fsc.uibmissatgeria.models.SubjectGroup;
 import com.fsc.uibmissatgeria.models.Message;
 import com.fsc.uibmissatgeria.models.Subject;
@@ -29,9 +29,9 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
     private List<Message> messages;
     private RecyclerView recView;
     private SwipeRefreshLayout swipeLayout;
-    private ImageButton fabImageButton;
+    private ImageButton fab;
     private ProgressBar loadingBar;
-    private ModelsManager mm;
+    private ModelManager mm;
     private Boolean olderAvaiable;
 
 
@@ -43,18 +43,18 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_messages, container, false);
-        recView = (RecyclerView) rootView.findViewById(R.id.list_messages);
+        recView = (RecyclerView) rootView.findViewById(R.id.messages_list);
         recView.setLayoutManager(
                 new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
-        swipeLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_messages);
+        swipeLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.messages_swipe);
         swipeLayout.setColorScheme(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-        fabImageButton = (ImageButton) rootView.findViewById(R.id.fab_image_button_messages);
-        loadingBar = (ProgressBar) rootView.findViewById(R.id.loading_messages);
+        fab = (ImageButton) rootView.findViewById(R.id.messages_fab);
+        loadingBar = (ProgressBar) rootView.findViewById(R.id.messages_loading);
 
-        mm = new ModelsManager(getActivity());
+        mm = new ModelManager(getActivity());
         setListeners();
         olderAvaiable = true;
 
@@ -70,13 +70,14 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
     private void setListeners() {
         swipeLayout.setOnRefreshListener(this);
         swipeLayout.post(new Runnable() {
-            @Override public void run() {
+            @Override
+            public void run() {
                 swipeLayout.setRefreshing(true);
                 loadMessages();
             }
         });
 
-        fabImageButton.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MessagesActivity ma = (MessagesActivity) getActivity();
@@ -141,7 +142,7 @@ public class MessagesFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     private void createAdapter() {
         recView.setEnabled(true);
-        messageAdapter = new MessageAdapter(messages);
+        messageAdapter = new MessageAdapter(messages, getActivity());
         recView.setAdapter(messageAdapter);
 
     }

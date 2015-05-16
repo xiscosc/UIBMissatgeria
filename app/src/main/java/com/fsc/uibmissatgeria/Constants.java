@@ -33,6 +33,7 @@ public class Constants {
     public static final int MAX_LIST_OLDER_SIZE = 25;
     public static final int MAX_LIST_SIZE_CONVERSATION = 15;
     public static final int MAX_LIST_OLDER_SIZE_CONVERSATION = 15;
+    public static final int MAX_BODY_MESSAGE_ON_LIST = 45;
 
     public static final String DATE_FORMAT_SERVER = "yyyy-MM-dd HH:mm:ss";
     public static final String DATE_FORMAT = "HH:mm dd-MM-yyyy";
@@ -45,6 +46,10 @@ public class Constants {
     public static final String RESULT_CONVERSATIONS = "result_conversations";
     public static final String RESULT_SUBJECTS = "result_subjects";
     public static final String RESULT_GROUPS = "result_groups";
+
+    public static final String FOLDER_NAME_EXTERNAL = "uib_missatgeria";
+    public static final String FOLDER_NAME_IMAGES = "images";
+    public static final String FOLDER_NAME_FILES = "files";
 
 
     public static void showToast(Context ctx, String message) {
