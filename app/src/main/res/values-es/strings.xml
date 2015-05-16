@@ -40,4 +40,6 @@
     <string name="new_messages_group">Nuevos mensajes en asignaturas</string>
     <string name="only_teacher">Sólo notificaciones de profesores</string>
     <string name="new_messages_group_you">Tienes nuevos mensajes en diferentes asignaturas</string>
+    <string name="error_image_copy">Error obteniendo la imagen</string>
+    <string name="subject_subtitle">Selección de foro</string>
 </resources>

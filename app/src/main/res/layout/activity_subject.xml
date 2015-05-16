@@ -15,7 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:onClick="startMessages">
+        android:onClick="startMessages"
+        android:background="?android:selectableItemBackground">
 
         <ImageView
             android:layout_width="55dp"
@@ -33,7 +34,8 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
             <TextView android:id="@+id/subject_general_forum"
                 android:layout_width="match_parent"

@@ -9,6 +9,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 
 import com.fsc.uibmissatgeria.managers.ImageManager;
@@ -62,34 +63,10 @@ public class Avatar extends SugarRecord<Avatar> {
         this.local_path = imageManager.saveImageToStorage(intent);
     }
 
-    public Bitmap getCroppedBitmap(Context c) {
-
-
-        Bitmap bitmap = this.getBitmap(c);
-
-        int min = bitmap.getWidth();
-        if (min > bitmap.getHeight()) min = bitmap.getHeight();
-
-        final Bitmap output = Bitmap.createBitmap(min,
-                min, Bitmap.Config.ARGB_8888);
-        final Canvas canvas = new Canvas(output);
-
-        final int color = Color.WHITE;
-        final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, min, min);
-        final RectF rectF = new RectF(rect);
-
-        paint.setAntiAlias(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(color);
-        canvas.drawOval(rectF, paint);
-
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, rect, rect, paint);
-
-        bitmap.recycle();
-
-        return output;
+    public BitmapDrawable getCircleBitmap(Context c) {
+        ImageManager imageManager = new ImageManager(c);
+        Bitmap m = imageManager.getCroppedBitmap(this.local_path);
+        return new BitmapDrawable(c.getResources(), m);
     }
 
     public Boolean haveFile() {

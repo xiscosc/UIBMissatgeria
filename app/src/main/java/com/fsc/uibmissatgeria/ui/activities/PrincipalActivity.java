@@ -64,7 +64,7 @@ public class PrincipalActivity extends AppCompatActivity {
         Intent i = getIntent();
         Boolean fromNotification = i.getBooleanExtra(Constants.NOTIFICATION_CONVERSATIONS, false);
         if (fromNotification) {
-            //TODO
+            pager.setCurrentItem(1);
         }
     }
 
@@ -77,9 +77,7 @@ public class PrincipalActivity extends AppCompatActivity {
         Avatar avatar = accountUIB.getUser().getAvatar();
         if (avatar != null) {
             MenuItem avatarMenu = menu.getItem(0);
-            Bitmap m = avatar.getCroppedBitmap(this);
-            BitmapDrawable bmDrawable=new BitmapDrawable(this.getResources(), m);
-            avatarMenu.setIcon(bmDrawable);
+            avatarMenu.setIcon(avatar.getCircleBitmap(this));
 
         }
         return true;
@@ -122,9 +120,7 @@ public class PrincipalActivity extends AppCompatActivity {
             Avatar avatar = accountUIB.getUser().getAvatar();
             if (avatar != null) {
                 MenuItem avatarMenu = menu.getItem(0);
-                Bitmap m = avatar.getCroppedBitmap(this);
-                BitmapDrawable bmDrawable=new BitmapDrawable(this.getResources(), m);
-                avatarMenu.setIcon(bmDrawable);
+                avatarMenu.setIcon(avatar.getCircleBitmap(this));
             }
         }
     }

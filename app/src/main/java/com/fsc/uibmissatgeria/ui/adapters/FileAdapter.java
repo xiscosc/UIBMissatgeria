@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.managers.ImageManager;
 
@@ -25,6 +26,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.PeerViewHolder
         private TextView fileName;
         private TextView fileSize;
         private ImageView fileImage;
+        private ImageView fileRemove;
 
         public PeerViewHolder(View itemView) {
             super(itemView);
@@ -32,6 +34,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.PeerViewHolder
             fileName = (TextView) itemView.findViewById(R.id.file_name);
             fileSize = (TextView) itemView.findViewById(R.id.file_size);
             fileImage = (ImageView) itemView.findViewById(R.id.file_image);
+            fileRemove = (ImageView)itemView.findViewById(R.id.file_delete);
 
         }
 
@@ -67,6 +70,14 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.PeerViewHolder
     public void onBindViewHolder(PeerViewHolder viewHolder, int pos) {
         String item = files.get(pos);
         viewHolder.bindSubject(item, c);
+        final int post = pos;
+        viewHolder.fileRemove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                files.remove(post);
+                notifyDataSetChanged();
+            }
+        });
     }
 
     @Override

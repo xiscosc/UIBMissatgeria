@@ -45,6 +45,16 @@
                 android:layout_below="@+id/file_name"
                 />
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_menu_delete"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:id="@+id/file_delete"
+                android:background="?android:selectableItemBackground"/>
+
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>

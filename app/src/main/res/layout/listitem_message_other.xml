@@ -14,7 +14,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@drawable/bg_other"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:elevation="2dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -58,7 +59,8 @@
             android:layout_height="45dp"
             android:layout_margin="@dimen/margin_message"
             android:id="@+id/user_avatar"
-            android:src="@drawable/user_avatar"/>
+            android:src="@drawable/user_avatar"
+            android:elevation="2dp"/>
 
     </LinearLayout>
 

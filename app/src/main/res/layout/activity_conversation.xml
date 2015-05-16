@@ -4,7 +4,7 @@
     android:paddingBottom="2dp"
     tools:context="com.fsc.uibmissatgeria.ui.activities.ConversationActivity"
     android:orientation="vertical"
-    android:background="@color/chatBackgroud">
+    >
 
     <include
         android:id="@+id/tool_bar"
@@ -41,11 +41,18 @@
         android:layout_centerVertical="true"
         />
 
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="@android:color/white">
+
 
         <EditText
         android:hint="@string/new_message_hint"
@@ -54,9 +61,11 @@
         android:minLines="1"
         android:maxLines="10"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:scrollbars="vertical"
+        android:padding="10dp"
         android:layout_weight="1"
+            android:background="@null"
         />
 
 
@@ -65,19 +74,8 @@
             android:layout_width="65dp"
             android:layout_height="45dp"
             android:background="@color/primary"
-            android:onClick="sendMessage">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_send"
-                android:tint="@android:color/white"
-                android:id="@+id/conversation_send"
-      />
-
-        </com.gc.materialdesign.views.ButtonRectangle>
-
-
+            android:onClick="sendMessage"
+            android:text="@string/new_message_button" />
 
         </LinearLayout>
 
