@@ -3,11 +3,13 @@ package com.fsc.uibmissatgeria.ui.activities;
 import android.app.ProgressDialog;
 import android.app.TaskStackBuilder;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v4.app.NavUtils;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -16,20 +18,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.api.Server;
 import com.fsc.uibmissatgeria.api.ServerSettings;
+import com.fsc.uibmissatgeria.managers.FileManager;
+import com.fsc.uibmissatgeria.managers.ImageManager;
+import com.fsc.uibmissatgeria.models.Avatar;
 import com.fsc.uibmissatgeria.models.Conversation;
 import com.fsc.uibmissatgeria.models.MessageConversation;
 import com.fsc.uibmissatgeria.managers.ModelManager;
 import com.fsc.uibmissatgeria.ui.adapters.MessageConversationAdapter;
 
+import java.io.File;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ConversationActivity extends AppCompatActivity {
 
@@ -47,6 +57,14 @@ public class ConversationActivity extends AppCompatActivity {
     private TimerTask ttask;
     private Boolean firstRun;
     private Toolbar toolbar;
+    private String file;
+
+
+    /*FILES*/
+    private LinearLayout fileView;
+    private TextView fileName;
+    private TextView fileSize;
+    private CircleImageView fileImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +79,11 @@ public class ConversationActivity extends AppCompatActivity {
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         editText = (EditText) findViewById(R.id.conversation_text);
         recView = (RecyclerView) findViewById(R.id.conversation_list);
+
+        fileView = (LinearLayout) findViewById(R.id.conversation_file_layout);
+        fileName = (TextView) findViewById(R.id.conversation_file_name);
+        fileSize = (TextView) findViewById(R.id.conversation_file_size);
+        fileImage = (CircleImageView) findViewById(R.id.conversation_file_image);
 
 
         recView.setLayoutManager(
@@ -84,6 +107,60 @@ public class ConversationActivity extends AppCompatActivity {
         loadingBar_older = (ProgressBar) findViewById(R.id.conversation_loading_older);
         olderAvaiable = false;
         loadMessages();
+    }
+
+    private void getFile() {
+        if (file == null) { //TODO: CONFIG
+            Intent intent = new Intent();
+            intent.setType("*/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent,
+                    "Select Picture"), 1);
+        } else {
+            Intent intent = new Intent();
+            intent.setAction(android.content.Intent.ACTION_VIEW);
+            File f = new File(file);
+            intent.setDataAndType(Uri.fromFile(f), "application/pdf");
+            startActivity(intent);
+            Constants.showToast(this, this.getString(R.string.error_file_max_number)+" 1");
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK){
+                Uri route = data.getData();
+                if (FileManager.isImageFromUri(route, this)) {
+                    ImageManager imageManager = new ImageManager(this);
+                    file = imageManager.saveImageToStorage(route);
+                } else {
+                    FileManager fileManager = new FileManager(this);
+                    file = fileManager.saveFileToStorage(route);
+                }
+                if (file != null)  showFile();
+            }
+            if (resultCode == RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+    }
+
+    private void showFile() {
+        if (FileManager.isImage(file)) {
+            ImageManager manager = new ImageManager(this);
+            fileImage.setImageBitmap(manager.getBitmap(file));
+            fileSize.setText(manager.getSizeInMB(file) + " MB");
+            fileName.setText(manager.getFileName(file));
+        } else {
+            FileManager manager = new FileManager(this);
+            fileImage.setImageResource(R.drawable.file_icon);
+            fileSize.setText(manager.getSizeInMB(file)+" MB");
+            fileName.setText(manager.getFileName(file));
+        }
+        fileView.setVisibility(View.VISIBLE);
     }
 
     private void createAdapter() {
@@ -150,9 +227,11 @@ public class ConversationActivity extends AppCompatActivity {
     }
 
     private void cancelTimeReload() {
-        timer.cancel();
-        timer.purge();
-        ttask.cancel();
+        if (timer!=null) {
+            timer.cancel();
+            timer.purge();
+            ttask.cancel();
+        }
     }
 
     @Override
@@ -183,6 +262,13 @@ public class ConversationActivity extends AppCompatActivity {
                     NavUtils.navigateUpTo(this, upIntent);
                 }
                 return true;
+            case R.id.menu_conversation_attach:
+                getFile();
+                return true;
+            case R.id.menu_conversation_avatar:
+                Avatar avatar = conversation.getPeer().getAvatar();
+                if (avatar != null) avatar.startIntent(this);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -206,6 +292,12 @@ public class ConversationActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         cancelTimeReload();
+    }
+
+    public void deleteFile(View view) {
+        if (file != null) FileManager.deleteFile(file);
+        file = null;
+        fileView.setVisibility(View.GONE);
     }
 
     private class ConversationTask extends AsyncTask<Void, Void, List<MessageConversation>> {

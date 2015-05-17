@@ -9,7 +9,7 @@
         app:showAsAction="ifRoom"/>
     <item
         android:title=" "
-        android:id="@+id/menu_edit_profille"
+        android:id="@+id/menu_conversation_avatar"
         android:icon="@drawable/user_avatar_menu"
         app:showAsAction="ifRoom"/>
 </menu>

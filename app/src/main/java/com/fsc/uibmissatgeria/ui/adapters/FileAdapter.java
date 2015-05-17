@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
+import com.fsc.uibmissatgeria.managers.FileManager;
 import com.fsc.uibmissatgeria.managers.ImageManager;
 
 import java.util.List;
@@ -41,8 +42,11 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.PeerViewHolder
         public void bindSubject(String f, Context c) {
             ImageManager imageManager = new ImageManager(c);
             fileName.setText(imageManager.getFileName(f));
-            fileSize.setText(imageManager.getSizeInMB(f)+" MB");
-            fileImage.setImageBitmap(imageManager.getBitmap(f));
+            fileSize.setText(imageManager.getSizeInMB(f) + " MB");
+            if (FileManager.isImage(f)) {
+                fileImage.setImageBitmap(imageManager.getBitmap(f));
+            }
+
         }
     }
 
@@ -74,7 +78,9 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.PeerViewHolder
         viewHolder.fileRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String path = files.get(post);
                 files.remove(post);
+                FileManager.deleteFile(path);
                 notifyDataSetChanged();
             }
         });

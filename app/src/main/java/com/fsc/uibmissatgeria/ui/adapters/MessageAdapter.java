@@ -96,6 +96,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Messages
     public void onBindViewHolder(MessagesViewHolder viewHolder, int pos) {
         Message item = messages.get(pos);
         viewHolder.bindGroup(item, c);
+        final Message msg = item;
+        viewHolder.avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Avatar avatar = msg.getUser().getAvatar();
+                if (avatar != null) avatar.startIntent(c);
+            }
+        });
     }
 
     @Override

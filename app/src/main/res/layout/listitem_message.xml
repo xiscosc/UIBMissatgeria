@@ -16,7 +16,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:src="@drawable/user_avatar"
-            android:elevation="2dp"/>
+            />
 
 
         <LinearLayout
@@ -60,6 +60,9 @@
                 android:autoLink="all"
                 android:text="Message Content"
                 />
+
+
+
         </LinearLayout>
 
     </LinearLayout>

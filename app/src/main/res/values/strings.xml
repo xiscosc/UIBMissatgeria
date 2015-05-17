@@ -45,6 +45,10 @@
     <string name="only_teacher">Only notifications from teachers</string>
     <string name="subject_subtitle">Forum selection</string>
     <string name="error_image_copy">Error getting image</string>
+    <string name="file_not_allowed">This file is not allowed</string>
+    <string name="error_file_copy">Error getting file</string>
+    <string name="error_file_max_size">The file is too large (Max 2MB)</string>
+    <string name="error_file_max_number">Too much files. Max</string>
 
 
 </resources>

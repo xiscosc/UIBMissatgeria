@@ -24,6 +24,7 @@ import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.api.Server;
 import com.fsc.uibmissatgeria.api.ServerSettings;
+import com.fsc.uibmissatgeria.managers.FileManager;
 import com.fsc.uibmissatgeria.models.SubjectGroup;
 import com.fsc.uibmissatgeria.models.Subject;
 import com.fsc.uibmissatgeria.managers.ImageManager;
@@ -183,11 +184,16 @@ public class NewMessageActivity extends AppCompatActivity {
     }
 
     private void getFile() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent,
-                "Select Picture"), 1);
+        if (files.size()<5) { //TODO: CONFIG
+            Intent intent = new Intent();
+            intent.setType("*/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent,
+                    "Select Picture"), 1);
+        } else {
+            Constants.showToast(this, this.getString(R.string.error_file_max_number)+" 5");
+        }
+
     }
 
     private void createAdapter() {
@@ -200,9 +206,15 @@ public class NewMessageActivity extends AppCompatActivity {
 
         if (requestCode == 1) {
             if(resultCode == RESULT_OK){
-                Uri image = data.getData();
-                ImageManager imageManager = new ImageManager(this);
-                String f = imageManager.saveImageToStorage(image);
+                Uri route = data.getData();
+                String f = null;
+                if (FileManager.isImageFromUri(route, this)) {
+                    ImageManager imageManager = new ImageManager(this);
+                    f = imageManager.saveImageToStorage(route);
+                } else {
+                    FileManager fileManager = new FileManager(this);
+                    f = fileManager.saveFileToStorage(route);
+                }
                 if (f != null) {
                     files.add(f);
                     createAdapter();
