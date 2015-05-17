@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 
 import com.fsc.uibmissatgeria.Constants;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by xiscosastre on 4/5/15.
@@ -37,6 +39,23 @@ public class ServerSettings {
         SharedPreferences settings = c.getSharedPreferences(Constants.SP_UIB, 0);
         return  settings.getInt(Constants.SP_MAX_CHAR, Constants.SP_MAX_CHAR_DEFAULT);
     }
+
+    public List<String> getMimeTypes() {
+        SharedPreferences settings = c.getSharedPreferences(Constants.SP_UIB, 0);
+        Set<String> mt = settings.getStringSet(Constants.SP_MIMETYPES, (Set<String>) Constants.SP_MIMETYPES_DEFAULT);
+        return (List<String>) mt;
+    }
+
+    public int getMaxFiles() {
+        SharedPreferences settings = c.getSharedPreferences(Constants.SP_UIB, 0);
+        return settings.getInt(Constants.SP_MAX_FILES, Constants.SP_MAX_FILES_DEFAULT);
+    }
+
+    public int getMaxFileSize() {
+        SharedPreferences settings = c.getSharedPreferences(Constants.SP_UIB, 0);
+        return settings.getInt(Constants.SP_MAX_FILE_SIZE, Constants.SP_MAX_FILE_SIZE_DEFAULT);
+    }
+
 
 
 }

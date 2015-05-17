@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
+import com.fsc.uibmissatgeria.api.AccountUIB;
 import com.fsc.uibmissatgeria.api.Server;
 import com.fsc.uibmissatgeria.api.ServerSettings;
 import com.fsc.uibmissatgeria.managers.FileManager;
@@ -184,14 +185,14 @@ public class NewMessageActivity extends AppCompatActivity {
     }
 
     private void getFile() {
-        if (files.size()<5) { //TODO: CONFIG
+        if (files.size()< (new ServerSettings(this)).getMaxFiles()) {
             Intent intent = new Intent();
             intent.setType("*/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(Intent.createChooser(intent,
                     "Select Picture"), 1);
         } else {
-            Constants.showToast(this, this.getString(R.string.error_file_max_number)+" 5");
+            Constants.showToast(this, this.getString(R.string.error_file_max_number)+" "+(new ServerSettings(this)).getMaxFiles());
         }
 
     }

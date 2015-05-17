@@ -4,6 +4,8 @@ import android.content.Context;
 import android.widget.Toast;
 
 import java.lang.ref.SoftReference;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by xiscosastrecabot on 22/3/15.
@@ -21,9 +23,21 @@ public class Constants {
     public static final String ACCOUNT_ID = "prefIdAccount";
     public static final String ACCOUNT_TOKEN_FAILED = "token_failed";
     public static final String SP_UPDATE_DEFAULT = "60";
+    public static final String SP_MIMETYPES = "mimetypes";
+    public static final String SP_MAX_FILES = "max_files";
+    public static final String SP_MAX_FILE_SIZE = "max_file_size";
 
     public static final String SP_MAX_CHAR = "max_char";
     public static final int SP_MAX_CHAR_DEFAULT = 400;
+    public static final int SP_MAX_FILES_DEFAULT = 5;
+    public static final int SP_MAX_FILE_SIZE_DEFAULT = 1024*1024*2;
+    public static final List<String> SP_MIMETYPES_DEFAULT =  Arrays.asList(
+            "image/png",
+            "image/jpeg",
+            "image/pjpeg",
+            "image/gif",
+            "image/bmp",
+            "application/pdf");
 
     public static final String NOTIFICATION_CONVERSATIONS = "NOT_CONVERSATION";
 
