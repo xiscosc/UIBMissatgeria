@@ -26,6 +26,15 @@ public class ServerSettings {
             if (settingsServer.containsKey("message_max_length")) {
                 editor.putInt(Constants.SP_MAX_CHAR,  (int) settingsServer.get("message_max_length"));
             }
+            if (settingsServer.containsKey("message_max_length")) {
+                editor.putInt(Constants.SP_MAX_CHAR,  (int) settingsServer.get("message_max_length"));
+            }
+            if (settingsServer.containsKey("message_max_length")) {
+                editor.putInt(Constants.SP_MAX_CHAR,  (int) settingsServer.get("message_max_length"));
+            }
+            if (settingsServer.containsKey("message_max_length")) {
+                editor.putInt(Constants.SP_MAX_CHAR,  (int) settingsServer.get("message_max_length"));
+            }
             editor.commit();
         } catch (Exception e) {
             e.printStackTrace();

@@ -710,6 +710,15 @@ public class Server {
         if (reader != null) {
             try {
                 result.put("message_max_length", reader.getInt("message_max_length"));
+                result.put("max_file_size", reader.getInt("max_file_size"));
+                result.put("max_message_files", reader.getInt("max_message_files"));
+
+                JSONArray mimeJSON = reader.getJSONArray("allowed_mime_types");
+                List<String> mime = new ArrayList<>();
+                for (int x=0; x<mimeJSON.length(); x++) {
+                    mime.add(mimeJSON.getString(x));
+                }
+                result.put("allowed_mime_types", mime);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
