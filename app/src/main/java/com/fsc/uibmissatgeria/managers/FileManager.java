@@ -9,6 +9,7 @@ import android.webkit.MimeTypeMap;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
+import com.fsc.uibmissatgeria.api.ServerSettings;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -74,13 +75,7 @@ public class FileManager {
             ContentResolver cR = c.getContentResolver();
             type = cR.getType(route);
         }
-        List<String> allowedMimeTypes = Arrays.asList(
-                "image/png",
-                "image/jpeg",
-                "image/pjpeg",
-                "image/gif",
-                "image/bmp",
-                "application/pdf");
+        List<String> allowedMimeTypes = (new ServerSettings(c)).getMimeTypes();
 
         return allowedMimeTypes.contains(type);
 
