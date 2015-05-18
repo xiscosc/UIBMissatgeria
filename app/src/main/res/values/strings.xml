@@ -49,6 +49,8 @@
     <string name="error_file_copy">Error getting file</string>
     <string name="error_file_max_size">The file is too large (Max 2MB)</string>
     <string name="error_file_max_number">Too much files. Max</string>
+    <string name="avatar_message">Uploading Avatar</string>
+    <string name="error_avatar">Error getting new avatar</string>
 
 
 </resources>

@@ -24,28 +24,33 @@ import java.io.File;
 public class Avatar extends SugarRecord<Avatar> {
 
     private long idApi;
-    private String remote_path;
     private String local_path;
     private User user;
+    private String mimeType;
 
 
-    public Avatar(String local_path, User user) {
+    public Avatar(String local_path, User user, String mimeType) {
         this.local_path = local_path;
         this.user = user;
         this.idApi = -1;
-        this.remote_path = "";
+        this.mimeType = mimeType;
 
     }
 
-    public Avatar(long idApi, String remote_path, User user) {
+    public Avatar(long idApi,  User user, String mimeType) {
         this.idApi = idApi;
-        this.remote_path = remote_path;
         this.user = user;
         this.local_path = "";
+        this.mimeType = mimeType;
     }
 
     public Avatar() {
 
+    }
+
+    public void mergeFromServerAvatar(Avatar avatar) {
+        this.idApi = avatar.idApi;
+        this.mimeType = avatar.mimeType;
     }
 
 
@@ -53,7 +58,6 @@ public class Avatar extends SugarRecord<Avatar> {
         updateAvatarFromIntent(intent, c);
         this.user = user;
         this.idApi = -1;
-        this.remote_path = "";
     }
 
     public Bitmap getBitmap(Context c) {
@@ -88,4 +92,7 @@ public class Avatar extends SugarRecord<Avatar> {
 
     }
 
+    public String getLocal_path() {
+        return local_path;
+    }
 }

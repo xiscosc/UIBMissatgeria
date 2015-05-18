@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 
 import com.fsc.uibmissatgeria.Constants;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,14 +30,15 @@ public class ServerSettings {
             if (settingsServer.containsKey("message_max_length")) {
                 editor.putInt(Constants.SP_MAX_CHAR,  (int) settingsServer.get("message_max_length"));
             }
-            if (settingsServer.containsKey("message_max_length")) {
-                editor.putInt(Constants.SP_MAX_CHAR,  (int) settingsServer.get("message_max_length"));
+            if (settingsServer.containsKey("max_file_size")) {
+                editor.putInt(Constants.SP_MAX_FILE_SIZE,  (int) settingsServer.get("max_file_size"));
             }
-            if (settingsServer.containsKey("message_max_length")) {
-                editor.putInt(Constants.SP_MAX_CHAR,  (int) settingsServer.get("message_max_length"));
+            if (settingsServer.containsKey("max_message_files")) {
+                editor.putInt(Constants.SP_MAX_FILES,  (int) settingsServer.get("max_message_files"));
             }
-            if (settingsServer.containsKey("message_max_length")) {
-                editor.putInt(Constants.SP_MAX_CHAR,  (int) settingsServer.get("message_max_length"));
+            if (settingsServer.containsKey("allowed_mime_types")) {
+                Set<String> mimes = new HashSet<>((List<String>) settingsServer.get("allowed_mime_types"));
+                editor.putStringSet(Constants.SP_MIMETYPES, mimes);
             }
             editor.commit();
         } catch (Exception e) {
@@ -52,7 +55,7 @@ public class ServerSettings {
     public List<String> getMimeTypes() {
         SharedPreferences settings = c.getSharedPreferences(Constants.SP_UIB, 0);
         Set<String> mt = settings.getStringSet(Constants.SP_MIMETYPES, (Set<String>) Constants.SP_MIMETYPES_DEFAULT);
-        return (List<String>) mt;
+        return new ArrayList<>(mt);
     }
 
     public int getMaxFiles() {

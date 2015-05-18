@@ -5,6 +5,7 @@ import android.content.Context;
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.api.AccountUIB;
 import com.fsc.uibmissatgeria.api.Server;
+import com.fsc.uibmissatgeria.models.Avatar;
 import com.fsc.uibmissatgeria.models.Conversation;
 import com.fsc.uibmissatgeria.models.Message;
 import com.fsc.uibmissatgeria.models.MessageConversation;
@@ -284,5 +285,13 @@ public class ModelManager {
             }
             return  messages;
         }
+    }
+
+    public Avatar updateAvatar( User user, Avatar localAvatar) {
+        server = new Server(ctx);
+        Avatar avatar = server.uploadAvatar(localAvatar.getLocal_path(), user);
+        if (avatar == null) return null;
+        localAvatar.mergeFromServerAvatar(avatar);
+        return localAvatar;
     }
 }

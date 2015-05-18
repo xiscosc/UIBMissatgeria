@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
+import com.fsc.uibmissatgeria.models.Avatar;
 import com.fsc.uibmissatgeria.models.Conversation;
 import com.fsc.uibmissatgeria.models.MessageConversation;
 import com.fsc.uibmissatgeria.managers.ModelManager;
@@ -18,13 +19,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -80,7 +87,7 @@ public class Server {
                         sbj = subjectDbList.get(index);
                     }
 
-                    for (int y=0; y<groupJsonArray.length(); y++) {
+                    for (int y = 0; y < groupJsonArray.length(); y++) {
                         JSONObject groupJson = groupJsonArray.getJSONObject(y);
                         SubjectGroup sbjg = new SubjectGroup(
                                 groupJson.getInt("id"),
@@ -95,14 +102,13 @@ public class Server {
                 }
                 return null;
             } catch (Exception e) {
-              e.printStackTrace();
+                e.printStackTrace();
             }
         }
 
-        result =  netError;  
+        result = netError;
         return result;
     }
-
 
 
     public String getMessages(Subject s, SubjectGroup g) {
@@ -122,16 +128,15 @@ public class Server {
                     result = reader.getString("message");
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    result = netError;  
+                    result = netError;
                 }
             }
         } else {
-            result = netError;  
+            result = netError;
         }
 
         return result;
     }
-
 
 
     public String getNewMessages(Subject s, SubjectGroup g, Message last) {
@@ -149,7 +154,7 @@ public class Server {
                 manageMessages(reader, messagesDbList, usersDbList, g);
                 Boolean x = reader.getBoolean("more");
                 while (x) {
-                    Message middle = messagesDbList.get(messagesDbList.size()-1);
+                    Message middle = messagesDbList.get(messagesDbList.size() - 1);
                     reader = readObjectFromServer(makeMessagesUrl(s, g, middle, "next"));
                     if (reader != null) {
                         x = reader.getBoolean("more");
@@ -161,17 +166,16 @@ public class Server {
                 return null;
             } catch (Exception e) {
                 try {
-                    result =  reader.getString("message");
+                    result = reader.getString("message");
                     return result;
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
         }
-        result =   netError;  
+        result = netError;
         return result;
     }
-
 
 
     public String getOlderMessages(Subject s, SubjectGroup g, Message first) {
@@ -197,7 +201,7 @@ public class Server {
                 }
             }
         }
-        result = netError;  
+        result = netError;
         return result;
     }
 
@@ -226,7 +230,7 @@ public class Server {
                 sender = usersDbList.get(index);
             }
 
-            Message msg  = new Message(
+            Message msg = new Message(
                     messageJson.getLong("id"),
                     messageJson.getString("body"),
                     sender,
@@ -256,7 +260,7 @@ public class Server {
     }
 
 
-    private JSONArray readArrayFromServer(String url){
+    private JSONArray readArrayFromServer(String url) {
         JSONArray result = null;
         try {
             String data = readFromServer(url);
@@ -317,20 +321,19 @@ public class Server {
 
     public void sendMessageToGroup(Subject s, SubjectGroup g, String body) {
         String url;
-        if (g.getIdApi()==Constants.DEFAULT_GROUP_ID) {
-            url = SERVER_URL+"user/subjects/"+s.getIdApi()+"/messages/";
+        if (g.getIdApi() == Constants.DEFAULT_GROUP_ID) {
+            url = SERVER_URL + "user/subjects/" + s.getIdApi() + "/messages/";
         } else {
-            url = SERVER_URL+"user/subjects/"+s.getIdApi()+"/groups/"
-                    +g.getIdApi()+"/messages/";
+            url = SERVER_URL + "user/subjects/" + s.getIdApi() + "/groups/"
+                    + g.getIdApi() + "/messages/";
         }
         sendMessage(url, body);
     }
 
 
-
     public void sendMessageToConversation(Conversation c, String body) {
         String url;
-        url = SERVER_URL+"user/chats/"+c.getPeer().getIdApi()+"/messages/";
+        url = SERVER_URL + "user/chats/" + c.getPeer().getIdApi() + "/messages/";
         sendMessage(url, body);
     }
 
@@ -355,7 +358,7 @@ public class Server {
         }
     }
 
-    private HttpsURLConnection setUpConnection(String url, String method){
+    private HttpsURLConnection setUpConnection(String url, String method) {
         HttpsURLConnection urlConnection = null;
         InputStream caInput = null;
         URL urlObj;
@@ -393,14 +396,14 @@ public class Server {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return  urlConnection;
+        return urlConnection;
     }
 
     public User doLogin(String user, String password) {
 
         Boolean result = false;
         try {
-            String url = SERVER_URL+"login/?user="+user+"&password="+password;
+            String url = SERVER_URL + "login/?user=" + user + "&password=" + password;
             JSONObject reader = readObjectFromServer(url);
             this.token = reader.getString("token");
             JSONObject usr = reader.getJSONObject("user");
@@ -430,14 +433,14 @@ public class Server {
 
     private String makeMessagesUrl(Subject s, SubjectGroup g, Message m, String direction) {
         String result;
-        if (g.getIdApi()==Constants.DEFAULT_GROUP_ID) {
+        if (g.getIdApi() == Constants.DEFAULT_GROUP_ID) {
             result = SERVER_URL + "user/subjects/" + s.getIdApi() + "/messages/";
         } else {
-            result = SERVER_URL + "user/subjects/" + s.getIdApi() + "/groups/"+ g.getIdApi() + "/messages/";
+            result = SERVER_URL + "user/subjects/" + s.getIdApi() + "/groups/" + g.getIdApi() + "/messages/";
         }
         if (m != null && direction != null) {
-            result += m.getIdApi()+"/";
-            result += direction+"/";
+            result += m.getIdApi() + "/";
+            result += direction + "/";
         }
         return result;
     }
@@ -446,8 +449,8 @@ public class Server {
         String result;
         result = SERVER_URL + "user/chats/" + c.getPeer().getIdApi() + "/messages/";
         if (m != null && direction != null) {
-            result += m.getIdApi()+"/";
-            result += direction+"/";
+            result += m.getIdApi() + "/";
+            result += direction + "/";
         }
         return result;
     }
@@ -463,17 +466,17 @@ public class Server {
             if (reader != null) {
                 manageConversations(reader, converDB, peers);
             } else {
-                result =  c.getResources().getString(R.string.error_conversations);  
+                result = c.getResources().getString(R.string.error_conversations);
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            result =  netError;  
+            result = netError;
         }
 
         return result;
     }
 
-    private void manageConversations(JSONArray reader, List<Conversation> converDB, List<User> peers) throws JSONException{
+    private void manageConversations(JSONArray reader, List<Conversation> converDB, List<User> peers) throws JSONException {
         for (int x = 0; x < reader.length(); x++) {
             JSONObject userJson = reader.getJSONObject(x);
 
@@ -524,26 +527,26 @@ public class Server {
         try {
             if (usr.getType() == Constants.TYPE_TEACHER) {
                 reader = readArrayFromServer(SERVER_URL + "user/students/");
-                if (reader!=null) {
+                if (reader != null) {
                     managePeers(reader, usersDB, peers);
                 }
             }
             reader = readArrayFromServer(SERVER_URL + "user/teachers/");
-            if (reader!=null) {
+            if (reader != null) {
                 managePeers(reader, usersDB, peers);
             }
             if (peers.isEmpty()) {
-                result = c.getResources().getString(R.string.error_peers);  
+                result = c.getResources().getString(R.string.error_peers);
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            result = netError;  
+            result = netError;
         }
 
         return result;
     }
 
-    private void managePeers(JSONArray reader, List<User> usersDB, List<User> peers) throws JSONException{
+    private void managePeers(JSONArray reader, List<User> usersDB, List<User> peers) throws JSONException {
         for (int x = 0; x < reader.length(); x++) {
             JSONObject userJson = reader.getJSONObject(x);
             User peer = new User(
@@ -575,10 +578,10 @@ public class Server {
         String result;
         String where;
 
-        if (last!=null) {
-            where = "CONVERSATION = "+c.getId()+" AND ID_API > "+last.getIdApi();
+        if (last != null) {
+            where = "CONVERSATION = " + c.getId() + " AND ID_API > " + last.getIdApi();
         } else {
-            where = "CONVERSATION = "+c.getId()+" AND ID_API > 0";
+            where = "CONVERSATION = " + c.getId() + " AND ID_API > 0";
         }
 
         List<MessageConversation> messagesDbList = Select
@@ -593,7 +596,7 @@ public class Server {
                 manageMessagesConversation(reader, messagesDbList, c);
                 Boolean x = reader.getBoolean("more");
                 while (x) {
-                    MessageConversation middle = messagesDbList.get(messagesDbList.size()-1);
+                    MessageConversation middle = messagesDbList.get(messagesDbList.size() - 1);
                     reader = readObjectFromServer(makeConversationsUrl(c, middle, "next"));
                     if (reader != null) {
                         x = reader.getBoolean("more");
@@ -605,14 +608,14 @@ public class Server {
                 return null;
             } catch (Exception e) {
                 try {
-                    result =  reader.getString("message");
+                    result = reader.getString("message");
                     return result;
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
         }
-        result =   netError;  
+        result = netError;
         return result;
     }
 
@@ -621,7 +624,7 @@ public class Server {
         String result;
         List<MessageConversation> messagesDbList = Select
                 .from(MessageConversation.class)
-                .where("CONVERSATION = "+c.getId()+" AND ID_API < "+last.getIdApi())
+                .where("CONVERSATION = " + c.getId() + " AND ID_API < " + last.getIdApi())
                 .list();
 
 
@@ -632,14 +635,14 @@ public class Server {
                 return null;
             } catch (Exception e) {
                 try {
-                    result =  reader.getString("message");
+                    result = reader.getString("message");
                     return result;
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
         }
-        result =   netError;  
+        result = netError;
         return result;
     }
 
@@ -648,7 +651,7 @@ public class Server {
         String result;
         List<MessageConversation> messagesDbList = Select
                 .from(MessageConversation.class)
-                .where("CONVERSATION = "+c.getId())
+                .where("CONVERSATION = " + c.getId())
                 .list();
 
 
@@ -659,14 +662,14 @@ public class Server {
                 return null;
             } catch (Exception e) {
                 try {
-                    result =  reader.getString("message");
+                    result = reader.getString("message");
                     return result;
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
         }
-        result =   netError;  
+        result = netError;
         return result;
     }
 
@@ -674,7 +677,7 @@ public class Server {
         JSONArray messagesArray = reader.getJSONArray("messages");
         AccountUIB aUIB = new AccountUIB(this.c);
         User usr = aUIB.getUser();
-        for (int x =0; x<messagesArray.length(); x++) {
+        for (int x = 0; x < messagesArray.length(); x++) {
             JSONObject messageJson = messagesArray.getJSONObject(x);
 
             JSONObject userJson2 = messageJson.getJSONObject("recipient");
@@ -715,7 +718,7 @@ public class Server {
 
                 JSONArray mimeJSON = reader.getJSONArray("allowed_mime_types");
                 List<String> mime = new ArrayList<>();
-                for (int x=0; x<mimeJSON.length(); x++) {
+                for (int x = 0; x < mimeJSON.length(); x++) {
                     mime.add(mimeJSON.getString(x));
                 }
                 result.put("allowed_mime_types", mime);
@@ -754,10 +757,10 @@ public class Server {
     private List<SubjectGroup> manageSubjectGroupsNotifications(JSONArray groups) throws JSONException {
         Boolean onlyTeacher = (new AccountUIB(c)).OnlyTeacherNotifications();
         List<SubjectGroup> result = new ArrayList<>();
-        for (int x=0; x<groups.length(); x++) {
+        for (int x = 0; x < groups.length(); x++) {
             JSONObject message = groups.getJSONObject(x);
             int groupId = message.getInt("group_id");
-            List<SubjectGroup> gs = SubjectGroup.find(SubjectGroup.class, "ID_API = "+ groupId);
+            List<SubjectGroup> gs = SubjectGroup.find(SubjectGroup.class, "ID_API = " + groupId);
             if (!gs.isEmpty() && gs.size() == 1) {
                 SubjectGroup g = gs.get(0);
                 Long last = message.getLong("id");
@@ -786,10 +789,10 @@ public class Server {
     private List<SubjectGroup> manageSubjectsNotifications(JSONArray subjects) throws JSONException {
         Boolean onlyTeacher = (new AccountUIB(c)).OnlyTeacherNotifications();
         List<SubjectGroup> result = new ArrayList<>();
-        for (int x=0; x<subjects.length(); x++) {
+        for (int x = 0; x < subjects.length(); x++) {
             JSONObject message = subjects.getJSONObject(x);
             int subjectID = message.getInt("subject_id");
-            List<Subject> subject = Subject.find(Subject.class, "ID_API = "+subjectID);
+            List<Subject> subject = Subject.find(Subject.class, "ID_API = " + subjectID);
             if (!subject.isEmpty() && subject.size() == 1) {
                 SubjectGroup g = subject.get(0).getDefaultGroup();
                 if (g != null) {
@@ -822,7 +825,7 @@ public class Server {
         List<Conversation> conversations = Conversation.listAll(Conversation.class);
         AccountUIB aUIB = new AccountUIB(this.c);
         User usr = aUIB.getUser();
-        for (int x=0; x<chats.length(); x++) {
+        for (int x = 0; x < chats.length(); x++) {
             JSONObject messageJson = chats.getJSONObject(x);
             JSONObject userJson2 = messageJson.getJSONObject("sender");
 
@@ -889,5 +892,173 @@ public class Server {
         }
 
         return result;
+    }
+
+
+    public JSONObject uploadFile(String route, String filefield, String mime, String url, String method) {
+
+        String charset = "UTF-8";
+        File uploadFile1 = new File(route);
+
+        try {
+            MultipartUtility multipart = new MultipartUtility(setUpConnection(SERVER_URL + url, method), charset);
+
+            multipart.addFormField("mime", mime);
+            multipart.addFilePart(filefield, uploadFile1);
+            return new JSONObject(multipart.finish());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+
+    }
+
+    public Avatar uploadAvatar(String route, User user) {
+        JSONObject response = uploadFile(route, "avatar", "image/jpeg", "user/avatar/", "PUT");
+        if (response==null) return null;
+        try {
+            return new Avatar(response.getLong("id"), user, response.getString("mime"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+
+    private class MultipartUtility {
+        private final String boundary;
+        private static final String LINE_FEED = "\r\n";
+        private HttpsURLConnection httpConn;
+        private String charset;
+        private OutputStream outputStream;
+        private PrintWriter writer;
+
+
+        public MultipartUtility(HttpsURLConnection Conn, String charset)
+                throws IOException {
+            this.charset = charset;
+
+            // creates a unique boundary based on time stamp
+            boundary = "===" + System.currentTimeMillis() + "===";
+
+            httpConn = Conn;
+            httpConn.setUseCaches(false);
+            httpConn.setDoOutput(true); // indicates POST method
+            httpConn.setDoInput(true);
+            httpConn.setRequestProperty("Content-Type",
+                    "multipart/form-data; boundary=" + boundary);
+            httpConn.setRequestProperty("User-Agent", "CodeJava Agent");
+
+            outputStream = httpConn.getOutputStream();
+            writer = new PrintWriter(new OutputStreamWriter(outputStream, charset),
+                    true);
+        }
+
+        /**
+         * Adds a form field to the request
+         *
+         * @param name  field name
+         * @param value field value
+         */
+        public void addFormField(String name, String value) {
+            writer.append("--" + boundary).append(LINE_FEED);
+            writer.append("Content-Disposition: form-data; name=\"" + name + "\"")
+                    .append(LINE_FEED);
+            writer.append("Content-Type: text/plain; charset=" + charset).append(
+                    LINE_FEED);
+            writer.append(LINE_FEED);
+            writer.append(value).append(LINE_FEED);
+            writer.flush();
+        }
+
+        /**
+         * Adds a upload file section to the request
+         *
+         * @param fieldName  name attribute in <input type="file" name="..." />
+         * @param uploadFile a File to be uploaded
+         * @throws IOException
+         */
+        public void addFilePart(String fieldName, File uploadFile)
+                throws IOException {
+            String fileName = uploadFile.getName();
+            writer.append("--" + boundary).append(LINE_FEED);
+            writer.append(
+                    "Content-Disposition: form-data; name=\"" + fieldName
+                            + "\"; filename=\"" + fileName + "\"")
+                    .append(LINE_FEED);
+            writer.append(
+                    "Content-Type: "
+                            + URLConnection.guessContentTypeFromName(fileName))
+                    .append(LINE_FEED);
+            writer.append("Content-Transfer-Encoding: binary").append(LINE_FEED);
+            writer.append(LINE_FEED);
+            writer.flush();
+
+            FileInputStream inputStream = new FileInputStream(uploadFile);
+            byte[] buffer = new byte[4096];
+            int bytesRead = -1;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            outputStream.flush();
+            inputStream.close();
+
+            writer.append(LINE_FEED);
+            writer.flush();
+        }
+
+        /**
+         * Adds a header field to the request.
+         *
+         * @param name  - name of the header field
+         * @param value - value of the header field
+         */
+        public void addHeaderField(String name, String value) {
+            writer.append(name + ": " + value).append(LINE_FEED);
+            writer.flush();
+        }
+
+        /**
+         * Completes the request and receives response from the server.
+         *
+         * @return a list of Strings as response in case the server returned
+         * status OK, otherwise an exception is thrown.
+         * @throws IOException
+         */
+        public String finish() throws IOException {
+            String response = "";
+
+            writer.append(LINE_FEED).flush();
+            writer.append("--" + boundary + "--").append(LINE_FEED);
+            writer.close();
+
+            // checks server's status code first
+            int status = httpConn.getResponseCode();
+            BufferedReader reader;
+            if (200 <= status && status < 300) {
+                reader = new BufferedReader(new InputStreamReader(httpConn.getInputStream()));
+            } else if (400 <= status && status < 500) {
+                reader = new BufferedReader(new InputStreamReader(httpConn.getErrorStream()));
+            } else {
+                return null;
+            }
+
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                response += line;
+            }
+            reader.close();
+
+            httpConn.disconnect();
+
+            return response;
+        }
+
     }
 }

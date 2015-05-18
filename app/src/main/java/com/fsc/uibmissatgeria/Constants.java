@@ -5,7 +5,9 @@ import android.widget.Toast;
 
 import java.lang.ref.SoftReference;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by xiscosastrecabot on 22/3/15.
@@ -31,13 +33,12 @@ public class Constants {
     public static final int SP_MAX_CHAR_DEFAULT = 400;
     public static final int SP_MAX_FILES_DEFAULT = 5;
     public static final int SP_MAX_FILE_SIZE_DEFAULT = 1024*1024*2;
-    public static final List<String> SP_MIMETYPES_DEFAULT =  Arrays.asList(
+    public static final Set<String> SP_MIMETYPES_DEFAULT =  new HashSet<>(Arrays.asList(
             "image/png",
             "image/jpeg",
             "image/pjpeg",
             "image/gif",
-            "image/bmp",
-            "application/pdf");
+            "image/bmp" ));
 
     public static final String NOTIFICATION_CONVERSATIONS = "NOT_CONVERSATION";
 
