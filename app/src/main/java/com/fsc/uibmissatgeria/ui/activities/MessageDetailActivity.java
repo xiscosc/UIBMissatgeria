@@ -82,6 +82,8 @@ public class MessageDetailActivity extends AppCompatActivity {
 
         include = (LinearLayout) findViewById(R.id.message_detail);
 
+        View myLayout = this.getLayoutInflater.inflate(R.layout.listitem_message, null);
+
         messageUser = (TextView)include.findViewById(R.id.message_user);
         messageDate = (TextView)include.findViewById(R.id.message_date);
         messageBody = (TextView)include.findViewById(R.id.message_body);
