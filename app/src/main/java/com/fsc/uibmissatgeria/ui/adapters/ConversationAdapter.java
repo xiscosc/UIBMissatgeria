@@ -1,5 +1,6 @@
 package com.fsc.uibmissatgeria.ui.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,10 +8,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.fsc.uibmissatgeria.R;
+import com.fsc.uibmissatgeria.models.Avatar;
 import com.fsc.uibmissatgeria.models.Conversation;
 import com.fsc.uibmissatgeria.models.MessageConversation;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapter.ConversationsViewHolder>
@@ -22,6 +26,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         private TextView date;
         private TextView body;
         private View circleUnread;
+        private CircleImageView avatar;
 
         public ConversationsViewHolder(View itemView) {
             super(itemView);
@@ -30,10 +35,11 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             date = (TextView) itemView.findViewById(R.id.conversation_date);
             body = (TextView) itemView.findViewById(R.id.conversation_body);
             circleUnread = (View) itemView.findViewById(R.id.conversation_circle_unread);
+            avatar = (CircleImageView) itemView.findViewById(R.id.conversation_user_avatar);
 
         }
 
-        public void bindConversation(Conversation c) {
+        public void bindConversation(Conversation c, Context ctx) {
             userName.setText(c.getPeerName());
             MessageConversation m = c.getLastMessage();
             if (m != null) {
@@ -45,15 +51,18 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                 body.setText("");
                 circleUnread.setVisibility(View.VISIBLE);
             }
-
+            Avatar avr = c.getPeer().getAvatar();
+            if (avr!=null && avr.hasFile()) avatar.setImageBitmap(avr.getBitmap(ctx));
         }
     }
 
     private List<Conversation> conversations;
     private View.OnClickListener listener;
+    private Context c;
 
-    public ConversationAdapter(List<Conversation> conversations) {
+    public ConversationAdapter(List<Conversation> conversations, Context c) {
         this.conversations = conversations;
+        this.c = c;
     }
 
     @Override
@@ -70,7 +79,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
     @Override
     public void onBindViewHolder(ConversationsViewHolder viewHolder, int pos) {
         Conversation item = conversations.get(pos);
-        viewHolder.bindConversation(item);
+        viewHolder.bindConversation(item, c);
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.fsc.uibmissatgeria.api.AccountUIB;
 import com.fsc.uibmissatgeria.api.Server;
 import com.fsc.uibmissatgeria.models.Avatar;
 import com.fsc.uibmissatgeria.models.Conversation;
+import com.fsc.uibmissatgeria.models.FileMessageConversation;
 import com.fsc.uibmissatgeria.models.Message;
 import com.fsc.uibmissatgeria.models.MessageConversation;
 import com.fsc.uibmissatgeria.models.Subject;
@@ -140,6 +141,7 @@ public class ModelManager {
     }
 
     public static void resetDB() {
+        Avatar.deleteAll(Avatar.class);
         MessageConversation.deleteAll(MessageConversation.class);
         Conversation.deleteAll(Conversation.class);
         User.deleteAll(User.class);
@@ -289,9 +291,15 @@ public class ModelManager {
 
     public Avatar updateAvatar( User user, Avatar localAvatar) {
         server = new Server(ctx);
-        Avatar avatar = server.uploadAvatar(localAvatar.getLocal_path(), user);
+        Avatar avatar = server.uploadAvatar(localAvatar.getLocalPath(), user);
         if (avatar == null) return null;
         localAvatar.mergeFromServerAvatar(avatar);
         return localAvatar;
+    }
+
+    public MessageConversation sendMessageConversation(Conversation c, String body, List<FileMessageConversation> files) {
+        server = new Server(ctx);
+        server.sendMessageToConversation(c, body, files);
+        return null;
     }
 }

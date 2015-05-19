@@ -12,6 +12,7 @@ import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.managers.FileManager;
 import com.fsc.uibmissatgeria.managers.ImageManager;
+import com.fsc.uibmissatgeria.models.FileMessage;
 
 import java.util.List;
 
@@ -39,22 +40,21 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.PeerViewHolder
 
         }
 
-        public void bindSubject(String f, Context c) {
-            ImageManager imageManager = new ImageManager(c);
-            fileName.setText(imageManager.getFileName(f));
-            fileSize.setText(imageManager.getSizeInMB(f) + " MB");
-            if (FileManager.isImage(f)) {
-                fileImage.setImageBitmap(imageManager.getBitmap(f));
+        public void bindSubject(FileMessage f, Context c) {
+            fileName.setText(f.getName());
+            fileSize.setText(f.getSizeMB() + " MB");
+            if (f.isImage()) {
+                fileImage.setImageBitmap(f.getBitmap(c));
             }
 
         }
     }
 
-    private List<String> files;
+    private List<FileMessage> files;
     private Context c;
     private View.OnClickListener listener;
 
-    public FileAdapter(List<String> files, Context c) {
+    public FileAdapter(List<FileMessage> files, Context c) {
         this.files = files;
         this.c = c;
     }
@@ -72,15 +72,15 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.PeerViewHolder
 
     @Override
     public void onBindViewHolder(PeerViewHolder viewHolder, int pos) {
-        String item = files.get(pos);
+        FileMessage item = files.get(pos);
         viewHolder.bindSubject(item, c);
         final int post = pos;
         viewHolder.fileRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String path = files.get(post);
+                FileMessage path = files.get(post);
                 files.remove(post);
-                FileManager.deleteFile(path);
+                FileManager.deleteFile(path.getLocalPath());
                 notifyDataSetChanged();
             }
         });

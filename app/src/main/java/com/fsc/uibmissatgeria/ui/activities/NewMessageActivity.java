@@ -26,6 +26,7 @@ import com.fsc.uibmissatgeria.api.AccountUIB;
 import com.fsc.uibmissatgeria.api.Server;
 import com.fsc.uibmissatgeria.api.ServerSettings;
 import com.fsc.uibmissatgeria.managers.FileManager;
+import com.fsc.uibmissatgeria.models.FileMessage;
 import com.fsc.uibmissatgeria.models.SubjectGroup;
 import com.fsc.uibmissatgeria.models.Subject;
 import com.fsc.uibmissatgeria.managers.ImageManager;
@@ -51,7 +52,7 @@ public class NewMessageActivity extends AppCompatActivity {
     private Toolbar toolbar;
 
     private ProgressDialog pDialog;
-    private List<String> files;
+    private List<FileMessage> files;
     private RecyclerView recView;
     private FileAdapter fileAdapter;
 
@@ -208,13 +209,13 @@ public class NewMessageActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if(resultCode == RESULT_OK){
                 Uri route = data.getData();
-                String f = null;
+                FileMessage f = null;
                 if (FileManager.isImageFromUri(route, this)) {
                     ImageManager imageManager = new ImageManager(this);
-                    f = imageManager.saveImageToStorage(route);
+                    f = imageManager.saveImageToStorageGroup(route);
                 } else {
                     FileManager fileManager = new FileManager(this);
-                    f = fileManager.saveFileToStorage(route);
+                    f = fileManager.saveFileToStorageGroup(route);
                 }
                 if (f != null) {
                     files.add(f);
@@ -245,7 +246,7 @@ public class NewMessageActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... params) {
             Server s = new Server(ctx);
-            s.sendMessageToGroup(subject, subjectGroup, body);
+            s.sendMessageToGroup(subject, subjectGroup, body, files, (new AccountUIB(ctx)).getUser());
             return null;
         }
 

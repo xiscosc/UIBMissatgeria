@@ -6,9 +6,14 @@ import android.content.SharedPreferences;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.managers.ModelManager;
+import com.fsc.uibmissatgeria.models.Avatar;
 import com.fsc.uibmissatgeria.models.User;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by xiscosastrecabot on 9/4/15.
@@ -17,6 +22,7 @@ public class AccountUIB {
 
     private Context c;
     private User usr;
+    private JSONObject avatarJSON;
 
     public AccountUIB(Context c) {
         this.c = c;
@@ -26,7 +32,13 @@ public class AccountUIB {
 
     private boolean addAcount(String username, String password) {
         Server s = new Server(this.c);
-        User usr = s.doLogin(username, password);
+        Map<String, Object> result = s.doLogin(username, password);
+        usr = (User) result.get("user");
+        if (result.containsKey("avatar")) {
+            avatarJSON = (JSONObject) result.get("avatar");
+        } else {
+            avatarJSON = null;
+        }
         if (usr != null) {
             try {
                 String token = s.getTokenRaw();
@@ -34,7 +46,6 @@ public class AccountUIB {
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString(Constants.ACCOUNT_TOKEN, token);
                 editor.commit();
-                this.usr = usr;
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -57,8 +68,21 @@ public class AccountUIB {
 
     public boolean initalLogin(String user, String password) {
         boolean result = this.addAcount(user, password);
-        if (result) return this.saveUser();
-        return false;
+        if (result) {
+           Boolean result2 = this.saveUser();
+            if (result2) {
+                Avatar avatar = usr.getAvatar();
+                if(avatar != null) {
+                    boolean avatarDownloaded = avatar.downloadFromServer(c);
+                    if (avatarDownloaded) avatar.save();
+                }
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     public void logOut() {
@@ -82,6 +106,14 @@ public class AccountUIB {
 
     private boolean saveUser() {
         usr.save();
+        try {
+            if (avatarJSON != null) {
+                Avatar avtr = new Avatar(avatarJSON.getLong("id"), usr, avatarJSON.getString("mime"));
+                avtr.save();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         try {
             SharedPreferences settings = c.getSharedPreferences(Constants.SP_UIB, 0);
             SharedPreferences.Editor editor = settings.edit();

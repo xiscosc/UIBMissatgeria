@@ -121,7 +121,7 @@ public class ConversationsFragment extends Fragment implements SwipeRefreshLayou
 
     private void createAdapter() {
         recView.setEnabled(true);
-        conversationAdapter = new ConversationAdapter(conversations);
+        conversationAdapter = new ConversationAdapter(conversations, getActivity());
         conversationAdapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

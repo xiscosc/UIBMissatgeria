@@ -29,11 +29,12 @@ import com.fsc.uibmissatgeria.managers.FileManager;
 import com.fsc.uibmissatgeria.managers.ImageManager;
 import com.fsc.uibmissatgeria.models.Avatar;
 import com.fsc.uibmissatgeria.models.Conversation;
+import com.fsc.uibmissatgeria.models.FileMessageConversation;
 import com.fsc.uibmissatgeria.models.MessageConversation;
 import com.fsc.uibmissatgeria.managers.ModelManager;
 import com.fsc.uibmissatgeria.ui.adapters.MessageConversationAdapter;
 
-import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -56,7 +57,7 @@ public class ConversationActivity extends AppCompatActivity {
     private TimerTask ttask;
     private Boolean firstRun;
     private Toolbar toolbar;
-    private String file;
+    private FileMessageConversation file;
 
 
     /*FILES*/
@@ -64,6 +65,9 @@ public class ConversationActivity extends AppCompatActivity {
     private TextView fileName;
     private TextView fileSize;
     private CircleImageView fileImage;
+
+
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,11 +120,6 @@ public class ConversationActivity extends AppCompatActivity {
             startActivityForResult(Intent.createChooser(intent,
                     "Select Picture"), 1);
         } else {
-            Intent intent = new Intent();
-            intent.setAction(android.content.Intent.ACTION_VIEW);
-            File f = new File(file);
-            intent.setDataAndType(Uri.fromFile(f), "application/pdf");
-            startActivity(intent);
             Constants.showToast(this, this.getString(R.string.error_file_max_number)+" 1");
         }
 
@@ -134,10 +133,10 @@ public class ConversationActivity extends AppCompatActivity {
                 Uri route = data.getData();
                 if (FileManager.isImageFromUri(route, this)) {
                     ImageManager imageManager = new ImageManager(this);
-                    file = imageManager.saveImageToStorage(route);
+                    file = imageManager.saveImageToStorageConversation(route);
                 } else {
                     FileManager fileManager = new FileManager(this);
-                    file = fileManager.saveFileToStorage(route);
+                    file = fileManager.savFileToStorageConversation(route);
                 }
                 if (file != null)  showFile();
             }
@@ -148,17 +147,13 @@ public class ConversationActivity extends AppCompatActivity {
     }
 
     private void showFile() {
-        if (FileManager.isImage(file)) {
-            ImageManager manager = new ImageManager(this);
-            fileImage.setImageBitmap(manager.getBitmap(file));
-            fileSize.setText(manager.getSizeInMB(file) + " MB");
-            fileName.setText(manager.getFileName(file));
+        if (file.isImage()) {
+            fileImage.setImageBitmap(file.getBitmap(this));
         } else {
-            FileManager manager = new FileManager(this);
             fileImage.setImageResource(R.drawable.file_icon);
-            fileSize.setText(manager.getSizeInMB(file)+" MB");
-            fileName.setText(manager.getFileName(file));
         }
+        fileSize.setText(file.getSizeMB() + " MB");
+        fileName.setText(file.getName());
         fileView.setVisibility(View.VISIBLE);
     }
 
@@ -237,6 +232,13 @@ public class ConversationActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_conversation, menu);
+        this.menu = menu;
+        Avatar avatar = conversation.getPeer().getAvatar();
+        if (avatar != null && avatar.hasFile()) {
+            MenuItem avatarMenu = menu.getItem(1);
+            avatarMenu.setIcon(avatar.getCircleBitmap(this));
+
+        }
         return true;
     }
 
@@ -294,7 +296,7 @@ public class ConversationActivity extends AppCompatActivity {
     }
 
     public void deleteFile(View view) {
-        if (file != null) FileManager.deleteFile(file);
+        if (file != null) FileManager.deleteFile(file.getLocalPath());
         file = null;
         fileView.setVisibility(View.GONE);
     }
@@ -450,8 +452,10 @@ public class ConversationActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            Server s = new Server(ctx);
-            s.sendMessageToConversation(ctx.conversation, body);
+            ModelManager modelManager = new ModelManager(ctx);
+            List<FileMessageConversation> files = new ArrayList<>();
+            if (file!=null) files.add(file);
+            modelManager.sendMessageConversation(ctx.conversation, body, files);
             return null;
         }
 

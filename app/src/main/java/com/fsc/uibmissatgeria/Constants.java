@@ -16,6 +16,7 @@ public class Constants {
 
     public static final String SUBJECT_OBJ = "SUBJECT";
     public static final String GROUP_OBJ = "GROUP";
+    public static final String MESSAGE_OBJ = "MESSAGE";
     public static final String CONVERSATION_OBJ = "CONVERSATION";
 
     public static final String SP_UIB = "com.fsc.uibmissatgeria_preferences";

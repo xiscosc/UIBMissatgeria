@@ -98,6 +98,10 @@
             android:label="@string/title_activity_peer_selection" >
         </activity>
         <activity
+            android:name=".ui.activities.MessageDetailActivity"
+            android:label="@string/title_activity_message_detail" >
+        </activity>
+        <activity
             android:name=".ui.activities.ConversationActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_conversation"

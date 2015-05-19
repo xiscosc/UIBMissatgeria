@@ -61,7 +61,13 @@
                 android:text="Message Content"
                 />
 
-
+            <com.gc.materialdesign.views.ButtonRectangle
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/primary"
+                android:text="@string/view_attached_files"
+                android:id="@+id/button_files" />
 
         </LinearLayout>
 

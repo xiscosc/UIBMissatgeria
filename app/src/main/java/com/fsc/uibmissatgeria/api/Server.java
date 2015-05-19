@@ -4,8 +4,11 @@ import android.content.Context;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
+import com.fsc.uibmissatgeria.managers.FileManager;
 import com.fsc.uibmissatgeria.models.Avatar;
 import com.fsc.uibmissatgeria.models.Conversation;
+import com.fsc.uibmissatgeria.models.FileMessage;
+import com.fsc.uibmissatgeria.models.FileMessageConversation;
 import com.fsc.uibmissatgeria.models.MessageConversation;
 import com.fsc.uibmissatgeria.managers.ModelManager;
 import com.fsc.uibmissatgeria.models.Subject;
@@ -19,9 +22,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -36,6 +39,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.acl.Group;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -230,6 +234,8 @@ public class Server {
                 sender = usersDbList.get(index);
             }
 
+            if (!userJson.isNull("avatar")) manageAvatar(sender, userJson.getJSONObject("avatar"));
+
             Message msg = new Message(
                     messageJson.getLong("id"),
                     messageJson.getString("body"),
@@ -242,9 +248,23 @@ public class Server {
                 msg.save();
                 messagesDbList.add(msg);
                 result.add(msg);
+                
+                manageFiles(msg, messageJson.getJSONArray("media"));
             }
         }
         return result;
+    }
+
+    private void manageFiles(Message msg, JSONArray media) {
+        try {
+            for (int x=0; x<media.length(); x++) {
+                JSONObject fileJson = media.getJSONObject(x);
+                FileMessage fm = new FileMessage(fileJson.getLong("id"), fileJson.getString("mime"), msg);
+                fm.save();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -319,29 +339,101 @@ public class Server {
     }
 
 
-    public void sendMessageToGroup(Subject s, SubjectGroup g, String body) {
+    public void sendMessageToGroup(Subject s, SubjectGroup g, String body, List<FileMessage> files, User user) {
         String url;
         if (g.getIdApi() == Constants.DEFAULT_GROUP_ID) {
-            url = SERVER_URL + "user/subjects/" + s.getIdApi() + "/messages/";
+            url = "user/subjects/" + s.getIdApi() + "/messages/";
         } else {
-            url = SERVER_URL + "user/subjects/" + s.getIdApi() + "/groups/"
+            url = "user/subjects/" + s.getIdApi() + "/groups/"
                     + g.getIdApi() + "/messages/";
         }
-        sendMessage(url, body);
+        JSONObject messageJson = sendMessage(url, body);
+        if (messageJson != null) {
+            try {
+                Message msg = new Message(
+                        messageJson.getLong("id"),
+                        messageJson.getString("body"),
+                        user,
+                        messageJson.getString("created_at"),
+                        g
+                );
+                msg.save();
+                if (!files.isEmpty()) {
+                    for (FileMessage f : files) {
+                        long idApi = sendFileToMessageGroup(f, msg);
+                        if (idApi > 0) {
+                            f.setIdApi(idApi);
+                            f.setMessage(msg);
+                            f.save();
+                        }
+                    }
+                }
+            }catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-
-    public void sendMessageToConversation(Conversation c, String body) {
+    private long sendFileToMessageGroup(FileMessage f, Message msg) {
+        SubjectGroup g = msg.getSubjectGroup();
+        Subject s = g.getSubject();
         String url;
-        url = SERVER_URL + "user/chats/" + c.getPeer().getIdApi() + "/messages/";
-        sendMessage(url, body);
+
+        if (g.getIdApi() == Constants.DEFAULT_GROUP_ID) {
+            url = "user/subjects/" + s.getIdApi() + "/messages/";
+        } else {
+            url = "user/subjects/" + s.getIdApi() + "/groups/"
+                    + g.getIdApi() + "/messages/";
+        }
+        url += msg.getIdApi()+"/media/";
+
+        JSONObject response = uploadFile(f.getLocalPath(), "file", f.getMimeType(), url, "PATCH");
+        if (response==null) return 0;
+        try {
+            return response.getLong("id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
 
-    private void sendMessage(String url, String body) {
-        HttpsURLConnection urlConnection = null;
+    public void sendMessageToConversation(Conversation c, String body, List<FileMessageConversation> files) {
+        String url;
+        url = "user/chats/" + c.getPeer().getIdApi() + "/messages/";
+        JSONObject messageJson = sendMessage(url, body);
+        if (messageJson != null) {
+            try {
+                MessageConversation mc = new MessageConversation(
+                        messageJson.getLong("id"),
+                        messageJson.getString("body"),
+                        messageJson.getString("created_at"),
+                        c,
+                        false
+                );
+                mc.save();
+                if (!files.isEmpty()) {
+                    for (FileMessageConversation f : files) {
+                        long idApi = sendFileToConversation(f, mc);
+                        if (idApi > 0) {
+                            f.setIdApi(idApi);
+                            f.setMessage(mc);
+                            f.save();
+                        }
+                    }
+                }
+            }catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    private JSONObject sendMessage(String url, String body) {
+        String result = "";
+        HttpsURLConnection urlConnection;
         try {
-            urlConnection = setUpConnection(url, "POST");
+            urlConnection = setUpConnection(SERVER_URL +url, "POST");
             urlConnection.setDoOutput(true);
             OutputStreamWriter writer = new OutputStreamWriter(urlConnection.getOutputStream());
             writer.write("body=" + body);
@@ -349,13 +441,29 @@ public class Server {
             String line;
             BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             while ((line = reader.readLine()) != null) {
-                System.out.println(line);
+                result += line;
             }
             writer.close();
             reader.close();
+            return new JSONObject(result);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
+    }
+
+
+    public long sendFileToConversation(FileMessageConversation f, MessageConversation mc) {
+        String url = "user/chats/"+mc.getConversation().getPeer().getIdApi()+"/messages/"+mc.getIdApi()+"/media/";
+        JSONObject response = uploadFile(f.getLocalPath(), "file", f.getMimeType(), url, "PATCH");
+        if (response==null) return 0;
+        try {
+            return response.getLong("id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return 0;
+        }
+
     }
 
     private HttpsURLConnection setUpConnection(String url, String method) {
@@ -399,25 +507,27 @@ public class Server {
         return urlConnection;
     }
 
-    public User doLogin(String user, String password) {
+    public Map<String, Object> doLogin(String user, String password) {
 
-        Boolean result = false;
+        Map<String, Object> result = new HashMap<>();
         try {
             String url = SERVER_URL + "login/?user=" + user + "&password=" + password;
             JSONObject reader = readObjectFromServer(url);
             this.token = reader.getString("token");
             JSONObject usr = reader.getJSONObject("user");
-            return new User(
+            User userObject = new User(
                     usr.getInt("id"),
                     usr.getString("first_name"),
                     usr.getString("last_name"),
                     usr.getString("user"),
                     usr.getInt("type")
             );
+            result.put("user", userObject);
+            if (!usr.isNull("avatar")) result.put("avatar", usr.getJSONObject("avatar"));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return result;
     }
 
     public String getTokenRaw() {
@@ -499,6 +609,8 @@ public class Server {
                 peers.add(peer);
             }
 
+            if (!userJson.isNull("avatar")) manageAvatar(peer, userJson.getJSONObject("avatar"));
+
             Conversation c = new Conversation(peer);
 
             if (!converDB.contains(c)) {
@@ -514,6 +626,29 @@ public class Server {
                 }
             }
 
+        }
+    }
+
+
+    private void manageAvatar(User user, JSONObject avatarData) {
+        if (avatarData != null) {
+            try {
+                Avatar avatarRemote = new Avatar(avatarData.getLong("id"), user, avatarData.getString("mime"));
+                Avatar avatarLocal = user.getAvatar();
+                if (avatarLocal == null) {
+                    boolean result = avatarRemote.downloadFromServer(c);
+                    if (result) avatarRemote.save();
+                } else if (!avatarLocal.equals(avatarRemote)){
+                    boolean result = avatarRemote.downloadFromServer(c);
+                    if (result) {
+                        FileManager.deleteFile(avatarLocal.getLocalPath());
+                        avatarLocal.delete();
+                        avatarRemote.save();
+                    }
+                }
+            }catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -701,10 +836,23 @@ public class Server {
             if (!messagesDbList.contains(mc)) {
                 mc.save();
                 messagesDbList.add(mc);
+                manageFilesConversation(mc, messageJson.getJSONArray("media"));
             }
 
         }
 
+    }
+
+    private void manageFilesConversation(MessageConversation msg, JSONArray media) {
+        try {
+            for (int x=0; x<media.length(); x++) {
+                JSONObject fileJson = media.getJSONObject(x);
+                FileMessageConversation fm = new FileMessageConversation(fileJson.getLong("id"), fileJson.getString("mime"), msg);
+                fm.save();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public Map<String, Object> getSettings() {
@@ -895,7 +1043,7 @@ public class Server {
     }
 
 
-    public JSONObject uploadFile(String route, String filefield, String mime, String url, String method) {
+    private JSONObject uploadFile(String route, String filefield, String mime, String url, String method) {
 
         String charset = "UTF-8";
         File uploadFile1 = new File(route);
@@ -905,7 +1053,8 @@ public class Server {
 
             multipart.addFormField("mime", mime);
             multipart.addFilePart(filefield, uploadFile1);
-            return new JSONObject(multipart.finish());
+            String result = multipart.finish();
+            return new JSONObject(result);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -915,7 +1064,34 @@ public class Server {
             return null;
         }
 
+    }
 
+    public boolean downloadFile(String url, String target) {
+        try {
+            HttpsURLConnection conn = setUpConnection(SERVER_URL + url, "GET");
+            //conn.setDoOutput(true);
+            conn.connect();
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode>300) return false;
+
+            File f = new File(target);
+            FileOutputStream fileOutput = new FileOutputStream(f);
+            InputStream inputStream = conn.getInputStream();
+
+            byte[] buffer = new byte[1024];
+            int bufferLength = 0;
+
+            while ( (bufferLength = inputStream.read(buffer)) > 0 ) {
+                fileOutput.write(buffer, 0, bufferLength);
+            }
+            fileOutput.close();
+            return true;
+        } catch (Exception e) {
+            File f = new File(target);
+            if (f.exists()) f.delete();
+            return false;
+        }
     }
 
     public Avatar uploadAvatar(String route, User user) {
@@ -929,6 +1105,8 @@ public class Server {
         }
 
     }
+
+
 
 
     private class MultipartUtility {

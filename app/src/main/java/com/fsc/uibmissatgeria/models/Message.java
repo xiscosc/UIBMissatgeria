@@ -3,9 +3,11 @@ package com.fsc.uibmissatgeria.models;
 import com.fsc.uibmissatgeria.Constants;
 import com.orm.SugarRecord;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -44,6 +46,11 @@ public class Message extends SugarRecord<Message>{
 
     }
 
+
+    public SubjectGroup getSubjectGroup() {
+        return subjectGroup;
+    }
+
     public String getBody() {
         return body;
     }
@@ -66,6 +73,10 @@ public class Message extends SugarRecord<Message>{
     public String getStringDate() {
         SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_FORMAT, Locale.GERMAN);
         return sdf.format(this.date);
+    }
+
+    public List<FileMessage> getFiles() {
+        return FileMessage.find(FileMessage.class, "MESSAGE = "+getId());
     }
 
     @Override

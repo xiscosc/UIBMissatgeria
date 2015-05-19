@@ -9,7 +9,10 @@ import android.webkit.MimeTypeMap;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
+import com.fsc.uibmissatgeria.api.Server;
 import com.fsc.uibmissatgeria.api.ServerSettings;
+import com.fsc.uibmissatgeria.models.FileMessage;
+import com.fsc.uibmissatgeria.models.FileMessageConversation;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -20,6 +23,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,9 +47,6 @@ public class FileManager {
     }
 
 
-
-
-
     protected void createDirs() {
         File createDir = new File(filesFolder);
         if(!createDir.exists()) {
@@ -58,11 +59,11 @@ public class FileManager {
 
     }
 
-    public String getFileName(String path) {
+    public static String getFileName(String path) {
         return (new File(path)).getName();
     }
 
-    public String getSizeInMB(String path) {
+    public static String getSizeInMB(String path) {
         File file = new File(path);
         double sizeInBytes = file.length();
         double sizeInMb = sizeInBytes / (1024 * 1024);
@@ -98,8 +99,7 @@ public class FileManager {
     public static boolean isImageFromUri(Uri path, Context context) {
         String mimetype = getMimeType(path, context);
         if (mimetype == null) return false;
-        String type = mimetype.split("/")[0];
-        return type.equals("image");
+        return isImageFromMime(mimetype);
     }
 
 
@@ -133,18 +133,18 @@ public class FileManager {
         int i = path.lastIndexOf('.');
         int p = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
         if (i > p) {
-            extension = path.substring(i+1);
+            extension = path.substring(i + 1);
         }
         return extension;
     }
 
 
-    public String saveFileToStorage(Uri route) {
+    private List<String> saveFileToStorage(Uri route) {
         if (isAllowed(route)) {
-
-
+            List<String> result = new ArrayList<>();
             long unixTime = System.currentTimeMillis() / 1000L;
-            String destinationFilename = documentsFolder+unixTime+"_file."+ getMimeType(route, c).split("/")[1];
+            String mime = getMimeType(route, c);
+            String destinationFilename = documentsFolder+unixTime+"_file."+ mime.split("/")[1];
 
             /*if ((new File(sourceFilename)).length()>(1024*1024*2)) { //TODO: CONFIG
                 Constants.showToast(c, c.getResources().getString(R.string.error_file_max_size));
@@ -176,12 +176,55 @@ public class FileManager {
 
                 }
             }
-            return destinationFilename;
+            result.add(destinationFilename);
+            result.add(mime);
+            return result;
         } else {
             Constants.showToast(c, c.getResources().getString(R.string.file_not_allowed));
             return null;
         }
 
+    }
+
+    public FileMessageConversation savFileToStorageConversation(Uri imgUri) {
+        List<String> result = saveFileToStorage(imgUri);
+        if (result != null) {
+            return new FileMessageConversation(result.get(0), result.get(1));
+        } else {
+            return null;
+        }
+    }
+
+    public FileMessage saveFileToStorageGroup(Uri imgUri) {
+        List<String> result = saveFileToStorage(imgUri);
+        if (result != null) {
+            return new FileMessage(result.get(0), result.get(1));
+        } else {
+            return null;
+        }
+    }
+
+    protected  String generateLocalPath(String mime) {
+        String extension =  mime.split("/")[1];
+        long unixTime = System.currentTimeMillis() / 1000L;
+        return documentsFolder+unixTime+"_file."+ extension;
+    }
+
+    public String downloadMedia(long idApi, String mime) {
+        createDirs();
+        String localPath = generateLocalPath(mime);
+        Server s = new Server(c);
+        Boolean result = s.downloadFile("media/" + idApi + "/", localPath);
+        if (result) {
+            return localPath;
+        } else {
+            return null;
+        }
+    }
+
+    public static boolean isImageFromMime(String mime) {
+        String type = mime.split("/")[0];
+        return type.equals("image");
     }
 
 

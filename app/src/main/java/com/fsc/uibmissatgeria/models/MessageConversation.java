@@ -9,6 +9,7 @@ import com.orm.SugarRecord;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -99,6 +100,10 @@ public class MessageConversation extends SugarRecord<MessageConversation>{
     public String getStringDate() {
         SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_FORMAT, Locale.GERMAN);
         return sdf.format(this.date);
+    }
+
+    public List<FileMessageConversation> getFiles() {
+        return FileMessageConversation.find(FileMessageConversation.class, "MESSAGE = " + getId());
     }
 
     @Override

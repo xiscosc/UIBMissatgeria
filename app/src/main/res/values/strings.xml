@@ -51,6 +51,8 @@
     <string name="error_file_max_number">Too much files. Max</string>
     <string name="avatar_message">Uploading Avatar</string>
     <string name="error_avatar">Error getting new avatar</string>
+    <string name="view_attached_files">View attached files</string>
+    <string name="title_activity_message_detail">Message detail</string>
 
 
 </resources>

@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.api.AccountUIB;
-import com.fsc.uibmissatgeria.api.Server;
 import com.fsc.uibmissatgeria.managers.FileManager;
 import com.fsc.uibmissatgeria.managers.ImageManager;
 import com.fsc.uibmissatgeria.managers.ModelManager;
@@ -42,7 +41,7 @@ public class ProfileActivity extends AppCompatActivity {
         AccountUIB accountUIB = new AccountUIB(this);
         user = accountUIB.getUser();
         avatar = user.getAvatar();
-        if(avatar!= null) circleImageView.setImageBitmap(avatar.getBitmap(this));
+        if (avatar!= null && avatar.hasFile()) circleImageView.setImageBitmap(avatar.getBitmap(this));
         setProfile();
     }
 
@@ -68,8 +67,8 @@ public class ProfileActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if(resultCode == RESULT_OK){
                 Uri image = data.getData();
-                newAvatar = new Avatar();
-                newAvatar.createAvatarFromIntent(image, user, this);
+                ImageManager imageManager = new ImageManager(this);
+                newAvatar = imageManager.saveAvatarToStorageGroup(image, user);
                 SendMessageTask t = new SendMessageTask(this);
                 t.execute();
             }
@@ -99,15 +98,15 @@ public class ProfileActivity extends AppCompatActivity {
         protected void onPostExecute(Avatar response) {
             if (response != null) {
               if (avatar!= null){
-                  FileManager.deleteFile(avatar.getLocal_path());
+                  FileManager.deleteFile(avatar.getLocalPath());
                   avatar.delete();
               }
               avatar = response;
               avatar.save();
               newAvatar = null;
-              if(avatar!= null) circleImageView.setImageBitmap(avatar.getBitmap(ctx));
+              if (avatar!= null && avatar.hasFile()) circleImageView.setImageBitmap(avatar.getBitmap(ctx));
             } else {
-                FileManager.deleteFile(newAvatar.getLocal_path());
+                FileManager.deleteFile(newAvatar.getLocalPath());
                 Constants.showToast(ctx, getString(R.string.error_avatar));
             }
             pDialog.hide();

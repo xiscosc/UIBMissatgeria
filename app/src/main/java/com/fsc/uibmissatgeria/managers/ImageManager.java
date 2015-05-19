@@ -16,6 +16,10 @@ import android.provider.MediaStore;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
+import com.fsc.uibmissatgeria.models.Avatar;
+import com.fsc.uibmissatgeria.models.FileMessage;
+import com.fsc.uibmissatgeria.models.FileMessageConversation;
+import com.fsc.uibmissatgeria.models.User;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,7 +42,7 @@ public class ImageManager extends FileManager {
     }
 
 
-    public String saveImageToStorage(Uri imgUri) {
+    private String saveImageToStorage(Uri imgUri) {
         if (isAllowed(imgUri)) {
             File file = null;
             String result = null;
@@ -47,7 +51,7 @@ public class ImageManager extends FileManager {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(c.getContentResolver(), imgUri);
                 OutputStream out;
                 long unixTime = System.currentTimeMillis() / 1000L;
-                String fileName = imagesFolder+unixTime+"_img.jpg";
+                String fileName = imagesFolder+unixTime+"_img.jpeg";
                 file = new File(fileName);
                 file.createNewFile();
                 out = new FileOutputStream(file);
@@ -63,6 +67,33 @@ public class ImageManager extends FileManager {
             return result;
         } else {
             Constants.showToast(c, c.getResources().getString(R.string.file_not_allowed));
+            return null;
+        }
+    }
+
+    public FileMessageConversation saveImageToStorageConversation(Uri imgUri) {
+        String route = saveImageToStorage(imgUri);
+        if (route != null) {
+            return new FileMessageConversation(route, "image/jpeg");
+        } else {
+            return null;
+        }
+    }
+
+    public FileMessage saveImageToStorageGroup(Uri imgUri) {
+        String route = saveImageToStorage(imgUri);
+        if (route != null) {
+            return new FileMessage(route, "image/jpeg");
+        } else {
+            return null;
+        }
+    }
+
+    public Avatar saveAvatarToStorageGroup(Uri imgUri, User user) {
+        String route = saveImageToStorage(imgUri);
+        if (route != null) {
+            return new Avatar(route, user, "image/jpeg");
+        } else {
             return null;
         }
     }
@@ -85,31 +116,53 @@ public class ImageManager extends FileManager {
 
     public Bitmap getCroppedBitmap(String path) {
 
-        Bitmap bitmap = getBitmap(path);
+        Bitmap srcBmp = getBitmap(path);
+        Bitmap dstBmp;
+        if (srcBmp.getWidth() >= srcBmp.getHeight()){
 
-        int min = bitmap.getWidth();
-        if (min > bitmap.getHeight()) min = bitmap.getHeight();
+            dstBmp = Bitmap.createBitmap(
+                    srcBmp,
+                    srcBmp.getWidth() / 2 - srcBmp.getHeight() / 2,
+                    0,
+                    srcBmp.getHeight(),
+                    srcBmp.getHeight()
+            );
+        }else{
 
-        final Bitmap output = Bitmap.createBitmap(min,
-                min, Bitmap.Config.ARGB_8888);
-        final Canvas canvas = new Canvas(output);
+            dstBmp = Bitmap.createBitmap(
+                    srcBmp,
+                    0,
+                    srcBmp.getHeight() / 2 - srcBmp.getWidth() / 2,
+                    srcBmp.getWidth(),
+                    srcBmp.getWidth()
+            );
+        }
 
-        final int color = Color.WHITE;
+
+        Bitmap output = Bitmap.createBitmap(dstBmp.getWidth(),
+                dstBmp.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final int color = 0xff424242;
         final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, min, min);
-        final RectF rectF = new RectF(rect);
+        final Rect rect = new Rect(0, 0, dstBmp.getWidth(),
+                dstBmp.getHeight());
 
         paint.setAntiAlias(true);
         canvas.drawARGB(0, 0, 0, 0);
         paint.setColor(color);
-        canvas.drawOval(rectF, paint);
-
+        canvas.drawCircle(dstBmp.getWidth() / 2,
+                dstBmp.getHeight() / 2, dstBmp.getWidth() / 2, paint);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, rect, rect, paint);
-
-        bitmap.recycle();
-
+        canvas.drawBitmap(dstBmp, rect, rect, paint);
         return output;
+    }
+
+    @Override
+    protected String generateLocalPath(String mime) {
+        String extension =  mime.split("/")[1];
+        long unixTime = System.currentTimeMillis() / 1000L;
+        return imagesFolder+unixTime+"_img."+ extension;
     }
 
 

@@ -3,8 +3,6 @@ package com.fsc.uibmissatgeria.ui.activities;
 import java.util.Locale;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -75,7 +73,7 @@ public class PrincipalActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_principal, menu);
         this.menu = menu;
         Avatar avatar = accountUIB.getUser().getAvatar();
-        if (avatar != null) {
+        if (avatar != null && avatar.hasFile()) {
             MenuItem avatarMenu = menu.getItem(0);
             avatarMenu.setIcon(avatar.getCircleBitmap(this));
 
@@ -118,7 +116,7 @@ public class PrincipalActivity extends AppCompatActivity {
             startActivity(intent);
         } else if (menu!=null){
             Avatar avatar = accountUIB.getUser().getAvatar();
-            if (avatar != null) {
+            if (avatar != null && avatar.hasFile()) {
                 MenuItem avatarMenu = menu.getItem(0);
                 avatarMenu.setIcon(avatar.getCircleBitmap(this));
             }
