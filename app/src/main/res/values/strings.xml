@@ -48,11 +48,11 @@
     <string name="file_not_allowed">This file is not allowed</string>
     <string name="error_file_copy">Error getting file</string>
     <string name="error_file_max_size">The file is too large (Max 2MB)</string>
-    <string name="error_file_max_number">Too much files. Max</string>
+    <string name="error_file_max_number">Too much files. Max is</string>
     <string name="avatar_message">Uploading Avatar</string>
     <string name="error_avatar">Error getting new avatar</string>
     <string name="view_attached_files">View attached files</string>
-    <string name="title_activity_message_detail">Message detail</string>
+    <string name="title_activity_message_detail">Message Detail</string>
     <string name="file_to_download">File to download</string>
     <string name="downloading">Downloading file</string>
     <string name="error_downloading">Error downloading file</string>

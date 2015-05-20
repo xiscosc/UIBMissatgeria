@@ -42,4 +42,20 @@
     <string name="new_messages_group_you">Tens nous missatges a diferents assignatures</string>
     <string name="error_image_copy">Error obtenint la imatge</string>
     <string name="subject_subtitle">Selecció de fòrum</string>
+    <string name="avatar_message">Pujant avatar</string>
+    <string name="downloading">Descarregant arxiu</string>
+    <string name="error_avatar">Error obtenint el nou avatar</string>
+    <string name="error_downloading">Error descarregant fitxer</string>
+    <string name="error_file_copy">Error obtenint arxiu</string>
+    <string name="error_file_max_number">Massa arxius. El màxim és </string>
+    <string name="error_file_max_size">L'arxiu és massa gran (Max 2MB)</string>
+    <string name="error_sending_files">Error enviant arxius</string>
+    <string name="error_sending_message">Error enviant missatge</string>
+    <string name="file_not_allowed">Aquest arxiu no està permès</string>
+    <string name="file_to_download">Arxiu pendent de descarregar</string>
+    <string name="files">Arxius</string>
+    <string name="select_avatar">Selecciona un avatar</string>
+    <string name="select_file">Selecciona un arxiu</string>
+    <string name="title_activity_message_detail">Detall del Missatge</string>
+    <string name="view_attached_files">Veure arxius adjunts</string>
 </resources>

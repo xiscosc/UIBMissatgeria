@@ -42,4 +42,20 @@
     <string name="new_messages_group_you">Tienes nuevos mensajes en diferentes asignaturas</string>
     <string name="error_image_copy">Error obteniendo la imagen</string>
     <string name="subject_subtitle">Selección de foro</string>
+    <string name="avatar_message">Subiendo avatar</string>
+    <string name="downloading">Descargando archivo</string>
+    <string name="error_avatar">Error obteniendo el nuevo avatar</string>
+    <string name="error_downloading">Error descargando archivo</string>
+    <string name="error_file_copy">Error obteniendo archivo</string>
+    <string name="error_file_max_number">Demasiados archivos. El máximo es</string>
+    <string name="error_file_max_size">El archivo es demasiado grande (Max 2MB)</string>
+    <string name="error_sending_files">Error enviando archivos</string>
+    <string name="error_sending_message">Error enviando mensaje</string>
+    <string name="file_not_allowed">Este archivo no está permitido</string>
+    <string name="files">Archivos</string>
+    <string name="file_to_download">Archivo pendiente de descargar</string>
+    <string name="select_avatar">Selecciona un avatar</string>
+    <string name="select_file">Selecciona un arxiu</string>
+    <string name="title_activity_message_detail">Detalle del Mensaje</string>
+    <string name="view_attached_files">Ver archivos adjuntos</string>
 </resources>
