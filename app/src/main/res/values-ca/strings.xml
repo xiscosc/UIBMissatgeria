@@ -48,7 +48,7 @@
     <string name="error_downloading">Error descarregant fitxer</string>
     <string name="error_file_copy">Error obtenint arxiu</string>
     <string name="error_file_max_number">Massa arxius. El màxim és </string>
-    <string name="error_file_max_size">L'arxiu és massa gran (Max 2MB)</string>
+    <string name="error_file_max_size">L\'arxiu és massa gran (Max 2MB)</string>
     <string name="error_sending_files">Error enviant arxius</string>
     <string name="error_sending_message">Error enviant missatge</string>
     <string name="file_not_allowed">Aquest arxiu no està permès</string>
