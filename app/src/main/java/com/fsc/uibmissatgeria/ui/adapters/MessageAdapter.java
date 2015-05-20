@@ -3,6 +3,7 @@ package com.fsc.uibmissatgeria.ui.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,8 +54,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Messages
             Avatar avatarObj = m.getUser().getAvatar();
             if (avatarObj!=null && avatarObj.hasFile()) {
                 avatar.setImageBitmap(avatarObj.getBitmap(c));
+            } else {
+                avatar.setImageResource(R.drawable.user_avatar);
             }
-            if (!(m.getFiles()).isEmpty()) buttonFiles.setVisibility(View.VISIBLE);
+            if (!(m.getFiles()).isEmpty()) {
+                buttonFiles.setVisibility(View.VISIBLE);
+            } else {
+                buttonFiles.setVisibility(View.GONE);
+            }
         }
     }
 
