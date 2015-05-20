@@ -41,7 +41,7 @@ public class Constants {
             "image/gif",
             "image/bmp" ));
 
-    public static final String NOTIFICATION_CONVERSATIONS = "NOT_CONVERSATION";
+    public static final String NOTIFICATION_CONVERSATIONS_INTENT = "NOT_CONVERSATION";
 
 
     public static final int DEFAULT_GROUP_ID = -1;
@@ -66,6 +66,16 @@ public class Constants {
     public static final String FOLDER_NAME_EXTERNAL = "uib_missatgeria";
     public static final String FOLDER_NAME_IMAGES = "images";
     public static final String FOLDER_NAME_FILES = "files";
+
+
+    /**RESPONSE CODES SEND MESSAGE **/
+    public static final int ALL_OK = 0;
+    public static final int MESSSAGE_NOT_SEND = 1;
+    public static final int SOME_FILES_NOT_SEND = 2;
+
+    /**NOTIFICATION ID**/
+    public static final int NOTIFICATION_GROUPS_ID = 1;
+    public static final int NOTIFICATION_CONVERSATIONS_ID = 2;
 
 
     public static void showToast(Context ctx, String message) {

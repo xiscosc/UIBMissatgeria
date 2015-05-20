@@ -17,24 +17,24 @@ import android.widget.TextView;
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.models.Avatar;
-import com.fsc.uibmissatgeria.models.FileMessage;
-import com.fsc.uibmissatgeria.models.Message;
-import com.fsc.uibmissatgeria.ui.adapters.FileAdapter;
+import com.fsc.uibmissatgeria.models.FileMessageConversation;
+import com.fsc.uibmissatgeria.models.MessageConversation;
+import com.fsc.uibmissatgeria.ui.adapters.FileConversationAdapter;
 
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class MessageDetailActivity extends AppCompatActivity {
+public class MessageConversationDetailActivity extends AppCompatActivity {
 
 
     private Toolbar toolbar;
 
     private ProgressDialog pDialog;
-    private List<FileMessage> files;
+    private List<FileMessageConversation> files;
     private RecyclerView recView;
-    private FileAdapter fileAdapter;
+    private FileConversationAdapter fileAdapter;
 
     private LinearLayout layoutContainer;
     private TextView messageUser;
@@ -42,7 +42,7 @@ public class MessageDetailActivity extends AppCompatActivity {
     private TextView messageBody;
     private CircleImageView avatarImg;
 
-    private Message message;
+    private MessageConversation message;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +51,7 @@ public class MessageDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_message_detail);
 
         Intent i = getIntent();
-        message = Message.findById(Message.class, i.getLongExtra(Constants.MESSAGE_OBJ, 0));
+        message = MessageConversation.findById(MessageConversation.class, i.getLongExtra(Constants.MESSAGE_OBJ, 0));
 
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         recView = (RecyclerView) findViewById(R.id.message_detail_list);
@@ -67,7 +67,7 @@ public class MessageDetailActivity extends AppCompatActivity {
 
         LayoutInflater inflater;
         int idLayout = R.layout.listitem_message;
-        if (message.getUser().getType() == Constants.TYPE_TEACHER) idLayout = R.layout.listitem_message_other;
+        if (message.isFromOther()) idLayout = R.layout.listitem_message_other;
         inflater = (LayoutInflater) this.getSystemService(this.LAYOUT_INFLATER_SERVICE);
         LinearLayout layout = (LinearLayout) inflater.inflate(idLayout ,null);
 
@@ -80,10 +80,10 @@ public class MessageDetailActivity extends AppCompatActivity {
         avatarImg = (CircleImageView)layout.findViewById(R.id.user_avatar);
 
 
-        messageUser.setText(message.getUser().getName());
+        messageUser.setText(message.getUser(this).getName());
         messageDate.setText(message.getStringDate());
         messageBody.setText(message.getBody());
-        Avatar avatar = message.getUser().getAvatar();
+        Avatar avatar = message.getUser(this).getAvatar();
         if (avatar != null && avatar.hasFile()) avatarImg.setImageBitmap(avatar.getBitmap(this));
 
         files = message.getFiles();
@@ -91,15 +91,13 @@ public class MessageDetailActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
                 Intent upIntent = NavUtils.getParentActivityIntent(this);
-                upIntent.putExtra(Constants.SUBJECT_OBJ, message.getSubjectGroup().getSubject().getId());
-                upIntent.putExtra(Constants.GROUP_OBJ, message.getSubjectGroup().getId());
+                upIntent.putExtra(Constants.CONVERSATION_OBJ, message.getConversation().getId());
                 if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
                     // This activity is NOT part of this app's task, so create a new task
                     // when navigating up, with a synthesized back stack.
@@ -114,6 +112,7 @@ public class MessageDetailActivity extends AppCompatActivity {
                     NavUtils.navigateUpTo(this, upIntent);
                 }
                 return true;
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -121,7 +120,7 @@ public class MessageDetailActivity extends AppCompatActivity {
 
 
     private void createAdapter() {
-        fileAdapter = new FileAdapter(files, this, false);
+        fileAdapter = new FileConversationAdapter(files, this, false);
         recView.setAdapter(fileAdapter);
     }
 

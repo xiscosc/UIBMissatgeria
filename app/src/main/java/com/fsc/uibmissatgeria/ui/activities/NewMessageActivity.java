@@ -26,6 +26,7 @@ import com.fsc.uibmissatgeria.api.AccountUIB;
 import com.fsc.uibmissatgeria.api.Server;
 import com.fsc.uibmissatgeria.api.ServerSettings;
 import com.fsc.uibmissatgeria.managers.FileManager;
+import com.fsc.uibmissatgeria.managers.ModelManager;
 import com.fsc.uibmissatgeria.models.FileMessage;
 import com.fsc.uibmissatgeria.models.SubjectGroup;
 import com.fsc.uibmissatgeria.models.Subject;
@@ -191,7 +192,7 @@ public class NewMessageActivity extends AppCompatActivity {
             intent.setType("*/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(Intent.createChooser(intent,
-                    "Select Picture"), 1);
+                    getString(R.string.select_file)), 1);
         } else {
             Constants.showToast(this, this.getString(R.string.error_file_max_number)+" "+(new ServerSettings(this)).getMaxFiles());
         }
@@ -228,12 +229,13 @@ public class NewMessageActivity extends AppCompatActivity {
         }
     }
 
-    private class SendMessageTask extends AsyncTask<Void, Void, Void> {
+    private class SendMessageTask extends AsyncTask<Void, Void, Boolean> {
 
         String body;
         Subject subject;
         SubjectGroup subjectGroup;
         NewMessageActivity ctx;
+        ModelManager modelManager;
 
         public SendMessageTask(NewMessageActivity ctx, Subject s, SubjectGroup g, String body) {
             super();
@@ -241,22 +243,21 @@ public class NewMessageActivity extends AppCompatActivity {
             this.subjectGroup = g;
             this.body = body;
             this.ctx = ctx;
+            modelManager = new ModelManager(ctx);
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
-            Server s = new Server(ctx);
-            s.sendMessageToGroup(subject, subjectGroup, body, files, (new AccountUIB(ctx)).getUser());
-            return null;
+        protected Boolean doInBackground(Void... params) {
+            return modelManager.sendMessageGroup(subjectGroup, body, files, (new AccountUIB(ctx)).getUser());
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+        protected void onPostExecute(Boolean result) {
             pDialog.dismiss();
-            ctx.finish();
-
-
+            modelManager.showError();
+            if(result) {
+                ctx.finish();
+            }
         }
 
         @Override

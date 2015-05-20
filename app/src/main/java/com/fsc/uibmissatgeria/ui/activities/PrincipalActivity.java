@@ -60,7 +60,7 @@ public class PrincipalActivity extends AppCompatActivity {
         tabs.setViewPager(pager);
 
         Intent i = getIntent();
-        Boolean fromNotification = i.getBooleanExtra(Constants.NOTIFICATION_CONVERSATIONS, false);
+        Boolean fromNotification = i.getBooleanExtra(Constants.NOTIFICATION_CONVERSATIONS_INTENT, false);
         if (fromNotification) {
             pager.setCurrentItem(1);
         }

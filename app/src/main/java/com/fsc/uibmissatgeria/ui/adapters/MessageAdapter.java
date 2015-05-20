@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.fsc.uibmissatgeria.Constants;
@@ -33,7 +34,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Messages
         private TextView messageDate;
         private TextView messageBody;
         private CircleImageView avatar;
-        private ButtonRectangle buttonFiles;
+        private Button buttonFiles;
+        private View divider;
 
 
         public MessagesViewHolder(View itemView) {
@@ -43,11 +45,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Messages
             messageDate = (TextView)itemView.findViewById(R.id.message_date);
             messageBody = (TextView)itemView.findViewById(R.id.message_body);
             avatar = (CircleImageView)itemView.findViewById(R.id.user_avatar);
-            buttonFiles = (ButtonRectangle)itemView.findViewById(R.id.button_files);
+            buttonFiles = (Button)itemView.findViewById(R.id.button_files);
+            divider = itemView.findViewById(R.id.message_divider);
 
         }
 
-        public void bindGroup(Message m, Context c) {
+        public void bindGroup(Message m, Context c, boolean last) {
             messageDate.setText(m.getStringDate());
             messageBody.setText(m.getBody());
             messageUser.setText(m.getUser().getName());
@@ -61,6 +64,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Messages
                 buttonFiles.setVisibility(View.VISIBLE);
             } else {
                 buttonFiles.setVisibility(View.GONE);
+            }
+            if (!last) {
+                divider.setVisibility(View.VISIBLE);
+            } else {
+                divider.setVisibility(View.GONE);
             }
         }
     }
@@ -89,10 +97,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Messages
         int lay;
         switch (viewType){
             case 0:
-                lay = R.layout.listitem_message_other;
+                lay = R.layout.listitem_post_other;
                 break;
             default:
-                lay = R.layout.listitem_message;
+                lay = R.layout.listitem_post;
                 break;
         }
 
@@ -107,7 +115,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Messages
     @Override
     public void onBindViewHolder(MessagesViewHolder viewHolder, int pos) {
         Message item = messages.get(pos);
-        viewHolder.bindGroup(item, c);
+        viewHolder.bindGroup(item, c, (pos == (messages.size()-1)));
         final Message msg = item;
         viewHolder.avatar.setOnClickListener(new View.OnClickListener() {
             @Override

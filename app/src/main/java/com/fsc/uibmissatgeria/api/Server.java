@@ -339,7 +339,8 @@ public class Server {
     }
 
 
-    public void sendMessageToGroup(Subject s, SubjectGroup g, String body, List<FileMessage> files, User user) {
+    public int sendMessageToGroup(Subject s, SubjectGroup g, String body, List<FileMessage> files, User user) {
+        int response = Constants.ALL_OK;
         String url;
         if (g.getIdApi() == Constants.DEFAULT_GROUP_ID) {
             url = "user/subjects/" + s.getIdApi() + "/messages/";
@@ -365,13 +366,21 @@ public class Server {
                             f.setIdApi(idApi);
                             f.setMessage(msg);
                             f.save();
+                        } else {
+                            FileManager.deleteFile(f.getLocalPath());
+                            response = Constants.SOME_FILES_NOT_SEND;
                         }
                     }
                 }
             }catch (JSONException e) {
+                response = Constants.MESSSAGE_NOT_SEND;
                 e.printStackTrace();
             }
+        } else {
+            response = Constants.MESSSAGE_NOT_SEND;
         }
+
+        return response;
     }
 
     private long sendFileToMessageGroup(FileMessage f, Message msg) {
@@ -398,7 +407,8 @@ public class Server {
     }
 
 
-    public void sendMessageToConversation(Conversation c, String body, List<FileMessageConversation> files) {
+    public int sendMessageToConversation(Conversation c, String body, List<FileMessageConversation> files) {
+        int response = Constants.ALL_OK;
         String url;
         url = "user/chats/" + c.getPeer().getIdApi() + "/messages/";
         JSONObject messageJson = sendMessage(url, body);
@@ -419,13 +429,21 @@ public class Server {
                             f.setIdApi(idApi);
                             f.setMessage(mc);
                             f.save();
+                        } else {
+                            response = Constants.SOME_FILES_NOT_SEND;
+                            FileManager.deleteFile(f.getLocalPath());
                         }
                     }
                 }
             }catch (JSONException e) {
+                response = Constants.MESSSAGE_NOT_SEND;
                 e.printStackTrace();
             }
+        } else {
+            response = Constants.MESSSAGE_NOT_SEND;
         }
+
+        return response;
     }
 
 
@@ -1056,10 +1074,7 @@ public class Server {
             String result = multipart.finish();
             return new JSONObject(result);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

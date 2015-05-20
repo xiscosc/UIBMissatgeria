@@ -2,9 +2,11 @@ package com.fsc.uibmissatgeria.managers;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.webkit.MimeTypeMap;
 
 import com.fsc.uibmissatgeria.Constants;
@@ -20,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.DecimalFormat;
@@ -146,10 +149,20 @@ public class FileManager {
             String mime = getMimeType(route, c);
             String destinationFilename = documentsFolder+unixTime+"_file."+ mime.split("/")[1];
 
-            /*if ((new File(sourceFilename)).length()>(1024*1024*2)) { //TODO: CONFIG
-                Constants.showToast(c, c.getResources().getString(R.string.error_file_max_size));
+            try {
+                ContentResolver cr = c.getContentResolver();
+                InputStream is = cr.openInputStream(route);
+                int size = is.available();
+
+                if (size > (new ServerSettings(c)).getMaxFileSize()) {
+                    Constants.showToast(c, c.getString(R.string.error_file_max_size));
+                    return null;
+                }
+            } catch (IOException e) {
+                Constants.showToast(c, c.getString(R.string.error_file_max_size));
                 return null;
-            }*/
+            }
+
 
             BufferedInputStream bis = null;
             BufferedOutputStream bos = null;
@@ -166,7 +179,7 @@ public class FileManager {
                 } while(bis.read(buf) != -1);
             } catch (IOException e) {
                 e.printStackTrace();
-                Constants.showToast(c, c.getResources().getString(R.string.error_file_copy));
+                Constants.showToast(c, c.getString(R.string.error_file_copy));
                 destinationFilename = null;
             } finally {
                 try {

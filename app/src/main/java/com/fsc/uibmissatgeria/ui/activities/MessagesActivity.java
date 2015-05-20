@@ -35,9 +35,11 @@ public class MessagesActivity extends AppCompatActivity {
         Long idSubjectGroup = i.getLongExtra(Constants.GROUP_OBJ, 0);
         gr = SubjectGroup.findById(SubjectGroup.class, idSubjectGroup);
 
-        String name = sbj.getName();
+        String subname = getString(R.string.group)+" ";
         if (gr.getIdApi()!=Constants.DEFAULT_GROUP_ID) {
-          name +=" "+gr.getName();
+          subname +=gr.getName();
+        } else {
+            subname +=getString(R.string.general);
         }
 
         if (savedInstanceState == null) {
@@ -47,7 +49,10 @@ public class MessagesActivity extends AppCompatActivity {
         }
 
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
-        toolbar.setTitle(name);
+        toolbar.setTitle(sbj.getName());
+        toolbar.setSubtitle(subname);
+
+
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         setSupportActionBar(toolbar);
 

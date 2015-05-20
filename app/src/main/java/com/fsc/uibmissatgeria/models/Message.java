@@ -85,6 +85,6 @@ public class Message extends SugarRecord<Message>{
         if (other == this) return true;
         if (!(other instanceof Message)) return false;
         Message otherMyClass = (Message) other;
-        return (this.idApi == otherMyClass.idApi);
+        return (idApi.equals(otherMyClass.idApi));
     }
 }

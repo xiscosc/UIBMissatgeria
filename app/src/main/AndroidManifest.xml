@@ -99,7 +99,19 @@
         </activity>
         <activity
             android:name=".ui.activities.MessageDetailActivity"
-            android:label="@string/title_activity_message_detail" >
+            android:label="@string/title_activity_message_detail"
+            android:parentActivityName=".ui.activities.MessagesActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activities.MessagesActivity"/>
+        </activity>
+        <activity
+            android:name=".ui.activities.MessageConversationDetailActivity"
+            android:label="@string/title_activity_message_detail"
+            android:parentActivityName=".ui.activities.ConversationActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activities.ConversationActivity"/>
         </activity>
         <activity
             android:name=".ui.activities.ConversationActivity"

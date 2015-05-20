@@ -23,6 +23,7 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.Subjects
         private TextView subjectTitle;
         private TextView subjectSubTitle;
         private View unRead;
+        private View divider;
 
         public SubjectsViewHolder(View itemView) {
             super(itemView);
@@ -30,12 +31,22 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.Subjects
             subjectTitle = (TextView) itemView.findViewById(R.id.subject_title);
             subjectSubTitle = (TextView) itemView.findViewById(R.id.subject_subtitle);
             unRead = itemView.findViewById(R.id.subject_circle_unread);
+            divider = itemView.findViewById(R.id.subject_divider);
         }
 
-        public void bindSubject(Subject s) {
+        public void bindSubject(Subject s, boolean last) {
             subjectTitle.setText(s.getName());
             subjectSubTitle.setText(Integer.toString(s.getCode()));
-            if (s.hasUnreadGroups()) unRead.setVisibility(View.VISIBLE);
+            if (s.hasUnreadGroups()) {
+                unRead.setVisibility(View.VISIBLE);
+            } else {
+                unRead.setVisibility(View.GONE);
+            }
+            if (!last) {
+                divider.setVisibility(View.VISIBLE);
+            } else {
+                divider.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -60,7 +71,7 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.Subjects
     @Override
     public void onBindViewHolder(SubjectsViewHolder viewHolder, int pos) {
         Subject item = subjects.get(pos);
-        viewHolder.bindSubject(item);
+        viewHolder.bindSubject(item, (pos == (subjects.size()-1)));
     }
 
     @Override

@@ -1,21 +1,20 @@
 <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@android:color/white">
+<LinearLayout
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
-        >
+        android:orientation="horizontal" >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@drawable/bg_other"
-            android:layout_weight="1"
-            android:elevation="2dp">
+            android:layout_weight="1">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -27,7 +26,6 @@
                     android:textStyle="bold"
                     android:textSize="13sp"
                     android:gravity="end"
-                    android:textColor="@android:color/white"
                     android:text="User name"
                     />
                 <TextView android:id="@+id/message_date"
@@ -36,7 +34,6 @@
                     android:textStyle="normal"
                     android:textSize="12sp"
                     android:gravity="start"
-                    android:textColor="@android:color/white"
                     android:text="20:40 10/10/1992"
                     />
             </RelativeLayout>
@@ -49,12 +46,11 @@
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
                 android:autoLink="all"
-                android:textColor="@android:color/white"
+
                 android:text="Message Content"
                 />
 
             <Button
-                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/view_attached_files"
@@ -64,7 +60,6 @@
                 android:id="@+id/button_files"
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="@dimen/margin_message"/>
-
 
         </LinearLayout>
 
@@ -78,4 +73,11 @@
 
     </LinearLayout>
 
+    <View
+        android:id="@+id/message_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/chatBackgroud" />
+
+</LinearLayout>
 

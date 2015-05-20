@@ -27,6 +27,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         private TextView body;
         private View circleUnread;
         private CircleImageView avatar;
+        private View divider;
 
         public ConversationsViewHolder(View itemView) {
             super(itemView);
@@ -36,10 +37,11 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             body = (TextView) itemView.findViewById(R.id.conversation_body);
             circleUnread = (View) itemView.findViewById(R.id.conversation_circle_unread);
             avatar = (CircleImageView) itemView.findViewById(R.id.conversation_user_avatar);
+            divider = itemView.findViewById(R.id.conversation_divider);
 
         }
 
-        public void bindConversation(Conversation c, Context ctx) {
+        public void bindConversation(Conversation c, Context ctx, boolean last) {
             userName.setText(c.getPeerName());
             MessageConversation m = c.getLastMessage();
             if (m != null) {
@@ -53,6 +55,12 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             }
             Avatar avr = c.getPeer().getAvatar();
             if (avr!=null && avr.hasFile()) avatar.setImageBitmap(avr.getBitmap(ctx));
+
+            if (!last) {
+                divider.setVisibility(View.VISIBLE);
+            } else {
+                divider.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -79,7 +87,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
     @Override
     public void onBindViewHolder(ConversationsViewHolder viewHolder, int pos) {
         Conversation item = conversations.get(pos);
-        viewHolder.bindConversation(item, c);
+        viewHolder.bindConversation(item, c, (pos == (conversations.size()-1)));
     }
 
     @Override

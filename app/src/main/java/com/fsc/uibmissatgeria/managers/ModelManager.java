@@ -3,10 +3,12 @@ package com.fsc.uibmissatgeria.managers;
 import android.content.Context;
 
 import com.fsc.uibmissatgeria.Constants;
+import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.api.AccountUIB;
 import com.fsc.uibmissatgeria.api.Server;
 import com.fsc.uibmissatgeria.models.Avatar;
 import com.fsc.uibmissatgeria.models.Conversation;
+import com.fsc.uibmissatgeria.models.FileMessage;
 import com.fsc.uibmissatgeria.models.FileMessageConversation;
 import com.fsc.uibmissatgeria.models.Message;
 import com.fsc.uibmissatgeria.models.MessageConversation;
@@ -297,9 +299,51 @@ public class ModelManager {
         return localAvatar;
     }
 
-    public MessageConversation sendMessageConversation(Conversation c, String body, List<FileMessageConversation> files) {
+    public boolean sendMessageConversation(Conversation c, String body, List<FileMessageConversation> files) {
+        boolean result;
         server = new Server(ctx);
-        server.sendMessageToConversation(c, body, files);
-        return null;
+        int response = server.sendMessageToConversation(c, body, files);
+        switch (response){
+            case Constants.ALL_OK:
+                result = true;
+                break;
+            case Constants.SOME_FILES_NOT_SEND:
+                result = true;
+                this.error_message = this.ctx.getString(R.string.error_sending_files);
+                break;
+            case Constants.MESSSAGE_NOT_SEND:
+                result = false;
+                this.error_message = this.ctx.getString(R.string.error_sending_message);
+                break;
+            default:
+                result = true;
+                break;
+
+        }
+        return result;
+    }
+
+    public boolean sendMessageGroup(SubjectGroup g, String body, List<FileMessage> files, User u) {
+        boolean result;
+        server = new Server(ctx);
+        int response = server.sendMessageToGroup(g.getSubject(), g, body, files, u);
+        switch (response){
+            case Constants.ALL_OK:
+                result = true;
+                break;
+            case Constants.SOME_FILES_NOT_SEND:
+                result = true;
+                this.error_message = this.ctx.getString(R.string.error_sending_files);
+                break;
+            case Constants.MESSSAGE_NOT_SEND:
+                result = false;
+                this.error_message = this.ctx.getString(R.string.error_sending_message);
+                break;
+            default:
+                result = true;
+                break;
+
+        }
+        return result;
     }
 }

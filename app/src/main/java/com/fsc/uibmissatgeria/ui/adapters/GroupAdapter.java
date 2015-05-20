@@ -22,6 +22,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupsViewHo
         private TextView groupTitle;
         private String group;
         private View unRead;
+        private View divider;
 
         public GroupsViewHolder(View itemView) {
             super(itemView);
@@ -29,11 +30,17 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupsViewHo
             group = itemView.getContext().getResources().getString(R.string.group);
             groupTitle = (TextView) itemView.findViewById(R.id.group_title);
             unRead = itemView.findViewById(R.id.group_circle_unread);
+            divider = itemView.findViewById(R.id.group_divider);
         }
 
-        public void bindGroup(SubjectGroup g) {
+        public void bindGroup(SubjectGroup g, boolean last) {
             groupTitle.setText(group+" "+g.getName());
             if (!g.isRead()) unRead.setVisibility(View.VISIBLE);
+            if (!last) {
+                divider.setVisibility(View.VISIBLE);
+            } else {
+                divider.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -59,7 +66,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupsViewHo
     @Override
     public void onBindViewHolder(GroupsViewHolder viewHolder, int pos) {
         SubjectGroup item = subjectGroups.get(pos);
-        viewHolder.bindGroup(item);
+        viewHolder.bindGroup(item, (pos == (subjectGroups.size()-1)));
 
     }
 

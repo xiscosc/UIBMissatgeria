@@ -56,6 +56,11 @@
     <string name="file_to_download">File to download</string>
     <string name="downloading">Downloading file</string>
     <string name="error_downloading">Error downloading file</string>
+    <string name="files">Files</string>
+    <string name="select_file">Select file</string>
+    <string name="select_avatar">Select new avatar</string>
+    <string name="error_sending_files">Error sending files</string>
+    <string name="error_sending_message">Error sending message</string>
 
 
 </resources>

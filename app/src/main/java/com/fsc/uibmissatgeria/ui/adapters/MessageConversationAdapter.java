@@ -1,17 +1,21 @@
 package com.fsc.uibmissatgeria.ui.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.models.Message;
 import com.fsc.uibmissatgeria.models.MessageConversation;
 import com.fsc.uibmissatgeria.models.User;
+import com.fsc.uibmissatgeria.ui.activities.MessageConversationDetailActivity;
 
 import java.util.List;
 
@@ -28,6 +32,7 @@ public class MessageConversationAdapter extends RecyclerView.Adapter<MessageConv
         private TextView messageDate;
         private TextView messageBody;
         private ImageView avatar;
+        private Button buttonFiles;
 
         public MessagesViewHolder(View itemView) {
             super(itemView);
@@ -36,6 +41,7 @@ public class MessageConversationAdapter extends RecyclerView.Adapter<MessageConv
             messageDate = (TextView)itemView.findViewById(R.id.message_date);
             messageBody = (TextView)itemView.findViewById(R.id.message_body);
             avatar = (ImageView)itemView.findViewById(R.id.user_avatar);
+            buttonFiles = (Button)itemView.findViewById(R.id.button_files);
         }
 
         public void bindGroup(MessageConversation m, User u) {
@@ -44,6 +50,12 @@ public class MessageConversationAdapter extends RecyclerView.Adapter<MessageConv
             messageBody.setText(m.getBody());
             messageUser.setText(u.getName());
             avatar.setVisibility(View.INVISIBLE);
+
+            if (m.getFiles().isEmpty()) {
+                buttonFiles.setVisibility(View.GONE);
+            } else {
+                buttonFiles.setVisibility(View.VISIBLE);
+            }
 
         }
     }
@@ -72,10 +84,10 @@ public class MessageConversationAdapter extends RecyclerView.Adapter<MessageConv
         int lay;
         switch (viewType){
             case 0:
-               lay = R.layout.listitem_message_other;
+               lay = R.layout.listitem_message;
                break;
             default:
-               lay = R.layout.listitem_message;
+               lay = R.layout.listitem_message_other;
                break;
         }
 
@@ -92,6 +104,15 @@ public class MessageConversationAdapter extends RecyclerView.Adapter<MessageConv
         MessageConversation item = messages.get(pos);
         User from = item.getUser(c);
         viewHolder.bindGroup(item, from);
+        final MessageConversation msg = item;
+        viewHolder.buttonFiles.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(c, MessageConversationDetailActivity.class);
+                i.putExtra(Constants.MESSAGE_OBJ, msg.getId());
+                c.startActivity(i);
+            }
+        });
     }
 
     @Override

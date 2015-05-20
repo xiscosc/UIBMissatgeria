@@ -151,7 +151,7 @@ public class NotificationService extends Service {
             Intent resultIntent;
             TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext())
-                    .setSmallIcon(R.drawable.ic_stat_action_speaker_notes)
+                    .setSmallIcon(R.drawable.ic_stat_content_drafts)
                     .setAutoCancel(true)
                     .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                     .setDefaults(Notification.DEFAULT_VIBRATE);
@@ -197,7 +197,7 @@ public class NotificationService extends Service {
             PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.setContentIntent(resultPendingIntent);
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
-            mNotificationManager.notify(1, mBuilder.build());
+            mNotificationManager.notify(Constants.NOTIFICATION_GROUPS_ID, mBuilder.build());
 
 
 
@@ -228,7 +228,7 @@ public class NotificationService extends Service {
                         .setContentText(you_have + " " + conversations.size() + " "  +converString)
                         .setStyle(inboxStyle);
                 resultIntent = new Intent(getApplicationContext(), PrincipalActivity.class);
-                resultIntent.putExtra(Constants.NOTIFICATION_CONVERSATIONS, true);
+                resultIntent.putExtra(Constants.NOTIFICATION_CONVERSATIONS_INTENT, true);
                 stackBuilder.addParentStack(PrincipalActivity.class);
             } else {
                 String new_message = getResources().getString(R.string.new_message_from);
@@ -246,7 +246,7 @@ public class NotificationService extends Service {
             PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.setContentIntent(resultPendingIntent);
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
-            mNotificationManager.notify(1, mBuilder.build());
+            mNotificationManager.notify(Constants.NOTIFICATION_CONVERSATIONS_ID, mBuilder.build());
         }
     }
 
