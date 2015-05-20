@@ -1,42 +1,26 @@
 package com.fsc.uibmissatgeria.ui.activities;
 
 import android.app.ProgressDialog;
-import android.app.TaskStackBuilder;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
+import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
-import com.fsc.uibmissatgeria.api.AccountUIB;
-import com.fsc.uibmissatgeria.api.Server;
-import com.fsc.uibmissatgeria.api.ServerSettings;
 import com.fsc.uibmissatgeria.managers.FileManager;
 import com.fsc.uibmissatgeria.managers.ImageManager;
 import com.fsc.uibmissatgeria.models.Avatar;
 import com.fsc.uibmissatgeria.models.FileMessage;
 import com.fsc.uibmissatgeria.models.Message;
-import com.fsc.uibmissatgeria.models.Subject;
-import com.fsc.uibmissatgeria.models.SubjectGroup;
 import com.fsc.uibmissatgeria.ui.adapters.FileAdapter;
-import com.gc.materialdesign.views.ButtonRectangle;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -52,7 +36,7 @@ public class MessageDetailActivity extends AppCompatActivity {
     private RecyclerView recView;
     private FileAdapter fileAdapter;
 
-    private LinearLayout include;
+    private LinearLayout layoutContainer;
     private TextView messageUser;
     private TextView messageDate;
     private TextView messageBody;
@@ -64,7 +48,7 @@ public class MessageDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_new_message);
+        setContentView(R.layout.activity_message_detail);
 
         Intent i = getIntent();
         message = Message.findById(Message.class, i.getLongExtra(Constants.MESSAGE_OBJ, 0));
@@ -76,18 +60,22 @@ public class MessageDetailActivity extends AppCompatActivity {
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         setSupportActionBar(toolbar);
 
-        /*recView.setLayoutManager(
-                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)); */
+        recView.setLayoutManager(
+                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+
+        layoutContainer = (LinearLayout) findViewById(R.id.message_detail);
+
+        LayoutInflater inflater;
+        inflater = (LayoutInflater) this.getSystemService(this.LAYOUT_INFLATER_SERVICE);
+        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.listitem_message ,null);
 
 
-        include = (LinearLayout) findViewById(R.id.message_detail);
+        layoutContainer.addView(layout);
 
-        //View myLayout = this.getLayoutInflater.inflate(R.layout.listitem_message, null);
-
-        messageUser = (TextView)include.findViewById(R.id.message_user);
-        messageDate = (TextView)include.findViewById(R.id.message_date);
-        messageBody = (TextView)include.findViewById(R.id.message_body);
-        avatarImg = (CircleImageView)include.findViewById(R.id.user_avatar);
+        messageUser = (TextView)layout.findViewById(R.id.message_user);
+        messageDate = (TextView)layout.findViewById(R.id.message_date);
+        messageBody = (TextView)layout.findViewById(R.id.message_body);
+        avatarImg = (CircleImageView)layout.findViewById(R.id.user_avatar);
 
 
         messageUser.setText(message.getUser().getName());
@@ -95,6 +83,9 @@ public class MessageDetailActivity extends AppCompatActivity {
         messageBody.setText(message.getBody());
         Avatar avatar = message.getUser().getAvatar();
         if (avatar != null && avatar.hasFile()) avatarImg.setImageBitmap(avatar.getBitmap(this));
+
+        files = message.getFiles();
+        createAdapter();
 
     }
 
@@ -140,33 +131,10 @@ public class MessageDetailActivity extends AppCompatActivity {
    */
 
     private void createAdapter() {
-        fileAdapter = new FileAdapter(files, this);
+        fileAdapter = new FileAdapter(files, this, false);
         recView.setAdapter(fileAdapter);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode == 1) {
-            if(resultCode == RESULT_OK){
-                Uri route = data.getData();
-                FileMessage f = null;
-                if (FileManager.isImageFromUri(route, this)) {
-                    ImageManager imageManager = new ImageManager(this);
-                    f = imageManager.saveImageToStorageGroup(route);
-                } else {
-                    FileManager fileManager = new FileManager(this);
-                    f = fileManager.saveFileToStorageGroup(route);
-                }
-                if (f != null) {
-                    files.add(f);
-                    createAdapter();
-                }
-            }
-            if (resultCode == RESULT_CANCELED) {
-                //Write your code if there's no result
-            }
-        }
-    }
 
 }

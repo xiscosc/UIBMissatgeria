@@ -199,7 +199,7 @@ public class NewMessageActivity extends AppCompatActivity {
     }
 
     private void createAdapter() {
-        fileAdapter = new FileAdapter(files, this);
+        fileAdapter = new FileAdapter(files, this, true);
         recView.setAdapter(fileAdapter);
     }
 

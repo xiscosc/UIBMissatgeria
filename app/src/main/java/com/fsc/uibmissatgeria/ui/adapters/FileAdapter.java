@@ -1,6 +1,7 @@
 package com.fsc.uibmissatgeria.ui.adapters;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.PeerViewHolder
         private TextView fileSize;
         private ImageView fileImage;
         private ImageView fileRemove;
+        private CardView  fileCard;
 
         public PeerViewHolder(View itemView) {
             super(itemView);
@@ -37,14 +39,28 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.PeerViewHolder
             fileSize = (TextView) itemView.findViewById(R.id.file_size);
             fileImage = (ImageView) itemView.findViewById(R.id.file_image);
             fileRemove = (ImageView)itemView.findViewById(R.id.file_delete);
+            fileCard = (CardView) itemView.findViewById(R.id.file_card);
 
         }
 
-        public void bindSubject(FileMessage f, Context c) {
-            fileName.setText(f.getName());
-            fileSize.setText(f.getSizeMB() + " MB");
-            if (f.isImage()) {
-                fileImage.setImageBitmap(f.getBitmap(c));
+        public void bindSubject(FileMessage f, Context c, boolean editable) {
+            if (f.haveFile() ) {
+                if (f.isImage()){
+                    fileImage.setImageBitmap(f.getBitmap(c));
+                } else {
+                    fileImage.setImageResource(R.drawable.file_icon);
+                }
+                fileName.setText(f.getName());
+                fileSize.setText(f.getSizeMB() + " MB");
+            } else {
+                fileName.setText(c.getString(R.string.file_to_download));
+                fileImage.setImageResource(R.drawable.file_icon);
+                fileSize.setText("");
+            }
+            if (editable) {
+                fileRemove.setVisibility(View.VISIBLE);
+            } else {
+                fileRemove.setVisibility(View.GONE);
             }
 
         }
@@ -53,10 +69,12 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.PeerViewHolder
     private List<FileMessage> files;
     private Context c;
     private View.OnClickListener listener;
+    private boolean editable;
 
-    public FileAdapter(List<FileMessage> files, Context c) {
+    public FileAdapter(List<FileMessage> files, Context c, boolean editable) {
         this.files = files;
         this.c = c;
+        this.editable = editable;
     }
 
     @Override
@@ -72,18 +90,31 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.PeerViewHolder
 
     @Override
     public void onBindViewHolder(PeerViewHolder viewHolder, int pos) {
+        final FileAdapter self = this;
         FileMessage item = files.get(pos);
-        viewHolder.bindSubject(item, c);
+        viewHolder.bindSubject(item, c, editable);
         final int post = pos;
-        viewHolder.fileRemove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FileMessage path = files.get(post);
-                files.remove(post);
-                FileManager.deleteFile(path.getLocalPath());
-                notifyDataSetChanged();
-            }
-        });
+        if (editable) {
+            viewHolder.fileRemove.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    FileMessage path = files.get(post);
+                    files.remove(post);
+                    FileManager.deleteFile(path.getLocalPath());
+                    notifyDataSetChanged();
+                }
+            });
+        } else {
+            viewHolder.fileCard.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    FileMessage path = files.get(post);
+                    path.startOrDownload(c, self);
+                    notifyDataSetChanged();
+                }
+            });
+        }
+
     }
 
     @Override

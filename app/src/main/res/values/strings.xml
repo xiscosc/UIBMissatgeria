@@ -53,6 +53,9 @@
     <string name="error_avatar">Error getting new avatar</string>
     <string name="view_attached_files">View attached files</string>
     <string name="title_activity_message_detail">Message detail</string>
+    <string name="file_to_download">File to download</string>
+    <string name="downloading">Downloading file</string>
+    <string name="error_downloading">Error downloading file</string>
 
 
 </resources>
