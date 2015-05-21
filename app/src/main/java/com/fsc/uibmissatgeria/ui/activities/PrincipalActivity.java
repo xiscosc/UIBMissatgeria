@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
 import com.fsc.uibmissatgeria.api.AccountUIB;
+import com.fsc.uibmissatgeria.api.NotificationService;
 import com.fsc.uibmissatgeria.models.Avatar;
 import com.fsc.uibmissatgeria.ui.fragments.SubjectsFragment;
 import com.fsc.uibmissatgeria.ui.fragments.ConversationsFragment;
@@ -109,6 +110,7 @@ public class PrincipalActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+        NotificationService.cancelNotifications(this);
         if (!accountUIB.isLogged()) {
             Intent intent = new Intent(this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);

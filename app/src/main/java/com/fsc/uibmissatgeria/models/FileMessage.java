@@ -124,7 +124,7 @@ public class FileMessage extends SugarRecord<FileMessage> {
         } else {
             manager = new FileManager(c);
         }
-        String result = manager.downloadMedia(this.idApi, this.mimeType);
+        String result = manager.downloadMedia(this.idApi, this.mimeType, message.getUser());
         if (result != null) {
             localPath = result;
             return true;

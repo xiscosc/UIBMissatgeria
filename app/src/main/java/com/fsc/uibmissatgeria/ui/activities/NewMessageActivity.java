@@ -32,6 +32,7 @@ import com.fsc.uibmissatgeria.models.SubjectGroup;
 import com.fsc.uibmissatgeria.models.Subject;
 import com.fsc.uibmissatgeria.managers.ImageManager;
 
+import com.fsc.uibmissatgeria.models.User;
 import com.fsc.uibmissatgeria.ui.adapters.FileAdapter;
 import com.gc.materialdesign.views.ButtonRectangle;
 

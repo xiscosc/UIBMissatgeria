@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.app.TaskStackBuilder;
+import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.os.AsyncTask;
@@ -248,6 +249,13 @@ public class NotificationService extends Service {
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
             mNotificationManager.notify(Constants.NOTIFICATION_CONVERSATIONS_ID, mBuilder.build());
         }
+    }
+
+
+    public static void cancelNotifications(Context ctx) {
+        String ns = Context.NOTIFICATION_SERVICE;
+        NotificationManager nMgr = (NotificationManager) ctx.getSystemService(ns);
+        nMgr.cancelAll();
     }
 
     @Override

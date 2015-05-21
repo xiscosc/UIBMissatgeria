@@ -61,6 +61,7 @@
     <string name="select_avatar">Select new avatar</string>
     <string name="error_sending_files">Error sending files</string>
     <string name="error_sending_message">Error sending message</string>
+    <string name="please_wait">Please Wait...</string>
 
 
 </resources>

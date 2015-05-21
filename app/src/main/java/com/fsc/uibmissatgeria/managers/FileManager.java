@@ -11,10 +11,12 @@ import android.webkit.MimeTypeMap;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
+import com.fsc.uibmissatgeria.api.AccountUIB;
 import com.fsc.uibmissatgeria.api.Server;
 import com.fsc.uibmissatgeria.api.ServerSettings;
 import com.fsc.uibmissatgeria.models.FileMessage;
 import com.fsc.uibmissatgeria.models.FileMessageConversation;
+import com.fsc.uibmissatgeria.models.User;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -147,7 +149,8 @@ public class FileManager {
             List<String> result = new ArrayList<>();
             long unixTime = System.currentTimeMillis() / 1000L;
             String mime = getMimeType(route, c);
-            String destinationFilename = documentsFolder+unixTime+"_file."+ mime.split("/")[1];
+            User user = (new AccountUIB(c)).getUser();
+            String destinationFilename = documentsFolder+user.getIdApi()+"_"+unixTime+"_file."+ mime.split("/")[1];
 
             try {
                 ContentResolver cr = c.getContentResolver();
@@ -217,15 +220,17 @@ public class FileManager {
         }
     }
 
-    protected  String generateLocalPath(String mime) {
+    protected  String generateLocalPath(String mime, User user) {
         String extension =  mime.split("/")[1];
         long unixTime = System.currentTimeMillis() / 1000L;
-        return documentsFolder+unixTime+"_file."+ extension;
+        int idUser = 0;
+        if (user != null) idUser = user.getIdApi();
+        return documentsFolder+idUser+unixTime+"_file."+ extension;
     }
 
-    public String downloadMedia(long idApi, String mime) {
+    public String downloadMedia(long idApi, String mime, User user) {
         createDirs();
-        String localPath = generateLocalPath(mime);
+        String localPath = generateLocalPath(mime, user);
         Server s = new Server(c);
         Boolean result = s.downloadFile("media/" + idApi + "/", localPath);
         if (result) {
@@ -238,6 +243,27 @@ public class FileManager {
     public static boolean isImageFromMime(String mime) {
         String type = mime.split("/")[0];
         return type.equals("image");
+    }
+
+
+    public static void deleteAllFiles() {
+        String root = Environment.getExternalStorageDirectory().getAbsolutePath()+"/";
+        String filesFolder = root+Constants.FOLDER_NAME_EXTERNAL+File.separator;
+        removeAllFromDir(filesFolder);
+    }
+
+    private static void removeAllFromDir(String path) {
+        File f = new File(path);
+        if (f.exists() && f.isDirectory()) {
+            String[] children = f.list();
+            for (int i = 0; i < children.length; i++) {
+                File f2 = new File(f, children[i]);
+                if (f2.isDirectory()) {
+                    removeAllFromDir(f2.getAbsolutePath());
+                }
+                f2.delete();
+            }
+        }
     }
 
 

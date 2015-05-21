@@ -44,6 +44,10 @@ public class Avatar extends SugarRecord<Avatar> {
 
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public void mergeFromServerAvatar(Avatar avatar) {
         this.idApi = avatar.idApi;
         this.mimeType = avatar.mimeType;
@@ -53,6 +57,11 @@ public class Avatar extends SugarRecord<Avatar> {
     public Bitmap getBitmap(Context c) {
         ImageManager imageManager = new ImageManager(c);
         return  imageManager.getBitmap(this.miniaturePath);
+    }
+
+    public Bitmap getBigBitmap(Context c) {
+        ImageManager imageManager = new ImageManager(c);
+        return  imageManager.getBitmap(this.localPath);
     }
 
 
@@ -90,10 +99,10 @@ public class Avatar extends SugarRecord<Avatar> {
 
     public boolean downloadFromServer(Context c) {
         ImageManager imageManager = new ImageManager(c);
-        String result = imageManager.downloadMedia(this.idApi, this.mimeType);
+        String result = imageManager.downloadMedia(this.idApi, this.mimeType, user);
         if (result != null) {
             localPath = result;
-            String mPath = imageManager.makeMiniature(result);
+            String mPath = imageManager.makeMiniature(result, user);
             if (mPath != null) {
                 miniaturePath = mPath;
             }
@@ -114,5 +123,9 @@ public class Avatar extends SugarRecord<Avatar> {
         if (!(other instanceof Avatar)) return false;
         Avatar otherMyClass = (Avatar) other;
         return (this.idApi == otherMyClass.idApi);
+    }
+
+    public Avatar cloneNoDb() {
+        return new Avatar(idApi, null, mimeType);
     }
 }

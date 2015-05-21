@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
+import com.fsc.uibmissatgeria.api.AccountUIB;
 import com.fsc.uibmissatgeria.api.ServerSettings;
 import com.fsc.uibmissatgeria.managers.FileManager;
 import com.fsc.uibmissatgeria.managers.ImageManager;
@@ -31,6 +32,7 @@ import com.fsc.uibmissatgeria.models.Conversation;
 import com.fsc.uibmissatgeria.models.FileMessageConversation;
 import com.fsc.uibmissatgeria.models.MessageConversation;
 import com.fsc.uibmissatgeria.managers.ModelManager;
+import com.fsc.uibmissatgeria.models.User;
 import com.fsc.uibmissatgeria.ui.adapters.MessageConversationAdapter;
 
 import java.util.ArrayList;
@@ -112,7 +114,7 @@ public class ConversationActivity extends AppCompatActivity {
     }
 
     private void getFile() {
-        if (file == null) { //TODO: CONFIG
+        if (file == null) {
             Intent intent = new Intent();
             intent.setType("*/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -130,9 +132,10 @@ public class ConversationActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if(resultCode == RESULT_OK){
                 Uri route = data.getData();
+                User user = (new AccountUIB(this)).getUser();
                 if (FileManager.isImageFromUri(route, this)) {
                     ImageManager imageManager = new ImageManager(this);
-                    file = imageManager.saveImageToStorageConversation(route);
+                    file = imageManager.saveImageToStorageConversation(route, user);
                 } else {
                     FileManager fileManager = new FileManager(this);
                     file = fileManager.savFileToStorageConversation(route);

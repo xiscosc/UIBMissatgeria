@@ -144,6 +144,8 @@ public class ModelManager {
 
     public static void resetDB() {
         Avatar.deleteAll(Avatar.class);
+        FileMessage.deleteAll(FileMessage.class);
+        FileMessageConversation.deleteAll(FileMessageConversation.class);
         MessageConversation.deleteAll(MessageConversation.class);
         Conversation.deleteAll(Conversation.class);
         User.deleteAll(User.class);
@@ -161,8 +163,15 @@ public class ModelManager {
     public void reloadData(){
         AccountUIB a = new AccountUIB(ctx);
         User usr = a.getUser().cloneNoDb();
+        Avatar avtr = a.getUser().getAvatar();
+        if (avtr != null) avtr = avtr.cloneNoDb();
         resetDB();
         usr.save();
+        if (avtr != null) {
+            avtr.setUser(usr);
+            avtr.save();
+        }
+
     }
 
     public Conversation getConversation(User peer) {

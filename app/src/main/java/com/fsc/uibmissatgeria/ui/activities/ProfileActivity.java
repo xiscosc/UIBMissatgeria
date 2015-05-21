@@ -41,7 +41,7 @@ public class ProfileActivity extends AppCompatActivity {
         AccountUIB accountUIB = new AccountUIB(this);
         user = accountUIB.getUser();
         avatar = user.getAvatar();
-        if (avatar!= null && avatar.hasFile()) circleImageView.setImageBitmap(avatar.getBitmap(this));
+        if (avatar!= null && avatar.hasFile()) circleImageView.setImageBitmap(avatar.getBigBitmap(this));
         setProfile();
     }
 
@@ -67,7 +67,7 @@ public class ProfileActivity extends AppCompatActivity {
             if(resultCode == RESULT_OK){
                 Uri image = data.getData();
                 ImageManager imageManager = new ImageManager(this);
-                newAvatar = imageManager.saveAvatarToStorageGroup(image, user);
+                newAvatar = imageManager.saveAvatarToStorage(image, user);
                 SendMessageTask t = new SendMessageTask(this);
                 t.execute();
             }
@@ -103,7 +103,7 @@ public class ProfileActivity extends AppCompatActivity {
               avatar = response;
               avatar.save();
               newAvatar = null;
-              if (avatar!= null && avatar.hasFile()) circleImageView.setImageBitmap(avatar.getBitmap(ctx));
+              if (avatar!= null && avatar.hasFile()) circleImageView.setImageBitmap(avatar.getBigBitmap(ctx));
             } else {
                 FileManager.deleteFile(newAvatar.getLocalPath());
                 Constants.showToast(ctx, getString(R.string.error_avatar));

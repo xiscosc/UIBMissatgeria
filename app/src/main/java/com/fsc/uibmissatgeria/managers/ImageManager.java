@@ -16,6 +16,7 @@ import android.provider.MediaStore;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
+import com.fsc.uibmissatgeria.api.AccountUIB;
 import com.fsc.uibmissatgeria.models.Avatar;
 import com.fsc.uibmissatgeria.models.FileMessage;
 import com.fsc.uibmissatgeria.models.FileMessageConversation;
@@ -44,7 +45,7 @@ public class ImageManager extends FileManager {
     }
 
 
-    private String saveImageToStorage(Uri imgUri) {
+    private String saveImageToStorage(Uri imgUri, User user) {
         if (isAllowed(imgUri)) {
             File file = null;
             String result = null;
@@ -53,7 +54,12 @@ public class ImageManager extends FileManager {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(c.getContentResolver(), imgUri);
                 OutputStream out;
                 long unixTime = System.currentTimeMillis() / 1000L;
-                String fileName = imagesFolder+unixTime+"_img.jpeg";
+
+                int idUser = 0;
+                if (user != null) idUser = user.getIdApi();
+
+
+                String fileName = imagesFolder+idUser+"_"+unixTime+"_img.jpeg";
                 file = new File(fileName);
                 file.createNewFile();
                 out = new FileOutputStream(file);
@@ -73,7 +79,7 @@ public class ImageManager extends FileManager {
         }
     }
 
-    public String makeMiniature(String path) {
+    public String makeMiniature(String path, User user) {
         File file;
         OutputStream out;
         try {
@@ -102,7 +108,12 @@ public class ImageManager extends FileManager {
 
             dstBmp = Bitmap.createScaledBitmap(dstBmp, 67, 67, true);
             long unixTime = System.currentTimeMillis() / 1000L;
-            String fileName = avatarsFolder+unixTime+"_avt.jpeg";
+
+
+            int idUser = 0;
+            if (user != null) idUser = user.getIdApi();
+
+            String fileName = avatarsFolder+idUser+"_"+unixTime+"_avt.jpeg";
             file = new File(fileName);
             file.createNewFile();
             out = new FileOutputStream(file);
@@ -116,8 +127,8 @@ public class ImageManager extends FileManager {
         return null;
     }
 
-    public FileMessageConversation saveImageToStorageConversation(Uri imgUri) {
-        String route = saveImageToStorage(imgUri);
+    public FileMessageConversation saveImageToStorageConversation(Uri imgUri, User user) {
+        String route = saveImageToStorage(imgUri, null);
         if (route != null) {
             return new FileMessageConversation(route, "image/jpeg");
         } else {
@@ -126,7 +137,7 @@ public class ImageManager extends FileManager {
     }
 
     public FileMessage saveImageToStorageGroup(Uri imgUri) {
-        String route = saveImageToStorage(imgUri);
+        String route = saveImageToStorage(imgUri, null);
         if (route != null) {
             return new FileMessage(route, "image/jpeg");
         } else {
@@ -134,10 +145,10 @@ public class ImageManager extends FileManager {
         }
     }
 
-    public Avatar saveAvatarToStorageGroup(Uri imgUri, User user) {
-        String route = saveImageToStorage(imgUri);
+    public Avatar saveAvatarToStorage(Uri imgUri, User user) {
+        String route = saveImageToStorage(imgUri, user);
         if (route != null) {
-            String mRoute = makeMiniature(route);
+            String mRoute = makeMiniature(route, user);
             if (mRoute!=null) {
                 return new Avatar(route, mRoute, user, "image/jpeg");
             } else {
@@ -213,10 +224,12 @@ public class ImageManager extends FileManager {
     }
 
     @Override
-    protected String generateLocalPath(String mime) {
+    protected String generateLocalPath(String mime, User user) {
         String extension =  mime.split("/")[1];
         long unixTime = System.currentTimeMillis() / 1000L;
-        return imagesFolder+unixTime+"_img."+ extension;
+        int idUser = 0;
+        if (user != null) idUser = user.getIdApi();
+        return imagesFolder+idUser+"_"+unixTime+"_img."+ extension;
     }
 
 
