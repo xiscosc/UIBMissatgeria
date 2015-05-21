@@ -203,7 +203,6 @@ public class ImageManager extends FileManager {
             );
         }
 
-        srcBmp.recycle();
         Bitmap output = Bitmap.createBitmap(dstBmp.getWidth(),
                 dstBmp.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
