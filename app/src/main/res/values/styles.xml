@@ -28,6 +28,7 @@
     <color name="tab_highlight">#ff9ecfbf</color>
     <color name="primaryDark">#ff0050a8</color>
     <color name="primary">#0060A8</color>
+    <color name="otherbg">#D7E8FE</color>
     <color name="message">@android:color/white</color>
     <color name="message_other">#0196F2</color>
     <color name="tabsScrollColor">@android:color/white</color>

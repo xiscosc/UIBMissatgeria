@@ -18,15 +18,17 @@ public class Avatar extends SugarRecord<Avatar> {
 
     private long idApi;
     private String localPath;
+    private String miniaturePath;
     private User user;
     private String mimeType;
 
 
-    public Avatar(String local_path, User user, String mimeType) {
+    public Avatar(String local_path, String miniaturePath, User user, String mimeType) {
         this.localPath = local_path;
         this.user = user;
         this.idApi = -1;
         this.mimeType = mimeType;
+        this.miniaturePath = miniaturePath;
 
     }
 
@@ -34,6 +36,7 @@ public class Avatar extends SugarRecord<Avatar> {
         this.idApi = idApi;
         this.user = user;
         this.localPath = "";
+        this.miniaturePath = "";
         this.mimeType = mimeType;
     }
 
@@ -49,7 +52,7 @@ public class Avatar extends SugarRecord<Avatar> {
 
     public Bitmap getBitmap(Context c) {
         ImageManager imageManager = new ImageManager(c);
-        return  imageManager.getBitmap(this.localPath);
+        return  imageManager.getBitmap(this.miniaturePath);
     }
 
 
@@ -60,7 +63,17 @@ public class Avatar extends SugarRecord<Avatar> {
     }
 
     public Boolean hasFile() {
-        return (!localPath.equals("") && (new File(localPath).exists()));
+        boolean cond1 = (!localPath.equals("") && (new File(localPath).exists()));
+        boolean cond2 = (!miniaturePath.equals("") && (new File(miniaturePath).exists()));
+        return cond1 && cond2;
+    }
+
+    public String getMiniaturePath() {
+        return miniaturePath;
+    }
+
+    public void setMiniaturePath(String miniaturePath) {
+        this.miniaturePath = miniaturePath;
     }
 
     public void startIntent(Context c) {
@@ -80,6 +93,10 @@ public class Avatar extends SugarRecord<Avatar> {
         String result = imageManager.downloadMedia(this.idApi, this.mimeType);
         if (result != null) {
             localPath = result;
+            String mPath = imageManager.makeMiniature(result);
+            if (mPath != null) {
+                miniaturePath = mPath;
+            }
             return true;
         } else {
             return false;

@@ -722,6 +722,8 @@ public class Server {
                 usersDB.add(peer);
                 peers.add(peer);
             }
+
+            if (!userJson.isNull("avatar")) manageAvatar(peer, userJson.getJSONObject("avatar"));
         }
 
     }

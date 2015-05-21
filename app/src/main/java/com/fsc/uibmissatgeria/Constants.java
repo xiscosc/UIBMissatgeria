@@ -66,6 +66,7 @@ public class Constants {
     public static final String FOLDER_NAME_EXTERNAL = "uib_missatgeria";
     public static final String FOLDER_NAME_IMAGES = "images";
     public static final String FOLDER_NAME_FILES = "files";
+    public static final String FOLDER_NAME_AVATARS = "avatars";
 
 
     /**RESPONSE CODES SEND MESSAGE **/

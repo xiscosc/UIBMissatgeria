@@ -89,7 +89,7 @@ public class PeerSelectionActivity extends AppCompatActivity {
     }
 
     private void createAdapter() {
-        peersAdapter = new PeerAdapter(peers);
+        peersAdapter = new PeerAdapter(peers, this);
         peersAdapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

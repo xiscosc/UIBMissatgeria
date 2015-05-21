@@ -7,14 +7,15 @@
 
     >
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="55dp"
         android:layout_height="55dp"
         android:layout_marginRight="5dp"
         android:layout_marginLeft="3dp"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
-        android:src="@drawable/user_avatar"/>
+        android:src="@drawable/user_avatar"
+        android:id="@+id/peer_avatar"/>
 
 
     <TextView android:id="@+id/peer_user_name"

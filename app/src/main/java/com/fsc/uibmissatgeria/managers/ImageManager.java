@@ -35,10 +35,12 @@ public class ImageManager extends FileManager {
 
 
     String imagesFolder;
+    String avatarsFolder;
 
     public ImageManager(Context c) {
         super(c);
         imagesFolder = filesFolder+Constants.FOLDER_NAME_IMAGES+File.separator;
+        avatarsFolder = imagesFolder+Constants.FOLDER_NAME_AVATARS+File.separator;
     }
 
 
@@ -71,6 +73,49 @@ public class ImageManager extends FileManager {
         }
     }
 
+    public String makeMiniature(String path) {
+        File file;
+        OutputStream out;
+        try {
+            createDirs();
+            Bitmap srcBmp = getBitmap(path);
+            Bitmap dstBmp;
+            if (srcBmp.getWidth() >= srcBmp.getHeight()){
+
+                dstBmp = Bitmap.createBitmap(
+                        srcBmp,
+                        srcBmp.getWidth() / 2 - srcBmp.getHeight() / 2,
+                        0,
+                        srcBmp.getHeight(),
+                        srcBmp.getHeight()
+                );
+            }else{
+
+                dstBmp = Bitmap.createBitmap(
+                        srcBmp,
+                        0,
+                        srcBmp.getHeight() / 2 - srcBmp.getWidth() / 2,
+                        srcBmp.getWidth(),
+                        srcBmp.getWidth()
+                );
+            }
+
+            dstBmp = Bitmap.createScaledBitmap(dstBmp, 67, 67, true);
+            long unixTime = System.currentTimeMillis() / 1000L;
+            String fileName = avatarsFolder+unixTime+"_avt.jpeg";
+            file = new File(fileName);
+            file.createNewFile();
+            out = new FileOutputStream(file);
+            dstBmp.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.close();
+            return file.getAbsolutePath();
+        } catch (Exception e) {
+            Constants.showToast(c, c.getResources().getString(R.string.error_image_copy));
+        }
+
+        return null;
+    }
+
     public FileMessageConversation saveImageToStorageConversation(Uri imgUri) {
         String route = saveImageToStorage(imgUri);
         if (route != null) {
@@ -92,7 +137,12 @@ public class ImageManager extends FileManager {
     public Avatar saveAvatarToStorageGroup(Uri imgUri, User user) {
         String route = saveImageToStorage(imgUri);
         if (route != null) {
-            return new Avatar(route, user, "image/jpeg");
+            String mRoute = makeMiniature(route);
+            if (mRoute!=null) {
+                return new Avatar(route, mRoute, user, "image/jpeg");
+            } else {
+                return null;
+            }
         } else {
             return null;
         }
@@ -102,6 +152,10 @@ public class ImageManager extends FileManager {
     protected void createDirs() {
         super.createDirs();
         File createDir = new File(imagesFolder);
+        if(!createDir.exists()) {
+            createDir.mkdir();
+        }
+        createDir = new File(avatarsFolder);
         if(!createDir.exists()) {
             createDir.mkdir();
         }
