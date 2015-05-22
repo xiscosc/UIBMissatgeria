@@ -11,6 +11,7 @@
         <item name="actionModeBackground">@color/primary</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="windowActionModeOverlay">true</item>
     </style>
 
     <style name="toolBarTheme" parent="@style/Base.ThemeOverlay.AppCompat.Light">
