@@ -944,15 +944,23 @@ public class Server {
                     } else if (onlyTeacher) {
                         if (sender.getInt("type") == Constants.TYPE_TEACHER) {
                             g.setLastMessageId(last);
-                            g.setRead(false);
+                            if (!itsMe){
+                                g.setRead(false);
+                                result.add(g);
+                            } else {
+                                g.setRead(true);
+                            }
                             g.save();
-                            if (!itsMe) result.add(g);
                         }
                     } else {
                         g.setLastMessageId(last);
-                        g.setRead(false);
+                        if (!itsMe){
+                            g.setRead(false);
+                            result.add(g);
+                        } else {
+                            g.setRead(true);
+                        }
                         g.save();
-                        if (!itsMe) result.add(g);
                     }
 
                 }
@@ -984,16 +992,25 @@ public class Server {
                         } else if (onlyTeacher) {
                             if (sender.getInt("type") == Constants.TYPE_TEACHER) {
                                 g.setLastMessageId(last);
-                                g.setRead(false);
+                                if (!itsMe){
+                                    g.setRead(false);
+                                    result.add(g);
+                                } else {
+                                    g.setRead(true);
+                                }
                                 g.save();
-                                if (!itsMe) result.add(g);
                             }
                         } else {
                             g.setLastMessageId(last);
-                            g.setRead(false);
+                            if (!itsMe){
+                                g.setRead(false);
+                                result.add(g);
+                            } else {
+                                g.setRead(true);
+                            }
                             g.save();
-                            if (!itsMe) result.add(g);
                         }
+
                     }
                 }
             }
