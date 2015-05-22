@@ -49,6 +49,10 @@ public class SubjectGroup extends SugarRecord<SubjectGroup>{
         return (idApi == otherSG.idApi && subject.equals(otherSG.subject));
     }
 
+    public boolean hasMessages() {
+        return !lastMessageId.equals(Long.valueOf(0));
+    }
+
     public Boolean isRead() {
         return read;
     }

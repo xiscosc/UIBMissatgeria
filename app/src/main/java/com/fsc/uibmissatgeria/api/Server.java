@@ -923,7 +923,9 @@ public class Server {
     }
 
     private List<SubjectGroup> manageSubjectGroupsNotifications(JSONArray groups) throws JSONException {
-        Boolean onlyTeacher = (new AccountUIB(c)).OnlyTeacherNotifications();
+        AccountUIB accountUIB = new AccountUIB(c);
+        User user = accountUIB.getUser();
+        Boolean onlyTeacher = accountUIB.OnlyTeacherNotifications();
         List<SubjectGroup> result = new ArrayList<>();
         for (int x = 0; x < groups.length(); x++) {
             JSONObject message = groups.getJSONObject(x);
@@ -933,19 +935,24 @@ public class Server {
                 SubjectGroup g = gs.get(0);
                 Long last = message.getLong("id");
                 if (!last.equals(g.getLastMessageId())) {
-                    if (onlyTeacher) {
-                        JSONObject sender = message.getJSONObject("sender");
+                    JSONObject sender = message.getJSONObject("sender");
+                    Boolean itsMe = (user.getIdApi() == sender.getInt("id"));
+                    if (!g.hasMessages()) {
+                        g.setLastMessageId(last);
+                        g.setRead(false);
+                        g.save();
+                    } else if (onlyTeacher) {
                         if (sender.getInt("type") == Constants.TYPE_TEACHER) {
                             g.setLastMessageId(last);
                             g.setRead(false);
                             g.save();
-                            result.add(g);
+                            if (!itsMe) result.add(g);
                         }
                     } else {
                         g.setLastMessageId(last);
                         g.setRead(false);
                         g.save();
-                        result.add(g);
+                        if (!itsMe) result.add(g);
                     }
 
                 }
@@ -955,7 +962,9 @@ public class Server {
     }
 
     private List<SubjectGroup> manageSubjectsNotifications(JSONArray subjects) throws JSONException {
-        Boolean onlyTeacher = (new AccountUIB(c)).OnlyTeacherNotifications();
+        AccountUIB accountUIB = new AccountUIB(c);
+        User user = accountUIB.getUser();
+        Boolean onlyTeacher = accountUIB.OnlyTeacherNotifications();
         List<SubjectGroup> result = new ArrayList<>();
         for (int x = 0; x < subjects.length(); x++) {
             JSONObject message = subjects.getJSONObject(x);
@@ -966,19 +975,24 @@ public class Server {
                 if (g != null) {
                     Long last = message.getLong("id");
                     if (!last.equals(g.getLastMessageId())) {
-                        if (onlyTeacher) {
-                            JSONObject sender = message.getJSONObject("sender");
+                        JSONObject sender = message.getJSONObject("sender");
+                        Boolean itsMe = (user.getIdApi() == sender.getInt("id"));
+                        if (!g.hasMessages()) {
+                            g.setLastMessageId(last);
+                            g.setRead(false);
+                            g.save();
+                        } else if (onlyTeacher) {
                             if (sender.getInt("type") == Constants.TYPE_TEACHER) {
                                 g.setLastMessageId(last);
                                 g.setRead(false);
                                 g.save();
-                                result.add(g);
+                                if (!itsMe) result.add(g);
                             }
                         } else {
                             g.setLastMessageId(last);
                             g.setRead(false);
                             g.save();
-                            result.add(g);
+                            if (!itsMe) result.add(g);
                         }
                     }
                 }
