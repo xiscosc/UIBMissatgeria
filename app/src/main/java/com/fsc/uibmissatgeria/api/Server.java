@@ -1,7 +1,6 @@
 package com.fsc.uibmissatgeria.api;
 
 import android.content.Context;
-import android.os.Build;
 
 import com.fsc.uibmissatgeria.Constants;
 import com.fsc.uibmissatgeria.R;
@@ -18,13 +17,6 @@ import com.fsc.uibmissatgeria.models.Message;
 import com.fsc.uibmissatgeria.models.User;
 import com.orm.query.Select;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,7 +34,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.KeyManagementException;
@@ -1073,88 +1064,29 @@ public class Server {
 
 
     private JSONObject uploadFile(String route, String filefield, String mime, String url, String method) {
-        int sdkVersion = Build.VERSION.SDK_INT;
         try {
-            if (method.equals("PATCH") && sdkVersion < Build.VERSION_CODES.LOLLIPOP) {
-                return new JSONObject(patchKitkat(route, filefield, mime, url));
-            } else {
-                return new JSONObject(uploadFileLollipop(route, filefield, mime, url, method));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+            String charset = "UTF-8";
+            File uploadFile1 = new File(route);
 
-    }
+            try {
+                MultipartUtility multipart = new MultipartUtility(setUpConnection(SERVER_URL + url, method), charset);
 
+                multipart.addFormField("mime", mime);
+                multipart.addFilePart(filefield, uploadFile1);
+                return new JSONObject(multipart.finish());
 
-    private String uploadFileLollipop(String route, String filefield, String mime, String url, String method) {
-        String charset = "UTF-8";
-        File uploadFile1 = new File(route);
-
-        try {
-            MultipartUtility multipart = new MultipartUtility(setUpConnection(SERVER_URL + url, method), charset);
-
-            multipart.addFormField("mime", mime);
-            multipart.addFilePart(filefield, uploadFile1);
-            return  multipart.finish();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private String patchKitkat(String route, String filefield, String mime, String url) {
-        HttpClient httpClient = new DefaultHttpClient();
-        InputStream is;
-        InputStream inputStream;
-        try {
-            inputStream = new FileInputStream(new File(route));
-            byte[] data;
-            data = IOUtils.toByteArray(inputStream);
-            HttpPatch request = new HttpPatch(SERVER_URL + url);
-            FileBody bin = new FileBody(new File(route));
-            request.addHeader("Authorization", (new AccountUIB(c)).getToken());
-            StringBody vMime = new StringBody(mime);
-            HttpEntity reqEntity = MultipartEntityBuilder.create()
-                    .addPart(filefield, bin)
-                    .addPart(mime, vMime)
-                    .build();
-
-            request.setEntity(reqEntity);
-            HttpResponse response = httpClient.execute(request);
-            HttpEntity entity1 = response.getEntity();
-            is = entity1.getContent();
-            int resopnceStatus = response.getStatusLine().getStatusCode();
-
-            if (resopnceStatus != 200) {
+            } catch (Exception e) {
+                e.printStackTrace();
                 return null;
             }
-        }catch (IllegalArgumentException timeout) {
-            timeout.printStackTrace();
-            return null;
-        } catch (SocketTimeoutException timeout) {
-            timeout.printStackTrace();
-            return null;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
 
-        String response = "";
-        String s = "";
-        try {
-            BufferedReader buffer = new BufferedReader(new InputStreamReader(is));
-            while ((s = buffer.readLine()) != null) {
-                response += s;
-            }
-        } catch (Exception e) {
-            return null;
-        }
-        return response;
-
     }
+
+
 
     public boolean downloadFile(String url, String target) {
         try {
