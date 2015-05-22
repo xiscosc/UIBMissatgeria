@@ -25,12 +25,14 @@ public class FileMessageConversation extends SugarRecord<FileMessageConversation
     private String localPath;
     private String mimeType;
     private MessageConversation message;
+    private String miniaturePath;
 
     public FileMessageConversation(long idApi, String mimeType, MessageConversation message) {
         this.idApi = idApi;
         this.localPath = "";
         this.mimeType = mimeType;
         this.message = message;
+        this.miniaturePath = "";
     }
 
     public FileMessageConversation(String local_path, String mimeType) {
@@ -38,13 +40,29 @@ public class FileMessageConversation extends SugarRecord<FileMessageConversation
         this.mimeType = mimeType;
         this.message = null;
         this.idApi = -1;
+        this.mimeType = "";
+    }
+
+    public FileMessageConversation(String local_path, String miniaturePath, String mimeType) {
+        this.localPath = local_path;
+        this.mimeType = mimeType;
+        this.message = null;
+        this.idApi = -1;
+        this.mimeType = miniaturePath;
     }
 
     public FileMessageConversation() {
     }
 
     public Boolean haveFile() {
-        return (!localPath.equals("") && (new File(localPath).exists()));
+        if (!isImage()) {
+            return (!localPath.equals("") && (new File(localPath)).exists());
+        } else {
+            boolean cond1 = (!localPath.equals("") && (new File(localPath).exists()));
+            boolean cond2 = (!miniaturePath.equals("") && (new File(miniaturePath).exists()));
+            return cond1 && cond2;
+        }
+
     }
 
     public String getMimeType() {
@@ -103,8 +121,8 @@ public class FileMessageConversation extends SugarRecord<FileMessageConversation
     }
 
     public Bitmap getBitmap(Context c) {
-        if (isImage()) {
-            return (new ImageManager(c)).getBitmap(this.localPath);
+        if (isImage() && !miniaturePath.equals("")) {
+            return (new ImageManager(c)).getBitmap(this.miniaturePath);
         } else {
             return null;
         }
@@ -120,6 +138,9 @@ public class FileMessageConversation extends SugarRecord<FileMessageConversation
         String result = manager.downloadMedia(this.idApi, this.mimeType, message.getUser(c));
         if (result != null) {
             localPath = result;
+            if (isImage()) {
+                miniaturePath = (new ImageManager(c)).makeMiniature(localPath, message.getUser(c));
+            }
             return true;
         } else {
             return false;

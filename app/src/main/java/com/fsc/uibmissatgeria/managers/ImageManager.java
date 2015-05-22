@@ -128,9 +128,14 @@ public class ImageManager extends FileManager {
     }
 
     public FileMessageConversation saveImageToStorageConversation(Uri imgUri, User user) {
-        String route = saveImageToStorage(imgUri, null);
+        String route = saveImageToStorage(imgUri, user);
         if (route != null) {
-            return new FileMessageConversation(route, "image/jpeg");
+            String mRoute = makeMiniature(route, null);
+            if (mRoute!=null) {
+                return new FileMessageConversation(route, mRoute, "image/jpeg");
+            } else {
+                return null;
+            }
         } else {
             return null;
         }
@@ -139,7 +144,12 @@ public class ImageManager extends FileManager {
     public FileMessage saveImageToStorageGroup(Uri imgUri) {
         String route = saveImageToStorage(imgUri, null);
         if (route != null) {
-            return new FileMessage(route, "image/jpeg");
+            String mRoute = makeMiniature(route, null);
+            if (mRoute!=null) {
+                return new FileMessage(route, mRoute, "image/jpeg");
+            } else {
+                return null;
+            }
         } else {
             return null;
         }

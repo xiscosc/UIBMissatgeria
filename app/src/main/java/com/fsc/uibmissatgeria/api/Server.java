@@ -1027,6 +1027,7 @@ public class Server {
         for (int x = 0; x < chats.length(); x++) {
             JSONObject messageJson = chats.getJSONObject(x);
             JSONObject userJson2 = messageJson.getJSONObject("sender");
+            JSONObject recipientJson = messageJson.getJSONObject("recipient");
 
             User sender = new User(
                     userJson2.getInt("id"),
@@ -1034,6 +1035,14 @@ public class Server {
                     userJson2.getString("last_name"),
                     userJson2.getString("user"),
                     userJson2.getInt("type")
+            );
+
+            User recipient = new User(
+                    recipientJson.getInt("id"),
+                    recipientJson.getString("first_name"),
+                    recipientJson.getString("last_name"),
+                    recipientJson.getString("user"),
+                    recipientJson.getInt("type")
             );
 
             if (!sender.equals(usr)) {
@@ -1085,6 +1094,52 @@ public class Server {
                     result.add(conver);
                 }
 
+            } else {
+                Conversation conver;
+                if (users.contains(recipient)) {
+                    int i = users.indexOf(recipient);
+                    User u = users.get(i);
+                    if (u.isPeer()) {
+                        recipient = u;
+                        conver = new Conversation(recipient);
+                        if (conversations.contains(conver)) {
+                            int index = conversations.indexOf(conver);
+                            conver = conversations.get(index);
+                        } else {
+                            conver.save();
+                            conversations.add(conver);
+                        }
+                    } else {
+                        u.setPeer(true);
+                        u.save();
+                        sender = u;
+                        conver = new Conversation(sender);
+                        conver.save();
+                        conversations.add(conver);
+                    }
+
+                } else {
+                    recipient.setPeer(true);
+                    recipient.save();
+                    users.add(recipient);
+                    conver = new Conversation(recipient);
+                    conver.save();
+                    conversations.add(conver);
+                }
+
+                if (!conver.getLastMessageId().equals(messageJson.getLong("id"))) {
+                    MessageConversation mc = new MessageConversation(
+                            messageJson.getLong("id"),
+                            messageJson.getString("body"),
+                            messageJson.getString("created_at"),
+                            conver,
+                            false
+                    );
+
+                    mc.save();
+                    conver.setLastMessageId(mc.getIdApi());
+                    conver.save();
+                }
             }
 
 

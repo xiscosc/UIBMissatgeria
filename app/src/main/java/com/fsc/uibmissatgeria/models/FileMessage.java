@@ -25,18 +25,28 @@ public class FileMessage extends SugarRecord<FileMessage> {
     private String localPath;
     private String mimeType;
     private Message message;
+    private String miniaturePath;
 
     public FileMessage(long idApi, String mimeType, Message message) {
         this.idApi = idApi;
         this.mimeType = mimeType;
         this.message = message;
         this.localPath = "";
+        this.miniaturePath = "";
+    }
+
+    public FileMessage(String local_path, String miniaturePath, String mimeType) {
+        this.localPath = local_path;
+        this.mimeType = mimeType;
+        this.idApi = -1;
+        this.miniaturePath = miniaturePath;
     }
 
     public FileMessage(String local_path, String mimeType) {
         this.localPath = local_path;
         this.mimeType = mimeType;
         this.idApi = -1;
+        this.miniaturePath = "";
     }
 
     public FileMessage() {
@@ -44,7 +54,14 @@ public class FileMessage extends SugarRecord<FileMessage> {
     }
 
     public Boolean haveFile() {
-        return (!localPath.equals("") && (new File(localPath)).exists());
+        if (!isImage()) {
+            return (!localPath.equals("") && (new File(localPath)).exists());
+        } else {
+            boolean cond1 = (!localPath.equals("") && (new File(localPath).exists()));
+            boolean cond2 = (!miniaturePath.equals("") && (new File(miniaturePath).exists()));
+            return cond1 && cond2;
+        }
+
     }
 
     public long getIdApi() {
@@ -109,8 +126,8 @@ public class FileMessage extends SugarRecord<FileMessage> {
     }
 
     public Bitmap getBitmap(Context c) {
-        if (isImage()) {
-            return (new ImageManager(c)).getBitmap(this.localPath);
+        if (isImage() && !miniaturePath.equals("")) {
+            return (new ImageManager(c)).getBitmap(this.miniaturePath);
         } else {
             return null;
         }
@@ -127,6 +144,9 @@ public class FileMessage extends SugarRecord<FileMessage> {
         String result = manager.downloadMedia(this.idApi, this.mimeType, message.getUser());
         if (result != null) {
             localPath = result;
+            if (isImage()) {
+                miniaturePath = (new ImageManager(c)).makeMiniature(localPath, message.getUser());
+            }
             return true;
         } else {
             return false;
