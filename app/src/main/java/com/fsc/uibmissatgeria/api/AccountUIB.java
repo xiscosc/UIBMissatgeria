@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by xiscosastrecabot on 9/4/15.
+ * Class to manage auth from server and the user settings
  */
 public class AccountUIB {
 
@@ -148,6 +148,10 @@ public class AccountUIB {
         return null;
     }
 
+    /**
+     * Get notification's period check in milliseconds
+     * @return Long
+     */
     public Long getPeriodMS() {
         SharedPreferences settings = c.getSharedPreferences(Constants.SP_UIB, 0);
         String freqStr = settings.getString(Constants.SP_UPDATE, Constants.SP_UPDATE_DEFAULT);
@@ -170,6 +174,10 @@ public class AccountUIB {
         }
     }
 
+    /**
+     * Get Only Teacher setting
+     * @return boolean
+     */
     public boolean OnlyTeacherNotifications() {
         SharedPreferences settings = c.getSharedPreferences(Constants.SP_UIB, 0);
         return settings.getBoolean(Constants.SP_ONLY_TEACHER, false);

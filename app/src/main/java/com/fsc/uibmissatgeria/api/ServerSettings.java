@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by xiscosastre on 4/5/15.
+ * Class to manage the default configuration from the server
  */
 public class ServerSettings {
     Context c;
