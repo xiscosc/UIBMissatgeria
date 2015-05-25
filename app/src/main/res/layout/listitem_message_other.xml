@@ -51,6 +51,7 @@
                 android:autoLink="all"
                 android:textColor="@android:color/white"
                 android:text="Message Content"
+                android:textIsSelectable="true"
                 />
 
             <Button

@@ -239,11 +239,24 @@ public class Server {
     public Map<String, Object> doLogin(String user, String password) {
 
         Map<String, Object> result = new HashMap<>();
+        String resultStr = "";
+        HttpsURLConnection urlConnection;
         try {
-            String url = SERVER_URL + "login/?user=" + user + "&password=" + password;
-            JSONObject reader = readObjectFromServer(url);
-            this.token = reader.getString("token");
-            JSONObject usr = reader.getJSONObject("user");
+            urlConnection = setUpConnection(SERVER_URL + "login/", "POST");
+            urlConnection.setDoOutput(true);
+            OutputStreamWriter writer = new OutputStreamWriter(urlConnection.getOutputStream());
+            writer.write("user=" + user + "&password=" + password);
+            writer.flush();
+            String line;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            while ((line = reader.readLine()) != null) {
+                resultStr += line;
+            }
+            writer.close();
+            reader.close();
+            JSONObject readerJson =  new JSONObject(resultStr);
+            this.token = readerJson.getString("token");
+            JSONObject usr = readerJson.getJSONObject("user");
             User userObject = new User(
                     usr.getInt("id"),
                     usr.getString("first_name"),
@@ -257,6 +270,7 @@ public class Server {
             e.printStackTrace();
         }
         return result;
+
     }
 
     /**

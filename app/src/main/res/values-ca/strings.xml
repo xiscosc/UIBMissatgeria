@@ -58,4 +58,5 @@
     <string name="select_file">Selecciona un arxiu</string>
     <string name="title_activity_message_detail">Detall del Missatge</string>
     <string name="view_attached_files">Veure arxius adjunts</string>
+    <string name="please_wait">Per favor espera...</string>
 </resources>

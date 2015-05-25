@@ -61,6 +61,7 @@
                 android:layout_marginBottom="@dimen/margin_message"
                 android:autoLink="all"
                 android:text="Message Content"
+                android:textIsSelectable="true"
                 />
 
             <Button

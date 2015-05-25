@@ -40,7 +40,7 @@ public class FileMessageConversation extends SugarRecord<FileMessageConversation
         this.mimeType = mimeType;
         this.message = null;
         this.idApi = -1;
-        this.mimeType = "";
+        this.miniaturePath = "";
     }
 
     public FileMessageConversation(String local_path, String miniaturePath, String mimeType) {
@@ -48,7 +48,7 @@ public class FileMessageConversation extends SugarRecord<FileMessageConversation
         this.mimeType = mimeType;
         this.message = null;
         this.idApi = -1;
-        this.mimeType = miniaturePath;
+        this.miniaturePath = miniaturePath;
     }
 
     public FileMessageConversation() {
