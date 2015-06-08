@@ -166,6 +166,8 @@ public class Server {
 
         try {
             urlObj = new URL(url);
+
+            // Load the certificate and prepare TLS CONNECTION
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
             caInput = c.getResources().openRawResource(R.raw.rhodes);
             Certificate ca;
@@ -182,13 +184,14 @@ public class Server {
 
             SSLContext context = SSLContext.getInstance("TLS");
             context.init(null, tmf.getTrustManagers(), null);
+            // end certificate and connection
 
             auib = new AccountUIB(this.c);
 
             urlConnection = (HttpsURLConnection) urlObj.openConnection();
             urlConnection.setSSLSocketFactory(context.getSocketFactory());
             urlConnection.setRequestMethod(method);
-            urlConnection.setRequestProperty("Authorization", auib.getToken());
+            urlConnection.setRequestProperty("Authorization", auib.getToken()); //set token from user account
 
         } catch (MalformedURLException | CertificateException | NoSuchAlgorithmException |
                 KeyStoreException | KeyManagementException | ProtocolException e) {
@@ -717,7 +720,6 @@ public class Server {
     public boolean downloadFile(String url, String target) {
         try {
             HttpsURLConnection conn = setUpConnection(SERVER_URL + url, "GET");
-            //conn.setDoOutput(true);
             conn.connect();
 
             int responseCode = conn.getResponseCode();
@@ -754,6 +756,9 @@ public class Server {
 
     }
 
+    /**
+     * Auxiliary class to create multipart forms and upload them
+     */
     private class MultipartUtility {
         private final String boundary;
         private static final String LINE_FEED = "\r\n";

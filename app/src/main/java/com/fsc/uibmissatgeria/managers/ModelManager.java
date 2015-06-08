@@ -50,6 +50,10 @@ public class ModelManager {
             return messages;
         } else {
             Message m = messages.get(0);
+            /**
+             * If the last message is not from today or the last messages is not equal
+             * the last message provided by the notification service
+             */
             if (!m.isToday() || !m.getIdApi().equals(lastID)) {
                 List<Message> new_messages = getNewMessages(s, g, m);
                 for(Message me : new_messages) {
@@ -154,6 +158,9 @@ public class ModelManager {
         SubjectGroup.deleteAll(SubjectGroup.class);
     }
 
+    /**
+     * Generates the forum group for a subject
+     */
     public static SubjectGroup generateSGDefault(Subject s) {
         SubjectGroup sg = new SubjectGroup(Constants.DEFAULT_GROUP_ID, "Subject Forum", s);
         sg.save();

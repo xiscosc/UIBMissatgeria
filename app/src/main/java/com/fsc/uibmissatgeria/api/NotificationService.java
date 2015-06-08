@@ -90,10 +90,10 @@ public class NotificationService extends Service {
                         if (isLogged && accountUIB.getPeriodMS().equals(current)) {
                             (new ConversationTask()).execute();
                         } else if (isLogged && accountUIB.getPeriodMS()>0) {
-                            cancelTimeReload();
+                            cancelTimeReload(); // Cancels actual task and starts a new one with the new time parameter
                             prepareTimer();
                         } else {
-                            cancelTimeReload();
+                            cancelTimeReload(); // Cancels actual task and stops the Notification Service
                             stopSelf();
                         }
                     }
@@ -139,6 +139,11 @@ public class NotificationService extends Service {
 
     }
 
+    /**
+     * Create notifications for groups
+     * @param subjects
+     * @param groups
+     */
     private void notificateGroups(List<SubjectGroup> subjects, List<SubjectGroup> groups) {
         List<SubjectGroup> toNotificate = new ArrayList<>();
         if (!subjects.isEmpty() || !groups.isEmpty()) {
@@ -205,7 +210,10 @@ public class NotificationService extends Service {
         }
     }
 
-
+    /**
+     * Create notifications for conversations
+     * @param conversations
+     */
     private void notificateConversations(List<Conversation> conversations) {
         if (!conversations.isEmpty()) {
             Intent resultIntent;

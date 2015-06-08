@@ -188,7 +188,11 @@ public class ImageManager extends FileManager {
         return BitmapFactory.decodeFile(path);
     }
 
-
+    /**
+     * Generates a cropped circular miniature bitmap from a file
+     * @param path
+     * @return
+     */
     public Bitmap getCroppedBitmap(String path) {
 
         Bitmap srcBmp = getBitmap(path);
