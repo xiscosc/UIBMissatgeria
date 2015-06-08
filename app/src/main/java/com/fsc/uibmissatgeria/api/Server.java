@@ -57,7 +57,7 @@ import javax.net.ssl.TrustManagerFactory;
 
 public class Server {
 
-    private final String SERVER_URL = "https://rhodes.joan-font.com/";
+    private final String SERVER_URL = Constants.SERVER_URL;
     private Context c;
     private String netError;
     private String token;
