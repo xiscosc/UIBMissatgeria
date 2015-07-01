@@ -3,10 +3,8 @@ package com.fsc.uibmissatgeria;
 import android.content.Context;
 import android.widget.Toast;
 
-import java.lang.ref.SoftReference;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -82,8 +80,9 @@ public class Constants {
     public static final int NOTIFICATION_CONVERSATIONS_ID = 2;
 
 
-    /** SERVER URL **/
+    /** SERVER **/
     public static final String SERVER_URL = "https://rhodes.joan-font.com/";
+    public static final int SERVER_CERT_RAW = R.raw.cert_server;
 
     public static void showToast(Context ctx, String message) {
         Toast toast = Toast.makeText(ctx, message, Toast.LENGTH_SHORT);

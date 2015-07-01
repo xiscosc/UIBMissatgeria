@@ -169,7 +169,7 @@ public class Server {
 
             // Load the certificate and prepare TLS CONNECTION
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
-            caInput = c.getResources().openRawResource(R.raw.rhodes);
+            caInput = c.getResources().openRawResource(Constants.SERVER_CERT_RAW);
             Certificate ca;
             ca = cf.generateCertificate(caInput);
 
