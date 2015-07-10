@@ -1045,6 +1045,7 @@ public class Server {
         AccountUIB accountUIB = new AccountUIB(c);
         User user = accountUIB.getUser();
         Boolean onlyTeacher = accountUIB.OnlyTeacherNotifications();
+        Boolean isFirstNotification = accountUIB.isFirstNotifications();
         List<SubjectGroup> result = new ArrayList<>();
         for (int x = 0; x < groups.length(); x++) {
             JSONObject message = groups.getJSONObject(x);
@@ -1056,12 +1057,11 @@ public class Server {
                 if (!last.equals(g.getLastMessageId())) {
                     JSONObject sender = message.getJSONObject("sender");
                     Boolean itsMe = (user.getIdApi() == sender.getInt("id"));
-                    if (!g.hasMessages()) {
+                    if (isFirstNotification && !g.hasMessages()) {
                         g.setLastMessageId(last);
-                        g.setRead(false);
+                        g.setRead(itsMe);
                         g.save();
-                    } else if (onlyTeacher) {
-                        if (sender.getInt("type") == Constants.TYPE_TEACHER) {
+                    } else if (!onlyTeacher || sender.getInt("type") == Constants.TYPE_TEACHER) {
                             g.setLastMessageId(last);
                             if (!itsMe){
                                 g.setRead(false);
@@ -1070,18 +1070,7 @@ public class Server {
                                 g.setRead(true);
                             }
                             g.save();
-                        }
-                    } else {
-                        g.setLastMessageId(last);
-                        if (!itsMe){
-                            g.setRead(false);
-                            result.add(g);
-                        } else {
-                            g.setRead(true);
-                        }
-                        g.save();
                     }
-
                 }
             }
         }
@@ -1092,6 +1081,7 @@ public class Server {
         AccountUIB accountUIB = new AccountUIB(c);
         User user = accountUIB.getUser();
         Boolean onlyTeacher = accountUIB.OnlyTeacherNotifications();
+        Boolean isFirstNotification = accountUIB.isFirstNotifications();
         List<SubjectGroup> result = new ArrayList<>();
         for (int x = 0; x < subjects.length(); x++) {
             JSONObject message = subjects.getJSONObject(x);
@@ -1104,12 +1094,11 @@ public class Server {
                     if (!last.equals(g.getLastMessageId())) {
                         JSONObject sender = message.getJSONObject("sender");
                         Boolean itsMe = (user.getIdApi() == sender.getInt("id"));
-                        if (!g.hasMessages()) {
+                        if (isFirstNotification && !g.hasMessages()) {
                             g.setLastMessageId(last);
-                            g.setRead(false);
+                            g.setRead(itsMe);
                             g.save();
-                        } else if (onlyTeacher) {
-                            if (sender.getInt("type") == Constants.TYPE_TEACHER) {
+                        } else if (!onlyTeacher || sender.getInt("type") == Constants.TYPE_TEACHER) {
                                 g.setLastMessageId(last);
                                 if (!itsMe){
                                     g.setRead(false);
@@ -1118,18 +1107,7 @@ public class Server {
                                     g.setRead(true);
                                 }
                                 g.save();
-                            }
-                        } else {
-                            g.setLastMessageId(last);
-                            if (!itsMe){
-                                g.setRead(false);
-                                result.add(g);
-                            } else {
-                                g.setRead(true);
-                            }
-                            g.save();
                         }
-
                     }
                 }
             }
@@ -1355,14 +1333,24 @@ public class Server {
                 JSONArray subjects = reader.getJSONArray("subjects");
                 JSONArray groups = reader.getJSONArray("groups");
 
+                Boolean subjectsDownloaded = !(Subject.listAll(Subject.class).isEmpty());
+                List<SubjectGroup> resultSubjects = new ArrayList<>();
+                List<SubjectGroup> resultSubjectGroups =  new ArrayList<>();
+
                 List<Conversation> resultConversations = manageConversationsNotifications(chats);
-                List<SubjectGroup> resultSubjects = manageSubjectsNotifications(subjects);
-                List<SubjectGroup> resultSubjectGroups = manageSubjectGroupsNotifications(groups);
+                if (subjectsDownloaded) {
+                    resultSubjects = manageSubjectsNotifications(subjects);
+                    resultSubjectGroups = manageSubjectGroupsNotifications(groups);
+                }
 
                 result.put(Constants.RESULT_CONVERSATIONS, resultConversations);
                 result.put(Constants.RESULT_SUBJECTS, resultSubjects);
                 result.put(Constants.RESULT_GROUPS, resultSubjectGroups);
 
+                AccountUIB accountUIB = new AccountUIB(c);
+                if (subjectsDownloaded && accountUIB.isFirstNotifications()) {
+                    accountUIB.markFirstNotifications();
+                }
 
             } catch (JSONException e) {
                 e.printStackTrace();

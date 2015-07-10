@@ -29,6 +29,7 @@ public class Constants {
     public static final String SP_MAX_FILES = "max_files";
     public static final String SP_MAX_FILE_SIZE = "max_file_size";
     public static final String SP_MAX_CHAR = "max_char";
+    public static final String SP_FIRST_NOTIFICATIONS = "first_notifications";
 
     /** PREFERENCES DEFAULTS **/
     public static final String SP_UPDATE_DEFAULT = "60";
@@ -41,6 +42,9 @@ public class Constants {
             "image/pjpeg",
             "image/gif",
             "image/bmp" ));
+    public static final boolean SP_ONLY_TEACHER_DEFAULT = false;
+    public static final boolean SP_FIRST_NOTIFICATIONS_DEFAULT = true;
+
 
     /** MANAGER DEFAULTS **/
     public static final int DEFAULT_GROUP_ID = -1;
