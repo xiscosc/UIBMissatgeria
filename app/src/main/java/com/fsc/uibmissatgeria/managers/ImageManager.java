@@ -74,7 +74,6 @@ public class ImageManager extends FileManager {
             }
             return result;
         } else {
-            Constants.showToast(c, c.getResources().getString(R.string.file_not_allowed));
             return null;
         }
     }
@@ -121,10 +120,8 @@ public class ImageManager extends FileManager {
             out.close();
             return file.getAbsolutePath();
         } catch (Exception e) {
-            Constants.showToast(c, c.getResources().getString(R.string.error_image_copy));
+            return null;
         }
-
-        return null;
     }
 
     public FileMessageConversation saveImageToStorageConversation(Uri imgUri, User user) {

@@ -196,7 +196,6 @@ public class FileManager {
             result.add(mime);
             return result;
         } else {
-            Constants.showToast(c, c.getResources().getString(R.string.file_not_allowed));
             return null;
         }
 
